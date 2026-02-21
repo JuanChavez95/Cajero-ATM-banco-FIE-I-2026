@@ -1,0 +1,136 @@
+.swiper-btn-center-lr{
+    position: relative;
+	
+	.btn-next,
+	.btn-prev{
+		position:absolute;
+		top:50%;
+		transform:translateY(-50%);
+	}
+	@include respond('tab-land'){
+		.swiper-btn{
+			text-align: center;
+			margin-top: 30px;
+		}
+		.btn-next,
+		.btn-prev{
+			position: static;
+			transform:translateY(0);
+		}
+	}
+	@include respond('phone'){
+		.swiper-btn{
+			margin-top: 20px;
+		}
+	}
+}
+
+.btn-next,
+.btn-prev{
+	&.style-1{
+		box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.05);
+		bottom: auto;
+		width: 60px;
+		height: 60px;
+		color: var(--primary);
+		background: var(--rgba-primary-1);
+		font-size: 15px;
+		letter-spacing: 2px;
+		@include transitionMedium;
+		z-index: 1;
+		text-align: center;
+		line-height: 60px;
+		border-radius: 60px;
+		margin: 0 10px;
+		display: inline-block;
+		
+		@include respond('phone'){
+			width: 45px;
+			height: 45px;
+			line-height: 45px;
+			margin: 0 5px;
+		}
+		&:hover{
+			background:var(--primary);
+			color:#fff;	
+		
+		}
+	}
+}
+.btn-prev{
+	left:-125px;
+	
+	@include respond('tab-land'){
+		left: -0px;
+	}
+	@include respond('phone'){
+		left:0px;
+	}
+}
+.btn-next{
+	right:-125px;
+	@include respond('tab-land'){
+		right:-0px;
+	}
+	@include respond('phone'){
+		right:0px;
+	}
+}
+
+
+.num-pagination {
+    display: flex;
+    align-items: center;
+	justify-content:end;
+	
+	@include respond('tab-port'){
+		justify-content:center;
+		margin-bottom:30px;
+	}
+}
+.swiper-visible-wrapper{
+	overflow: unset;
+	
+	.swiper-slide{
+		@include transitionMedium;
+		opacity: 0;
+		
+		&.swiper-slide-prev,
+		&.swiper-slide-next,
+		&.swiper-slide-active{
+			opacity: 1;
+		}
+	}
+	&.style-1{
+		.swiper-slide{
+			&.swiper-slide-next{
+				opacity:0;
+			}
+		}
+		.btn-prev{
+			left:-125px;
+			@include respond('tab-land'){
+				left: -100px;
+			}
+		
+		}
+		.btn-next{
+			right:-125px;
+			@include respond('tab-land'){
+				right:-100px;
+			}
+		}
+	}
+}
+.product-swiper-wrapper{
+	overflow: unset;
+	
+	.swiper-slide{
+		@include transitionMedium;
+		opacity: 0;
+		
+		&.swiper-slide-visible:not(.swiper-slide-duplicate-active){
+			opacity: 1;
+		}
+	}
+}

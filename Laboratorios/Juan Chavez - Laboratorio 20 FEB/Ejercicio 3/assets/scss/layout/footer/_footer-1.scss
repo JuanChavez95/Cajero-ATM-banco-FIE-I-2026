@@ -1,0 +1,93 @@
+.site-footer{
+	&.style-1{
+		background: #18214F;
+		position: relative;
+		
+		.footer-top{
+			.widget{
+				p{
+					width:70%;
+					color: #808BC5;
+					font-size:14px;
+					font-weight:500;		
+				}
+				@include respond('tab-port'){
+					p{
+						width:100%;
+					}
+					ul{
+						text-align: center;
+					}
+				}
+			}
+	
+			.footer-subscribe-wrapper{
+				position: relative;
+				z-index: 1;
+				border-bottom: 1px solid rgba(225, 225, 225,.1);
+				margin-bottom: 50px;
+				
+				@include respond('tab-port'){
+					margin-bottom: 40px;
+				}
+			}
+			
+			.dzSubscribe{
+				.input-group{
+					.btn{
+						border: none;
+						color: #fff;
+						text-transform: uppercase;
+						font-size: 14px;
+						position: absolute;
+						top: 5px;
+						right: 5px;
+						border-radius: var(--border-radius-base) !important;
+						z-index: 99;
+						padding: 16px 25px;
+					}
+					input{
+						padding-left:30px;
+						padding-right:140px;
+					}
+				}
+			}		
+		}
+		.footer-bottom{
+			.footer-inner{
+				border-top: 1px solid rgba(225,225,255,0.1);
+			}
+			.copyright-text{
+				font-weight: 400;
+				font-size: 15px;
+				color:#808BC5;
+			}
+		}
+		
+		.bg1{
+			position:absolute;
+			bottom:0;
+			left:0;
+			@include respond('wide-desktop'){
+			    width: 120px;
+				height: auto;
+			}
+			@include respond('tab-land'){
+				display: none;
+			}
+		}
+		
+		.bg2{
+			position:absolute;
+			top:0;
+			right:0;
+			@include respond('wide-desktop'){
+			    width: 120px;
+				height: auto;
+			}
+			@include respond('tab-land'){
+				display: none;
+			}
+		}
+	}
+}

@@ -1,0 +1,33 @@
+.product-bx{
+	background: #FFFFFF;
+	box-shadow: 0px 0px 60px rgba(35, 50, 126, 0.15);
+	border-radius: 25px;
+	padding:30px 45px;
+	text-align: center;
+	margin-bottom:30px;
+	transition:0.5s;
+	
+	@include respond('phone-land'){
+		padding: 20px 20px;
+	}
+	.product-media{
+		width:185px;
+		height:185px;
+		margin: auto;
+		margin-bottom:20px;	
+		img{
+			border-radius: 20px;		
+		}
+	}
+	.product-content{
+		margin-bottom:10px;
+		.price{
+			font-weight: 700;
+			font-size: 17px;
+			color:var(--primary);
+		}
+	}
+	&:hover{
+		transform: translateY(-10px);
+	}
+}

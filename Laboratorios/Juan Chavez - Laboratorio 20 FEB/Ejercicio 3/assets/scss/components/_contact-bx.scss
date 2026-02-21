@@ -1,0 +1,17 @@
+.contact-bx{
+	&.style-1{
+	    border: 1px solid #EEEEEE;
+		padding: 25px;
+		padding-bottom: 0;
+		@include respond('tab-port'){
+			padding:10px;
+		}
+		.form-check{
+			margin-bottom:20px;
+			.form-check-input{
+				border-radius:50%;
+			}
+		
+		}	
+	}
+}

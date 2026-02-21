@@ -1,0 +1,140 @@
+#bg {
+    background-attachment: fixed;
+    background-size: cover;
+}
+.main-bar-wraper.sticky-no{
+	.main-bar {
+		position: unset;
+	}
+}
+
+@media only screen and (min-width: 1281px){
+	.boxed{
+		.page-wraper{
+			max-width: 1280px;
+			margin: 0 auto;
+			position: relative;
+			overflow: hidden;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		}
+		.main-bnr .dz-shape,
+		.dz-shape-2{
+			display: none;
+		}
+		.banner-media {
+			width: 500px;
+			min-width: 500px;
+		}
+		
+		.main-bar{
+			width: 1280px;
+			left: 50%;
+			transform: translateX(-50%);
+		}
+		.main-bnr .shape1 {
+			display:none;
+		}
+		.main-bnr .shape2 {
+			display:none;
+		}
+		.bnr-blocks li:nth-child(2) {
+			top: 67%;
+			right: 17px;
+		}
+		.dz-media.style-1 .text {
+			left:10px;
+		}
+		.banner-media {
+			margin-right: 0;
+			margin-left: -50px;
+		}
+		.banner-shape{
+			display:none;
+		}
+		.product-bnr{
+			.btn.btn-lg{
+				font-size: 15px;
+				padding: 10px 25px;
+			}
+			&.style-1{
+				.product-media{
+					img{
+						width: 65%;
+					}
+					.title{
+						font-size: 36px;
+					}
+				}	
+			}
+			&.style-2{
+				.inner-content{
+					padding: 15px;
+				}
+			}
+			&.style-3{
+				h2{
+					font-size:45px;	
+					margin-bottom:0;
+				}
+				.inner-content{
+					padding: 15px 15px 15px 0;
+				}
+			}
+			&.style-4{
+				.inner-content{
+					padding: 15px;
+				}
+			}	
+		}
+	}
+	
+	/* Frame */
+	.frame{
+		padding:30px;
+		
+		.page-wraper{
+			margin: 0 auto;
+			position: relative;
+			overflow: hidden;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			height: auto!important;
+		}
+		.is-fixed{
+			.main-bar {
+				left:0;
+				width: 100%;
+				margin: 0;
+				position: unset;
+			}
+		}
+		button.scroltop{
+			right:50px;
+			bottom:50px;
+		}
+	}
+}
+
+
+
+@media only screen and (max-width: 1280px) {
+	.frame {
+		padding: 0 !important;
+	}
+	.frame button.scroltop{
+		right:15px;
+		bottom:15px;
+	}
+}
+
+.theme-sharped{
+	--border-radius-base: 0;
+	@include transitionNone;
+}
+.theme-rounded{
+	--border-radius-base: 10px;
+	@include transitionNone;
+}
+
+.theme-bg-color{
+	background-color: var(--theme-bg-color);
+}

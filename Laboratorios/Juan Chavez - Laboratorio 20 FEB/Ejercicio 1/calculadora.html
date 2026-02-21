@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name = "author" content = "Juan Carlos Chavez Machaca">
+    <script>
+    function obtenerValores() {
+        let num1 = document.calculadora.valor1.value;
+        let num2 = document.calculadora.valor2.value;
+        // Verificar si las entradas sean enteros, no cadenas de caracteres ni espacios
+        if (isNaN(num1) || isNaN(num2) || num1.trim() === "" || num2.trim() === "") {
+            document.calculadora.resultado.value = "Dato inválido";
+            return null;
+        }
+        // Retornar los números
+        return {
+            n1: parseInt(num1),
+            n2: parseInt(num2)
+        };
+    }
+
+    function sumar() {
+        let valores = obtenerValores();
+        if (valores == null) return;
+        let res = valores.n1 + valores.n2;
+        document.calculadora.resultado.value = res;
+    }
+
+    function restar() {
+        let valores = obtenerValores();
+        if (valores == null) return;
+        let res = valores.n1 - valores.n2;
+        document.calculadora.resultado.value = res;
+    }
+
+    function multiplicar() {
+        let valores = obtenerValores();
+        if (valores == null) return;
+        let res = valores.n1 * valores.n2;
+        document.calculadora.resultado.value = res;
+    }
+
+    function dividir() {
+        let valores = obtenerValores();
+        if (valores == null) return;
+        //Restringir la división entre 0
+        if (valores.n2 === 0) {
+            document.calculadora.resultado.value = "Error en división";
+            return;
+        }
+        let res = valores.n1 / valores.n2;
+        document.calculadora.resultado.value = res;
+    }
+    </script>
+
+    <link href = "style.css" rel = "stylesheet">
+</head>
+
+<body>
+    <div class="box">
+        <h1 class = "box__title">CALCULADORA</h1>
+        <form name="calculadora">
+            Primer número: <input type="text" name="valor1"><br><br>
+            Segundo número: <input type="text" name="valor2"><br><br>
+
+            <input type="button" value="Sumar" onclick="sumar()">
+            <input type="button" value="Restar" onclick="restar()">
+            <input type="button" value="Multiplicar" onclick="multiplicar()">
+            <input type="button" value="Dividir" onclick="dividir()"><br><br>
+
+            Resultado: <input type="text" name="resultado" readonly>
+        </form>
+    </div>
+</body>
+</html>
+
+
