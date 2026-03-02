@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATM - Cajero Automático</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div class="bg-deco"></div>
+
+<div class="atm-wrapper">
+  <div class="atm-card">
+
+    <!-- HEADER -->
+    <div class="atm-header">
+      <div class="logo-icon">🏧</div>
+      <div>
+        <h1>Cajero Automático</h1>
+        <p>Universidad · ATM System</p>
+      </div>
+    </div>
+
+    <div class="atm-body">
+
+      <!-- ============================
+           PANTALLA: LOGIN
+      ============================= -->
+      <div id="screen-login" class="screen active">
+        <div class="screen-title">Autenticación</div>
+
+        <div class="field-group">
+          <label>Número de tarjeta</label>
+          <input type="text" id="tarjeta" maxlength="16" placeholder="0000 0000 0000 0000" autocomplete="off">
+        </div>
+
+        <div class="field-group">
+          <label>PIN</label>
+          <input type="password" id="pin" maxlength="4" placeholder="••••" readonly>
+        </div>
+
+        <!-- TECLADO NUMÉRICO -->
+        <div class="numpad">
+          <button class="numpad-btn" data-num="1">1</button>
+          <button class="numpad-btn" data-num="2">2</button>
+          <button class="numpad-btn" data-num="3">3</button>
+          <button class="numpad-btn" data-num="4">4</button>
+          <button class="numpad-btn" data-num="5">5</button>
+          <button class="numpad-btn" data-num="6">6</button>
+          <button class="numpad-btn" data-num="7">7</button>
+          <button class="numpad-btn" data-num="8">8</button>
+          <button class="numpad-btn" data-num="9">9</button>
+          <button class="numpad-btn btn-clear" id="btn-clear">⌫</button>
+          <button class="numpad-btn btn-zero" data-num="0">0</button>
+        </div>
+
+        <button class="btn btn-primary" id="btn-login">
+          <span id="login-btn-text">Ingresar</span>
+        </button>
+
+        <p class="error-msg" id="login-error" style="display:none;">⚠ <span id="login-error-text"></span></p>
+      </div>
+
+      <!-- ============================
+           PANTALLA: OPERACIONES
+      ============================= -->
+      <div id="screen-operaciones" class="screen">
+
+        <div class="bienvenida-box">
+          <div class="avatar">👤</div>
+          <div>
+            <h2 id="bienvenida-nombre">Bienvenido</h2>
+            <p>¿Qué deseas hacer hoy?</p>
+          </div>
+        </div>
+
+        <button class="op-btn consultar" id="btn-consultar">
+          <div class="op-icon">💰</div>
+          Consultar saldo
+          <span class="arrow">›</span>
+        </button>
+
+        <button class="op-btn retirar" id="btn-retirar">
+          <div class="op-icon">💸</div>
+          Retirar dinero
+          <span class="arrow">›</span>
+        </button>
+
+        <button class="op-btn depositar" id="btn-depositar">
+          <div class="op-icon">💵</div>
+          Depositar dinero
+          <span class="arrow">›</span>
+        </button>
+
+        <button class="op-btn movimientos" id="btn-movimientos">
+          <div class="op-icon">📋</div>
+          Últimos movimientos
+          <span class="arrow">›</span>
+        </button>
+
+        <div id="resultado"></div>
+
+        <button class="btn-salir" id="btn-salir">🔚 Cerrar sesión</button>
+      </div>
+
+      <!-- ============================
+           PANTALLA: RETIRO
+      ============================= -->
+      <div id="screen-retiro" class="screen">
+        <button class="btn-back" id="back-retiro">← Volver</button>
+        <div class="screen-title">Retirar dinero</div>
+
+        <div class="field-group">
+          <label>Monto a retirar ($)</label>
+          <input type="number" id="monto-retiro" min="1" step="0.01" placeholder="0.00">
+        </div>
+
+        <p class="error-msg" id="retiro-error" style="display:none;">⚠ <span id="retiro-error-text"></span></p>
+
+        <div class="btn-pair">
+          <button class="btn btn-secondary" id="btn-cancelar-retiro">Cancelar</button>
+          <button class="btn btn-primary" id="btn-confirmar-retiro">Confirmar</button>
+        </div>
+      </div>
+
+      <!-- ============================
+           PANTALLA: DEPÓSITO
+      ============================= -->
+      <div id="screen-deposito" class="screen">
+        <button class="btn-back" id="back-deposito">← Volver</button>
+        <div class="screen-title">Depositar dinero</div>
+
+        <div class="field-group">
+          <label>Monto a depositar ($)</label>
+          <input type="number" id="monto-deposito" min="1" step="0.01" placeholder="0.00">
+        </div>
+
+        <p class="error-msg" id="deposito-error" style="display:none;">⚠ <span id="deposito-error-text"></span></p>
+
+        <div class="btn-pair">
+          <button class="btn btn-secondary" id="btn-cancelar-deposito">Cancelar</button>
+          <button class="btn btn-primary" id="btn-confirmar-deposito">Confirmar</button>
+        </div>
+      </div>
+
+      <!-- ============================
+           PANTALLA: MOVIMIENTOS
+      ============================= -->
+      <div id="screen-movimientos" class="screen">
+        <button class="btn-back" id="back-movimientos">← Volver</button>
+        <div class="screen-title">Últimos movimientos</div>
+        <ul class="mov-list" id="lista-movimientos">
+          <li style="color:#6b7db3;font-size:.9rem;">Cargando...</li>
+        </ul>
+      </div>
+
+    </div><!-- /atm-body -->
+  </div><!-- /atm-card -->
+</div><!-- /atm-wrapper -->
+
+<script>
+  /* ============================================================
+     ATM — JavaScript Controller
+     Paleta: Blanco / Azul / Naranja
+  ============================================================ */
+
+  const API = '/atm-app/api';
+  let usuarioActual = null;
+
+  // ── Utilidades ──────────────────────────────────────────────
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function showError(elId, msg) {
+    const el = document.getElementById(elId);
+    document.getElementById(elId + '-text').textContent = msg;
+    el.style.display = 'flex';
+    setTimeout(() => el.style.display = 'none', 4000);
+  }
+
+  function setLoading(btn, loading) {
+    if (loading) {
+      btn.dataset.orig = btn.innerHTML;
+      btn.innerHTML = '<span class="loading"></span>';
+      btn.disabled = true;
+    } else {
+      btn.innerHTML = btn.dataset.orig;
+      btn.disabled = false;
+    }
+  }
+
+  async function apiFetch(path, method = 'GET', body = null) {
+    const opts = { method, headers: { 'Content-Type': 'application/json' } };
+    if (body) opts.body = JSON.stringify(body);
+    const res = await fetch(API + path, opts);
+    const data = await res.json();
+    if (!res.ok) throw data;
+    return data;
+  }
+
+  // ── Teclado numérico ────────────────────────────────────────
+
+  document.querySelectorAll('.numpad-btn[data-num]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const pinEl = document.getElementById('pin');
+      if (pinEl.value.length < 4) {
+        pinEl.value += btn.dataset.num;
+        pinEl.style.borderColor = '#1a56db';
+        setTimeout(() => pinEl.style.borderColor = '', 150);
+      }
+    });
+  });
+
+  document.getElementById('btn-clear').addEventListener('click', () => {
+    const pinEl = document.getElementById('pin');
+    pinEl.value = pinEl.value.slice(0, -1);
+  });
+
+  // ── LOGIN ────────────────────────────────────────────────────
+
+  document.getElementById('btn-login').addEventListener('click', async () => {
+    const tarjeta = document.getElementById('tarjeta').value.trim();
+    const pin     = document.getElementById('pin').value.trim();
+    const btn     = document.getElementById('btn-login');
+
+    if (!tarjeta || !pin) {
+      showError('login-error', 'Ingresa el número de tarjeta y PIN');
+      return;
+    }
+
+    setLoading(btn, true);
+    try {
+      const data = await apiFetch('/login.php', 'POST', { tarjeta, pin });
+      usuarioActual = data.usuario;
+      document.getElementById('bienvenida-nombre').textContent =
+        `Hola, ${data.usuario.nombre} 👋`;
+      document.getElementById('resultado').innerHTML = '';
+      showScreen('screen-operaciones');
+    } catch (err) {
+      showError('login-error', err.error || 'Error al iniciar sesión');
+    } finally {
+      setLoading(btn, false);
+    }
+  });
+
+  // ── CONSULTAR SALDO ──────────────────────────────────────────
+
+  document.getElementById('btn-consultar').addEventListener('click', async () => {
+    try {
+      const data = await apiFetch('/balance.php');
+      document.getElementById('resultado').innerHTML = `
+        <div class="alert alert-info">
+          💰 Saldo actual: <strong>$${parseFloat(data.saldo).toFixed(2)}</strong>
+        </div>`;
+    } catch {
+      document.getElementById('resultado').innerHTML =
+        '<div class="alert alert-danger">❌ Error al consultar saldo</div>';
+    }
+  });
+
+  // ── RETIRO ───────────────────────────────────────────────────
+
+  document.getElementById('btn-retirar').addEventListener('click', () => {
+    document.getElementById('monto-retiro').value = '';
+    document.getElementById('retiro-error').style.display = 'none';
+    showScreen('screen-retiro');
+  });
+
+  document.getElementById('back-retiro').addEventListener('click', () => showScreen('screen-operaciones'));
+  document.getElementById('btn-cancelar-retiro').addEventListener('click', () => showScreen('screen-operaciones'));
+
+  document.getElementById('btn-confirmar-retiro').addEventListener('click', async () => {
+    const monto = parseFloat(document.getElementById('monto-retiro').value);
+    const btn   = document.getElementById('btn-confirmar-retiro');
+
+    if (isNaN(monto) || monto <= 0) {
+      showError('retiro-error', 'Ingresa un monto válido');
+      return;
+    }
+
+    setLoading(btn, true);
+    try {
+      const data = await apiFetch('/withdraw.php', 'POST', { monto });
+      showScreen('screen-operaciones');
+      document.getElementById('resultado').innerHTML = `
+        <div class="alert alert-success">
+          ✅ ${data.mensaje}. Nuevo saldo: <strong>$${parseFloat(data.nuevo_saldo).toFixed(2)}</strong>
+        </div>`;
+    } catch (err) {
+      showError('retiro-error', err.error || 'Error al procesar retiro');
+    } finally {
+      setLoading(btn, false);
+    }
+  });
+
+  // ── DEPÓSITO ─────────────────────────────────────────────────
+
+  document.getElementById('btn-depositar').addEventListener('click', () => {
+    document.getElementById('monto-deposito').value = '';
+    document.getElementById('deposito-error').style.display = 'none';
+    showScreen('screen-deposito');
+  });
+
+  document.getElementById('back-deposito').addEventListener('click', () => showScreen('screen-operaciones'));
+  document.getElementById('btn-cancelar-deposito').addEventListener('click', () => showScreen('screen-operaciones'));
+
+  document.getElementById('btn-confirmar-deposito').addEventListener('click', async () => {
+    const monto = parseFloat(document.getElementById('monto-deposito').value);
+    const btn   = document.getElementById('btn-confirmar-deposito');
+
+    if (isNaN(monto) || monto <= 0) {
+      showError('deposito-error', 'Ingresa un monto válido');
+      return;
+    }
+
+    setLoading(btn, true);
+    try {
+      const data = await apiFetch('/deposit.php', 'POST', { monto });
+      showScreen('screen-operaciones');
+      document.getElementById('resultado').innerHTML = `
+        <div class="alert alert-success">
+          ✅ ${data.mensaje}. Nuevo saldo: <strong>$${parseFloat(data.nuevo_saldo).toFixed(2)}</strong>
+        </div>`;
+    } catch (err) {
+      showError('deposito-error', err.error || 'Error al procesar depósito');
+    } finally {
+      setLoading(btn, false);
+    }
+  });
+
+  // ── MOVIMIENTOS ──────────────────────────────────────────────
+
+  document.getElementById('btn-movimientos').addEventListener('click', async () => {
+    showScreen('screen-movimientos');
+    const lista = document.getElementById('lista-movimientos');
+    lista.innerHTML = '<li style="color:#6b7db3;font-size:.9rem;">Cargando...</li>';
+
+    try {
+      const data = await apiFetch('/transactions.php');
+      if (!data.length) {
+        lista.innerHTML = '<li style="color:#6b7db3;font-size:.9rem;">Sin movimientos registrados.</li>';
+        return;
+      }
+
+      const iconos = { retiro: '💸', deposito: '💵', transferencia: '🔄' };
+      lista.innerHTML = data.map(m => `
+        <li class="mov-item ${m.tipo}">
+          <div>
+            <div class="mov-tipo">${iconos[m.tipo] || '•'} ${m.tipo.charAt(0).toUpperCase() + m.tipo.slice(1)}</div>
+            <div class="mov-fecha">${new Date(m.fecha).toLocaleString('es-BO')}</div>
+          </div>
+          <div class="mov-monto">${m.tipo === 'retiro' ? '-' : '+'}$${parseFloat(m.monto).toFixed(2)}</div>
+        </li>`).join('');
+    } catch {
+      lista.innerHTML = '<li style="color:#dc2626;font-size:.9rem;">❌ Error al obtener movimientos.</li>';
+    }
+  });
+
+  document.getElementById('back-movimientos').addEventListener('click', () => showScreen('screen-operaciones'));
+
+  // ── SALIR ────────────────────────────────────────────────────
+
+  document.getElementById('btn-salir').addEventListener('click', async () => {
+    try { await apiFetch('/logout.php', 'POST'); } catch {}
+    usuarioActual = null;
+    document.getElementById('tarjeta').value = '';
+    document.getElementById('pin').value = '';
+    showScreen('screen-login');
+  });
+
+</script>
+</body>
+</html>

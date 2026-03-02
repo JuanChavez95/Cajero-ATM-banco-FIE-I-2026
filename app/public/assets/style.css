@@ -1,0 +1,585 @@
+/* =============================================
+   ATM - CAJERO AUTOMÁTICO
+   Paleta: Blanco · Azul (#1a56db) · Naranja (#f97316)
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Mono:wght@400;600&display=swap');
+
+:root {
+  --azul:        #1a56db;
+  --azul-oscuro: #1241aa;
+  --azul-claro:  #e8effe;
+  --naranja:     #f97316;
+  --naranja-dark:#ea6a06;
+  --blanco:      #ffffff;
+  --gris-claro:  #f4f6fb;
+  --gris-borde:  #d1daf7;
+  --texto:       #0f1f45;
+  --texto-suave: #6b7db3;
+  --error:       #dc2626;
+  --exito:       #16a34a;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Barlow', sans-serif;
+  background: var(--azul-oscuro);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Fondo geométrico */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    linear-gradient(135deg, #0d2d7a 0%, #1a56db 50%, #0d2d7a 100%);
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  top: -30%;
+  right: -15%;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(249,115,22,0.18) 0%, transparent 70%);
+  z-index: 0;
+}
+
+/* Círculo decorativo inferior izq */
+.bg-deco {
+  position: fixed;
+  bottom: -20%;
+  left: -10%;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(26,86,219,0.35) 0%, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* =============================================
+   CONTENEDOR PRINCIPAL ATM
+   ============================================= */
+
+.atm-wrapper {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 480px;
+  padding: 16px;
+  animation: fadeUp 0.6s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.atm-card {
+  background: var(--blanco);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.45),
+    0 0 0 1px rgba(255,255,255,0.08);
+}
+
+/* Header de la tarjeta */
+.atm-header {
+  background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--azul) 100%);
+  padding: 22px 28px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 3px solid var(--naranja);
+}
+
+.atm-header .logo-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--naranja);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(249,115,22,0.4);
+}
+
+.atm-header h1 {
+  color: var(--blanco);
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  line-height: 1.1;
+}
+
+.atm-header p {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* Cuerpo */
+.atm-body {
+  padding: 28px;
+}
+
+/* =============================================
+   SCREENS
+   ============================================= */
+
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* Screen title */
+.screen-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.screen-title::before {
+  content: '';
+  display: block;
+  width: 4px;
+  height: 18px;
+  background: var(--naranja);
+  border-radius: 4px;
+}
+
+/* =============================================
+   FORMULARIO / INPUTS
+   ============================================= */
+
+.field-group { margin-bottom: 18px; }
+
+.field-group label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 7px;
+}
+
+.field-group input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--gris-borde);
+  border-radius: 10px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--texto);
+  background: var(--gris-claro);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+.field-group input:focus {
+  border-color: var(--azul);
+  background: var(--blanco);
+  box-shadow: 0 0 0 3px rgba(26,86,219,0.12);
+}
+
+.field-group input#pin {
+  font-family: 'Barlow Mono', monospace;
+  font-size: 1.6rem;
+  letter-spacing: 8px;
+  text-align: center;
+}
+
+/* =============================================
+   TECLADO NUMÉRICO
+   ============================================= */
+
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 20px 0 22px;
+}
+
+.numpad-btn {
+  height: 52px;
+  border: 2px solid var(--gris-borde);
+  border-radius: 10px;
+  background: var(--gris-claro);
+  font-family: 'Barlow', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--texto);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.numpad-btn:hover {
+  background: var(--azul-claro);
+  border-color: var(--azul);
+  color: var(--azul);
+  transform: scale(1.04);
+}
+
+.numpad-btn:active {
+  transform: scale(0.96);
+  background: var(--azul);
+  color: var(--blanco);
+}
+
+.numpad-btn.btn-clear {
+  background: #fef2e8;
+  border-color: #fbd5b5;
+  color: var(--naranja);
+}
+
+.numpad-btn.btn-clear:hover {
+  background: var(--naranja);
+  border-color: var(--naranja);
+  color: var(--blanco);
+}
+
+/* Tecla 0 ocupa 2 columnas */
+.numpad-btn.btn-zero {
+  grid-column: span 2;
+}
+
+/* =============================================
+   BOTONES
+   ============================================= */
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--azul) 0%, var(--azul-oscuro) 100%);
+  color: var(--blanco);
+  box-shadow: 0 4px 14px rgba(26,86,219,0.35);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(26,86,219,0.45);
+}
+
+.btn-primary:active { transform: translateY(0); }
+
+.btn-secondary {
+  background: var(--gris-claro);
+  color: var(--texto-suave);
+  border: 2px solid var(--gris-borde);
+}
+
+.btn-secondary:hover {
+  background: var(--gris-borde);
+  color: var(--texto);
+}
+
+/* Botones de operaciones */
+.op-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 16px 18px;
+  border: 2px solid var(--gris-borde);
+  border-radius: 12px;
+  background: var(--blanco);
+  color: var(--texto);
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.op-btn:last-child { margin-bottom: 0; }
+
+.op-btn .op-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.op-btn.consultar .op-icon  { background: #e0f2fe; }
+.op-btn.retirar .op-icon    { background: #fef3c7; }
+.op-btn.depositar .op-icon  { background: #dcfce7; }
+.op-btn.movimientos .op-icon { background: #f3e8ff; }
+
+.op-btn:hover {
+  border-color: var(--azul);
+  transform: translateX(4px);
+  box-shadow: 0 4px 14px rgba(26,86,219,0.12);
+}
+
+.op-btn:hover .op-icon { background: var(--azul-claro); }
+
+.op-btn .arrow {
+  margin-left: auto;
+  color: var(--gris-borde);
+  font-size: 20px;
+  transition: color 0.18s;
+}
+
+.op-btn:hover .arrow { color: var(--azul); }
+
+.btn-salir {
+  margin-top: 14px;
+  background: transparent;
+  border: 2px dashed var(--gris-borde);
+  color: var(--texto-suave);
+  border-radius: 12px;
+  padding: 11px;
+  width: 100%;
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+
+.btn-salir:hover {
+  border-color: var(--error);
+  color: var(--error);
+}
+
+/* =============================================
+   BIENVENIDA
+   ============================================= */
+
+.bienvenida-box {
+  background: linear-gradient(135deg, var(--azul-claro) 0%, #dde8ff 100%);
+  border: 2px solid var(--gris-borde);
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.bienvenida-box .avatar {
+  width: 46px;
+  height: 46px;
+  background: var(--azul);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.bienvenida-box h2 {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--texto);
+}
+
+.bienvenida-box p {
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+  font-weight: 500;
+}
+
+/* =============================================
+   RESULTADO / ALERTAS
+   ============================================= */
+
+#resultado { margin-top: 16px; }
+
+.alert {
+  padding: 14px 16px;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: fadeUp 0.3s ease;
+}
+
+.alert-success {
+  background: #dcfce7;
+  color: var(--exito);
+  border-left: 4px solid var(--exito);
+}
+
+.alert-info {
+  background: var(--azul-claro);
+  color: var(--azul-oscuro);
+  border-left: 4px solid var(--azul);
+}
+
+.alert-danger {
+  background: #fee2e2;
+  color: var(--error);
+  border-left: 4px solid var(--error);
+}
+
+/* =============================================
+   MENSAJES DE ERROR
+   ============================================= */
+
+.error-msg {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--error);
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* =============================================
+   TABLA MOVIMIENTOS
+   ============================================= */
+
+.mov-list {
+  list-style: none;
+  margin-top: 4px;
+}
+
+.mov-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 14px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  background: var(--gris-claro);
+  border: 1.5px solid var(--gris-borde);
+  font-size: 0.88rem;
+}
+
+.mov-item .mov-tipo {
+  font-weight: 700;
+  color: var(--texto);
+}
+
+.mov-item .mov-fecha {
+  font-size: 0.75rem;
+  color: var(--texto-suave);
+}
+
+.mov-item .mov-monto {
+  font-family: 'Barlow Mono', monospace;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.mov-item.retiro   .mov-monto { color: var(--error); }
+.mov-item.deposito .mov-monto { color: var(--exito); }
+.mov-item.transferencia .mov-monto { color: var(--azul); }
+
+/* =============================================
+   BOTONES CONFIRM / CANCEL PAIR
+   ============================================= */
+
+.btn-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+/* =============================================
+   BACK BUTTON
+   ============================================= */
+
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--texto-suave);
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 20px;
+  transition: color 0.2s;
+}
+
+.btn-back:hover { color: var(--azul); }
+
+/* =============================================
+   LOADER
+   ============================================= */
+
+.loading {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(255,255,255,0.4);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+
+@media (max-width: 500px) {
+  .atm-body { padding: 20px; }
+  .atm-header { padding: 18px 20px; }
+}
