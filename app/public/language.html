@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banco Fie — Selección de Idioma</title>
+  <link rel="stylesheet" href="assets/css/language.css">
+</head>
+<body>
+
+  <div class="top-bar"></div>
+
+  <div class="lang-wrapper">
+
+    <!-- Mini logo -->
+    <div class="mini-logo">
+      <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="28" cy="28" r="24" fill="#0a0a0a" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+        <path d="M20 16 C12 20, 12 36, 20 40" stroke="#e70075" stroke-width="4" stroke-linecap="round" fill="none"/>
+        <path d="M28 20 C38 24, 38 32, 28 36" stroke="#0094d6" stroke-width="4" stroke-linecap="round" fill="none"/>
+        <circle cx="24" cy="28" r="3" fill="#e70075"/>
+      </svg>
+      <div class="mini-logo-text">
+        <span class="b">Banco</span><span class="f">Fie</span>
+      </div>
+    </div>
+
+    <div class="logo-sep"></div>
+
+    <!-- Título -->
+    <div class="lang-title">Elija el idioma &nbsp;/&nbsp; Choose your language</div>
+
+    <!-- Opciones -->
+    <div class="lang-grid">
+
+      <!-- ESPAÑOL -->
+      <div class="lang-card es" onclick="elegirIdioma('es')">
+        <div class="lang-check">
+          <svg viewBox="0 0 10 10" fill="none">
+            <polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#e70075" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <!-- Bandera Bolivia (SVG inline) -->
+        <div class="flag-wrap">
+          <svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
+            <!-- Rojo -->
+            <rect width="72" height="24" fill="#D52B1E"/>
+            <!-- Amarillo -->
+            <rect y="24" width="72" height="24" fill="#F4D03F"/>
+            <!-- Verde -->
+            <rect y="48" width="72" height="24" fill="#007934"/>
+          </svg>
+        </div>
+
+        <div class="lang-name">Español</div>
+        <div class="lang-sub">Spanish</div>
+      </div>
+
+      <!-- INGLÉS -->
+      <div class="lang-card en" onclick="elegirIdioma('en')">
+        <div class="lang-check">
+          <svg viewBox="0 0 10 10" fill="none">
+            <polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#0094d6" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <!-- Bandera UK (SVG inline simplificada) -->
+        <div class="flag-wrap">
+          <svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
+            <rect width="72" height="72" fill="#012169"/>
+            <!-- Diagonales blancas -->
+            <line x1="0" y1="0" x2="72" y2="72" stroke="white" stroke-width="10"/>
+            <line x1="72" y1="0" x2="0" y2="72" stroke="white" stroke-width="10"/>
+            <!-- Cruz blanca -->
+            <rect x="28" y="0" width="16" height="72" fill="white"/>
+            <rect x="0" y="28" width="72" height="16" fill="white"/>
+            <!-- Diagonales rojas -->
+            <line x1="0" y1="0" x2="72" y2="72" stroke="#C8102E" stroke-width="6"/>
+            <line x1="72" y1="0" x2="0" y2="72" stroke="#C8102E" stroke-width="6"/>
+            <!-- Cruz roja -->
+            <rect x="31" y="0" width="10" height="72" fill="#C8102E"/>
+            <rect x="0" y="31" width="72" height="10" fill="#C8102E"/>
+          </svg>
+        </div>
+
+        <div class="lang-name">English</div>
+        <div class="lang-sub">Inglés</div>
+      </div>
+
+    </div><!-- /lang-grid -->
+
+    <div class="lang-hint">Seleccione una opción para continuar</div>
+
+  </div><!-- /lang-wrapper -->
+
+  <div class="bottom-bar"></div>
+
+  <!-- JSON de traducciones -->
+  <script>
+    const translations = {};
+
+    // Carga el JSON del idioma elegido
+    async function cargarIdioma(lang) {
+      try {
+        const res  = await fetch(`assets/lang/${lang}.json`);
+        const data = await res.json();
+        translations[lang] = data;
+      } catch (e) {
+        console.warn('No se pudo cargar el archivo de idioma:', lang);
+      }
+    }
+
+    // Guardar en sessionStorage y navegar al PIN
+    async function elegirIdioma(lang) {
+      await cargarIdioma(lang);
+      sessionStorage.setItem('idioma', lang);
+      sessionStorage.setItem('translations', JSON.stringify(translations[lang] || {}));
+
+      // Animación de salida antes de navegar
+      document.querySelector('.lang-wrapper').style.opacity = '0';
+      document.querySelector('.lang-wrapper').style.transform = 'translateY(-15px)';
+      document.querySelector('.lang-wrapper').style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+
+      setTimeout(() => {
+        window.location.href = 'pin.html';
+      }, 300);
+    }
+  </script>
+
+</body>
+</html>

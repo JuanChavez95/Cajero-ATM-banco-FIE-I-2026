@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banco Fie — Menú Principal</title>
+  <link rel="stylesheet" href="assets/css/menu.css">
+</head>
+<body>
+
+  <div class="top-bar"></div>
+
+  <div class="menu-wrapper">
+
+    <!-- ── HEADER ── -->
+    <div class="menu-header">
+      <div class="mini-logo">
+        <svg viewBox="0 0 56 56" fill="none">
+          <circle cx="28" cy="28" r="24" fill="#0a0a0a" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+          <path d="M20 16 C12 20, 12 36, 20 40" stroke="#e70075" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <path d="M28 20 C38 24, 38 32, 28 36" stroke="#0094d6" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <circle cx="24" cy="28" r="3" fill="#e70075"/>
+        </svg>
+        <div class="mini-logo-text">
+          <span class="b">Banco</span><span class="f">Fie</span>
+        </div>
+      </div>
+      <div class="menu-clock" id="reloj">--:--:--</div>
+    </div>
+
+    <!-- ── TARJETA DE USUARIO ── -->
+    <div class="user-card">
+      <div class="user-avatar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#0094d6" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+        </svg>
+      </div>
+      <div class="user-info">
+        <div class="user-name" id="user-name">Cargando...</div>
+        <div class="user-label" id="user-label">Sesión activa</div>
+      </div>
+      <div class="user-session">
+        <div class="session-dot"></div>
+        <div class="session-text">En línea</div>
+      </div>
+    </div>
+
+    <!-- ── TÍTULO ── -->
+    <div class="menu-title" id="menu-titulo">Seleccione una operación</div>
+
+    <!-- ── GRID DE OPERACIONES ── -->
+    <div class="ops-grid">
+
+      <!-- Retiro -->
+      <button class="op-btn retiro" onclick="irA('retiro.html')">
+        <div class="op-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="6" width="20" height="14" rx="2"/>
+            <path d="M16 12H8M12 9l-4 3 4 3"/>
+          </svg>
+        </div>
+        <div class="op-text">
+          <div class="op-name" id="op-retiro">Retiro</div>
+          <div class="op-desc">Retire efectivo de su cuenta</div>
+        </div>
+        <div class="op-arrow">↗</div>
+      </button>
+
+      <!-- Depósito -->
+      <button class="op-btn deposito" onclick="irA('deposito.html')">
+        <div class="op-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="6" width="20" height="14" rx="2"/>
+            <path d="M8 12h8M12 9l4 3-4 3"/>
+          </svg>
+        </div>
+        <div class="op-text">
+          <div class="op-name" id="op-deposito">Depósito</div>
+          <div class="op-desc">Deposite dinero en su cuenta</div>
+        </div>
+        <div class="op-arrow">↗</div>
+      </button>
+
+      <!-- Consulta de saldo -->
+      <button class="op-btn consulta" onclick="irA('consulta.html')">
+        <div class="op-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 8v4l3 3"/>
+          </svg>
+        </div>
+        <div class="op-text">
+          <div class="op-name" id="op-consulta">Consulta de saldo</div>
+          <div class="op-desc">Vea su saldo disponible</div>
+        </div>
+        <div class="op-arrow">↗</div>
+      </button>
+
+      <!-- Transferencia -->
+      <button class="op-btn transferencia" onclick="irA('transferencia.html')">
+        <div class="op-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M15 7l5 5-5 5"/>
+            <path d="M19 12H5M9 17l-5-5 5-5"/>
+          </svg>
+        </div>
+        <div class="op-text">
+          <div class="op-name" id="op-transferencia">Transferencia</div>
+          <div class="op-desc">Transfiera entre cuentas</div>
+        </div>
+        <div class="op-arrow">↗</div>
+      </button>
+
+      <!-- Movimientos — ancho completo -->
+      <button class="op-btn movimientos full-width" onclick="irA('movimientos.html')">
+        <div class="op-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+            <rect x="9" y="3" width="6" height="4" rx="1"/>
+            <path d="M9 12h6M9 16h4"/>
+          </svg>
+        </div>
+        <div class="op-text">
+          <div class="op-name" id="op-movimientos">Últimos movimientos</div>
+          <div class="op-desc">Historial de sus últimas transacciones</div>
+        </div>
+        <div class="op-arrow">↗</div>
+      </button>
+
+    </div><!-- /ops-grid -->
+
+    <!-- ── SALIR ── -->
+    <button class="btn-exit" id="btn-salir" onclick="cerrarSesion()">
+      ⏻ &nbsp; Terminar sesión
+    </button>
+
+  </div><!-- /menu-wrapper -->
+
+  <div class="bottom-bar"></div>
+
+  <script>
+    /* ============================================================
+       BANCO FIE — Menú Principal
+    ============================================================ */
+
+    const t = JSON.parse(sessionStorage.getItem('translations') || '{}');
+    const usuario = JSON.parse(sessionStorage.getItem('usuario') || '{}');
+
+    // ── Verificar sesión ──────────────────────────────────────
+    if (!usuario || !usuario.id) {
+      window.location.href = 'index.html';
+    }
+
+    // ── Aplicar nombre de usuario ─────────────────────────────
+    document.getElementById('user-name').textContent  = usuario.nombre || 'Usuario';
+    document.getElementById('user-label').textContent = t.sesion_activa || 'Sesión activa';
+
+    // ── Aplicar idioma ────────────────────────────────────────
+    if (Object.keys(t).length) {
+      const ids = {
+        'menu-titulo'      : t.menu_titulo      || 'Seleccione una operación',
+        'op-retiro'        : t.retiro           || 'Retiro',
+        'op-deposito'      : t.deposito         || 'Depósito',
+        'op-consulta'      : t.consulta_saldo   || 'Consulta de saldo',
+        'op-transferencia' : t.transferencia    || 'Transferencia',
+        'op-movimientos'   : t.movimientos      || 'Últimos movimientos',
+      };
+      for (const [id, text] of Object.entries(ids)) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+      }
+      document.getElementById('btn-salir').textContent =
+        '⏻  ' + (t.fin_sesion || 'Terminar sesión');
+    }
+
+    // ── Reloj en tiempo real ──────────────────────────────────
+    function actualizarReloj() {
+      const ahora = new Date();
+      const h = String(ahora.getHours()).padStart(2, '0');
+      const m = String(ahora.getMinutes()).padStart(2, '0');
+      const s = String(ahora.getSeconds()).padStart(2, '0');
+      document.getElementById('reloj').textContent = `${h}:${m}:${s}`;
+    }
+    actualizarReloj();
+    setInterval(actualizarReloj, 1000);
+
+    // ── Navegación ────────────────────────────────────────────
+    function irA(pagina) {
+      // Animación de salida
+      document.querySelector('.menu-wrapper').style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+      document.querySelector('.menu-wrapper').style.opacity    = '0';
+      document.querySelector('.menu-wrapper').style.transform  = 'translateY(-12px)';
+      setTimeout(() => window.location.href = pagina, 250);
+    }
+
+    // ── Cerrar sesión ─────────────────────────────────────────
+    async function cerrarSesion() {
+      try {
+        await fetch('/atm-app/api/logout.php', { method: 'POST' });
+      } catch {}
+      sessionStorage.clear();
+      window.location.href = 'index.html';
+    }
+
+    // ── Auto-logout por inactividad (2 minutos) ───────────────
+    let timerInactividad;
+
+    function reiniciarTimer() {
+      clearTimeout(timerInactividad);
+      timerInactividad = setTimeout(() => {
+        sessionStorage.clear();
+        window.location.href = 'index.html';
+      }, 2 * 60 * 1000);
+    }
+
+    ['click', 'keydown', 'mousemove', 'touchstart'].forEach(ev =>
+      document.addEventListener(ev, reiniciarTimer)
+    );
+    reiniciarTimer();
+  </script>
+
+</body>
+</html>

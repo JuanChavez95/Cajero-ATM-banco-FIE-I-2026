@@ -1,0 +1,302 @@
+/* =============================================
+   BANCO FIE — Pantalla de Bienvenida
+   welcome.css
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');
+
+.fie-root {
+  background: #0a0a0a;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  padding: 40px 20px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* Fondo decorativo */
+.fie-root::before {
+  content: '';
+  position: absolute;
+  top: -120px; left: -120px;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(231,0,117,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.fie-root::after {
+  content: '';
+  position: absolute;
+  bottom: -100px; right: -100px;
+  width: 350px; height: 350px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,148,214,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Línea decorativa superior */
+.top-bar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #e70075 0%, #0094d6 100%);
+}
+
+/* LOGO */
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 6px;
+  animation: fadeDown 0.7s ease both;
+}
+
+.logo-icon {
+  width: 56px;
+  height: 56px;
+}
+
+.logo-text {
+  font-size: 2.6rem;
+  font-weight: 900;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.logo-text .banco { color: #e70075; }
+.logo-text .fie   { color: #0094d6; font-style: italic; }
+
+/* Tagline */
+.tagline {
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  opacity: 0.55;
+  margin-bottom: 36px;
+  animation: fadeDown 0.7s 0.1s ease both;
+}
+
+/* TARJETA */
+.card-area {
+  position: relative;
+  margin-bottom: 32px;
+  animation: fadeUp 0.8s 0.2s ease both;
+}
+
+.atm-card-visual {
+  width: 280px;
+  height: 175px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%);
+  border: 1.5px solid rgba(255,255,255,0.12);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+}
+
+/* Chip */
+.card-chip {
+  position: absolute;
+  top: 28px; left: 22px;
+  width: 36px; height: 28px;
+  background: linear-gradient(135deg, #d4a843 0%, #f0c96b 40%, #b8901e 100%);
+  border-radius: 5px;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.card-chip::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 22px; height: 16px;
+  border: 1.5px solid rgba(0,0,0,0.25);
+  border-radius: 3px;
+}
+
+/* Logo en tarjeta */
+.card-logo {
+  position: absolute;
+  top: 22px; right: 18px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  font-family: 'Montserrat', sans-serif;
+}
+.card-logo .b { color: #e70075; }
+.card-logo .f { color: #0094d6; font-style: italic; }
+
+/* Número tarjeta */
+.card-number {
+  position: absolute;
+  bottom: 48px; left: 22px;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 3px;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+}
+
+/* Nombre */
+.card-name {
+  position: absolute;
+  bottom: 22px; left: 22px;
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Vencimiento */
+.card-exp {
+  position: absolute;
+  bottom: 22px; right: 18px;
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.4);
+  font-weight: 600;
+}
+
+/* Banda decorativa */
+.card-stripe {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #e70075, #0094d6);
+  opacity: 0.6;
+  border-radius: 16px 16px 0 0;
+}
+
+/* Brillo tarjeta */
+.card-shine {
+  position: absolute;
+  top: -40%; left: -30%;
+  width: 60%; height: 120%;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.06) 50%, transparent 60%);
+  animation: shine 3s ease-in-out infinite;
+}
+
+/* Flecha de inserción */
+.insert-arrow {
+  position: absolute;
+  right: -48px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  animation: arrowPulse 1.4s ease-in-out infinite;
+}
+
+.arrow-line {
+  width: 28px;
+  height: 2px;
+  background: linear-gradient(90deg, #e70075, #0094d6);
+  border-radius: 2px;
+}
+
+.arrow-head {
+  width: 0; height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 10px solid #0094d6;
+  margin-left: 8px;
+  margin-top: -12px;
+}
+
+/* INSTRUCCIONES */
+.instructions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 36px;
+  animation: fadeUp 0.8s 0.35s ease both;
+}
+
+.inst-line {
+  color: rgba(255,255,255,0.75);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inst-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #e70075;
+  animation: blink 1.2s ease-in-out infinite;
+}
+
+/* Divisor */
+.divider {
+  width: 200px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  margin-bottom: 28px;
+  animation: fadeUp 0.8s 0.4s ease both;
+}
+
+/* Texto 24H */
+.available-text {
+  color: rgba(255,255,255,0.25);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  text-align: center;
+  animation: fadeUp 0.8s 0.5s ease both;
+  line-height: 1.8;
+}
+
+.available-text span { color: #0094d6; }
+
+/* Enter hint */
+.enter-hint {
+  position: absolute;
+  bottom: 20px;
+  color: rgba(255,255,255,0.18);
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.fie-root:hover .enter-hint { opacity: 0.6; }
+
+/* ── Animaciones ── */
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes shine {
+  0%, 100% { left: -30%; opacity: 0; }
+  40%  { opacity: 1; }
+  60%  { left: 120%; opacity: 0; }
+}
+@keyframes arrowPulse {
+  0%, 100% { transform: translateY(-50%) translateX(0); opacity: 0.5; }
+  50%       { transform: translateY(-50%) translateX(6px); opacity: 1; }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; background: #e70075; }
+  50%       { opacity: 0.3; background: #0094d6; }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.18; }
+  50%       { opacity: 0.5; }
+}

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banco Fie — Autenticación</title>
+  <link rel="stylesheet" href="assets/css/pin.css">
+</head>
+<body>
+
+  <div class="top-bar"></div>
+
+  <!-- ── OVERLAY DE ÉXITO ── -->
+  <div class="success-overlay" id="success-overlay">
+    <div class="success-icon">
+      <svg viewBox="0 0 32 32" fill="none">
+        <polyline points="6,16 13,23 26,9" stroke="#0094d6" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="success-name" id="success-nombre">Bienvenido</div>
+    <div class="success-sub" id="success-sub">Acceso verificado</div>
+  </div>
+
+  <div class="pin-wrapper" id="pin-wrapper">
+
+    <!-- Mini logo -->
+    <div class="mini-logo">
+      <svg viewBox="0 0 56 56" fill="none">
+        <circle cx="28" cy="28" r="24" fill="#0a0a0a" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+        <path d="M20 16 C12 20, 12 36, 20 40" stroke="#e70075" stroke-width="4" stroke-linecap="round" fill="none"/>
+        <path d="M28 20 C38 24, 38 32, 28 36" stroke="#0094d6" stroke-width="4" stroke-linecap="round" fill="none"/>
+        <circle cx="24" cy="28" r="3" fill="#e70075"/>
+      </svg>
+      <div class="mini-logo-text">
+        <span class="b">Banco</span><span class="f">Fie</span>
+      </div>
+    </div>
+
+    <div class="logo-sep"></div>
+
+    <!-- Indicador de paso -->
+    <div class="step-indicator">
+      <div class="step-dot active" id="dot-1"></div>
+      <div class="step-line"      id="line-1"></div>
+      <div class="step-dot"       id="dot-2"></div>
+    </div>
+
+    <div class="step-title" id="step-title">Número de tarjeta</div>
+
+    <!-- ── CARD PRINCIPAL ── -->
+    <div class="pin-card" id="pin-card">
+
+      <!-- PASO 1: Número de tarjeta -->
+      <div id="paso-tarjeta" style="width:100%; display:flex; flex-direction:column; gap:20px;">
+
+        <div class="field-block">
+          <div class="field-label" id="lbl-tarjeta">Número de tarjeta</div>
+          <input
+            type="text"
+            class="field-input"
+            id="input-tarjeta"
+            maxlength="16"
+            placeholder="0000000000000000"
+            autocomplete="off"
+            inputmode="numeric"
+          >
+        </div>
+
+        <button class="btn-confirm" id="btn-siguiente" onclick="irAPIN()">
+          <span id="btn-siguiente-text">Continuar</span>
+        </button>
+
+      </div>
+
+      <!-- PASO 2: PIN (oculto al inicio) -->
+      <div id="paso-pin" style="width:100%; display:none; flex-direction:column; gap:20px; align-items:center;">
+
+        <!-- Puntos visuales del PIN -->
+        <div class="pin-dots">
+          <div class="pin-dot" id="d1"></div>
+          <div class="pin-dot" id="d2"></div>
+          <div class="pin-dot" id="d3"></div>
+          <div class="pin-dot" id="d4"></div>
+        </div>
+
+        <!-- Teclado numérico -->
+        <div class="numpad">
+          <button class="num-btn" onclick="presionarNum('1')">1</button>
+          <button class="num-btn" onclick="presionarNum('2')">2</button>
+          <button class="num-btn" onclick="presionarNum('3')">3</button>
+          <button class="num-btn" onclick="presionarNum('4')">4</button>
+          <button class="num-btn" onclick="presionarNum('5')">5</button>
+          <button class="num-btn" onclick="presionarNum('6')">6</button>
+          <button class="num-btn" onclick="presionarNum('7')">7</button>
+          <button class="num-btn" onclick="presionarNum('8')">8</button>
+          <button class="num-btn" onclick="presionarNum('9')">9</button>
+          <button class="num-btn btn-clear" onclick="borrarNum()">⌫</button>
+          <button class="num-btn btn-zero" onclick="presionarNum('0')">0</button>
+        </div>
+
+        <!-- Intentos restantes -->
+        <div class="intentos-bar" id="intentos-bar">
+          <div class="intento-pip activo" id="pip1"></div>
+          <div class="intento-pip activo" id="pip2"></div>
+          <div class="intento-pip activo" id="pip3"></div>
+        </div>
+
+        <button class="btn-confirm" id="btn-confirmar" disabled onclick="verificarLogin()">
+          <span id="btn-confirmar-text">Confirmar PIN</span>
+        </button>
+
+      </div>
+
+      <!-- Mensaje de error (compartido) -->
+      <div class="error-msg hidden" id="error-msg">
+        <span>●</span><span id="error-text"></span>
+      </div>
+
+    </div><!-- /pin-card -->
+
+    <button class="btn-back" onclick="window.location.href='language.html'">
+      ← Volver al inicio
+    </button>
+
+  </div><!-- /pin-wrapper -->
+
+  <div class="bottom-bar"></div>
+
+  <script>
+    /* ============================================================
+       BANCO FIE — Autenticación Tarjeta + PIN
+       Flujo: paso 1 tarjeta → paso 2 PIN → login.php → menu.html
+    ============================================================ */
+
+    const API = '/app/api';
+
+    // Traducciones desde sessionStorage
+    const t = JSON.parse(sessionStorage.getItem('translations') || '{}');
+
+    // Estado
+    let pinActual    = '';
+    let tarjetaNum   = '';
+    let intentos     = 3;
+    let bloqueado    = false;
+
+    // Aplicar idioma si hay traducciones cargadas
+    if (t.ingrese_pin) {
+      document.getElementById('lbl-tarjeta').textContent =
+        t.numero_tarjeta || 'Número de tarjeta';
+      document.getElementById('btn-siguiente-text').textContent =
+        t.continuar || 'Continuar';
+    }
+
+    // ── FORMATEAR número de tarjeta mientras escribe ──────────
+    const inputTarjeta = document.getElementById('input-tarjeta');
+
+    inputTarjeta.addEventListener('input', function () {
+      // Solo dígitos
+      this.value = this.value.replace(/\D/g, '').slice(0, 16);
+    });
+
+    inputTarjeta.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') irAPIN();
+    });
+
+    // ── PASO 1 → PASO 2 ──────────────────────────────────────
+    function irAPIN() {
+      const val = inputTarjeta.value.trim();
+
+      if (val.length !== 16) {
+        mostrarError(t.tarjeta_invalida || 'Ingrese los 16 dígitos de la tarjeta');
+        inputTarjeta.classList.add('error');
+        setTimeout(() => inputTarjeta.classList.remove('error'), 600);
+        return;
+      }
+
+      tarjetaNum = val;
+      ocultarError();
+
+      // Actualizar indicador de pasos
+      document.getElementById('dot-1').classList.remove('active');
+      document.getElementById('dot-1').classList.add('done');
+      document.getElementById('line-1').classList.add('done');
+      document.getElementById('dot-2').classList.add('active');
+      document.getElementById('step-title').textContent =
+        t.ingrese_pin || 'Ingrese su PIN';
+
+      // Cambiar vista
+      document.getElementById('paso-tarjeta').style.display = 'none';
+      document.getElementById('paso-pin').style.display     = 'flex';
+    }
+
+    // ── TECLADO NUMÉRICO ──────────────────────────────────────
+    function presionarNum(n) {
+      if (bloqueado || pinActual.length >= 4) return;
+      pinActual += n;
+      actualizarDots();
+      if (pinActual.length === 4) {
+        document.getElementById('btn-confirmar').disabled = false;
+      }
+    }
+
+    function borrarNum() {
+      if (bloqueado || pinActual.length === 0) return;
+      pinActual = pinActual.slice(0, -1);
+      document.getElementById('btn-confirmar').disabled = true;
+      actualizarDots();
+      ocultarError();
+    }
+
+    function actualizarDots() {
+      ['d1','d2','d3','d4'].forEach((id, i) => {
+        const dot = document.getElementById(id);
+        dot.classList.toggle('filled', i < pinActual.length);
+        dot.classList.remove('error-dot');
+      });
+    }
+
+    // ── VERIFICAR LOGIN (tarjeta + PIN) ───────────────────────
+    async function verificarLogin() {
+      if (bloqueado || pinActual.length < 4) return;
+
+      const btnText = document.getElementById('btn-confirmar-text');
+      const btn     = document.getElementById('btn-confirmar');
+      btnText.innerHTML = '<span class="spinner"></span>';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`${API}/login.php`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tarjeta: tarjetaNum, pin: pinActual })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          // Guardar datos de sesión
+          sessionStorage.setItem('usuario', JSON.stringify(data.usuario));
+          mostrarExito(data.usuario.nombre);
+
+        } else {
+          // Fallo
+          intentos--;
+          actualizarPips();
+          errorPIN(data.error || (t.pin_incorrecto || 'PIN incorrecto'));
+
+          if (intentos <= 0) {
+            bloqueado = true;
+            mostrarError(t.cuenta_bloqueada || 'Demasiados intentos. Sesión bloqueada.');
+            btn.disabled = true;
+            btnText.textContent = t.cuenta_bloqueada || 'Bloqueado';
+            setTimeout(() => window.location.href = 'index.html', 3000);
+            return;
+          }
+
+          btnText.textContent = t.ingresar || 'Confirmar PIN';
+          btn.disabled = false;
+          pinActual = '';
+          actualizarDots();
+        }
+
+      } catch (err) {
+        btnText.textContent = t.ingresar || 'Confirmar PIN';
+        btn.disabled = false;
+        mostrarError('Error de conexión con el servidor');
+      }
+    }
+
+    // ── INTENTOS VISUALES ────────────────────────────────────
+    function actualizarPips() {
+      const pips = ['pip1','pip2','pip3'];
+      const perdidos = 3 - intentos;
+      pips.forEach((id, i) => {
+        const el = document.getElementById(id);
+        el.classList.remove('activo','perdido');
+        if (i < perdidos)  el.classList.add('perdido');
+        else               el.classList.add('activo');
+      });
+    }
+
+    function errorPIN(msg) {
+      mostrarError(msg);
+      ['d1','d2','d3','d4'].forEach(id => {
+        document.getElementById(id).classList.remove('filled');
+        document.getElementById(id).classList.add('error-dot');
+      });
+      setTimeout(() => {
+        ['d1','d2','d3','d4'].forEach(id =>
+          document.getElementById(id).classList.remove('error-dot')
+        );
+      }, 700);
+    }
+
+    // ── MENSAJES ─────────────────────────────────────────────
+    function mostrarError(msg) {
+      const el = document.getElementById('error-msg');
+      document.getElementById('error-text').textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    function ocultarError() {
+      document.getElementById('error-msg').classList.add('hidden');
+    }
+
+    // ── OVERLAY ÉXITO ────────────────────────────────────────
+    function mostrarExito(nombre) {
+      document.getElementById('success-nombre').textContent =
+        (t.bienvenida || 'Bienvenido') + ', ' + nombre;
+      document.getElementById('success-sub').textContent =
+        t.acceso_verificado || 'Acceso verificado';
+      document.getElementById('success-overlay').classList.add('show');
+
+      setTimeout(() => {
+        window.location.href = 'menu.html';
+      }, 2000);
+    }
+
+    // ── Enter activa confirmar en paso PIN ───────────────────
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && document.getElementById('paso-pin').style.display !== 'none') {
+        if (pinActual.length === 4 && !bloqueado) verificarLogin();
+      }
+    });
+  </script>
+
+</body>
+</html>

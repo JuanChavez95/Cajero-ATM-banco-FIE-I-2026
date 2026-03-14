@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banco Fie — Operación Exitosa</title>
+  <link rel="stylesheet" href="assets/css/operaciones.css">
+</head>
+<body>
+  <div class="top-bar"></div>
+
+  <div class="op-wrapper">
+
+    <!-- Header mínimo -->
+    <div class="op-header" style="margin-bottom:20px;">
+      <div class="mini-logo" style="display:flex; align-items:center; gap:10px;">
+        <svg width="32" height="32" viewBox="0 0 56 56" fill="none">
+          <circle cx="28" cy="28" r="24" fill="#0a0a0a" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+          <path d="M20 16 C12 20, 12 36, 20 40" stroke="#e70075" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <path d="M28 20 C38 24, 38 32, 28 36" stroke="#0094d6" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <circle cx="24" cy="28" r="3" fill="#e70075"/>
+        </svg>
+        <div style="font-size:1.1rem; font-weight:900;">
+          <span style="color:#e70075;">Banco</span><span style="color:#0094d6; font-style:italic;">Fie</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card resultado -->
+    <div class="resultado-card">
+
+      <!-- Ícono éxito -->
+      <div class="resultado-icon" id="resultado-icon"
+           style="background: rgba(0,200,83,0.1); border: 2px solid rgba(0,200,83,0.3);">
+        <svg viewBox="0 0 28 28" fill="none">
+          <polyline points="5,14 11,20 23,8" stroke="#00c853" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <div class="resultado-title" id="resultado-titulo">Operación exitosa</div>
+      <div class="resultado-sub"   id="resultado-sub">Transacción completada</div>
+
+      <!-- Detalle -->
+      <div class="resultado-detalle" id="resultado-detalle">
+        <!-- se llena con JS -->
+      </div>
+
+      <!-- Separador -->
+      <div style="width:100%; height:1px; background:rgba(255,255,255,0.05);"></div>
+
+      <!-- ¿Otra operación? -->
+      <div style="font-size:0.65rem; font-weight:800; letter-spacing:3px;
+                  text-transform:uppercase; color:rgba(255,255,255,0.2); margin-top:4px;"
+           id="lbl-otra-op">
+        ¿Desea realizar otra operación?
+      </div>
+
+      <button class="btn-otra-op si" onclick="otraOperacion()" id="btn-si">
+        Sí, otra operación
+      </button>
+      <button class="btn-otra-op no" onclick="cerrarSesion()" id="btn-no">
+        No, finalizar sesión
+      </button>
+
+    </div><!-- /resultado-card -->
+  </div>
+
+  <div class="bottom-bar"></div>
+
+  <script>
+    const API      = '/app/api';
+    const t        = JSON.parse(sessionStorage.getItem('translations') || '{}');
+    const usuario  = JSON.parse(sessionStorage.getItem('usuario') || '{}');
+    const resultado = JSON.parse(sessionStorage.getItem('op_resultado') || 'null');
+
+    if (!usuario.id || !resultado) window.location.href = 'menu.html';
+
+    // Etiquetas de tipo
+    const tipoLabel = {
+      retiro:   t.retiro   || 'Retiro',
+      deposito: t.deposito || 'Depósito'
+    };
+
+    const cuentaLabel = {
+      ahorros:   t.cuenta_ahorros   || 'Cuenta Ahorros',
+      corriente: t.cuenta_corriente || 'Cuenta Corriente'
+    };
+
+    // Rellenar detalle
+    document.getElementById('resultado-titulo').textContent =
+      t.operacion_exitosa || 'Operación exitosa';
+
+    document.getElementById('resultado-sub').textContent =
+      tipoLabel[resultado.tipo] || resultado.tipo;
+
+    document.getElementById('resultado-detalle').innerHTML = `
+      <div class="detalle-row">
+        <span class="detalle-key">Operación</span>
+        <span class="detalle-val">${tipoLabel[resultado.tipo] || resultado.tipo}</span>
+      </div>
+      <div class="detalle-row">
+        <span class="detalle-key">Cuenta</span>
+        <span class="detalle-val">${cuentaLabel[resultado.cuenta_tipo] || resultado.cuenta_tipo}</span>
+      </div>
+      <div class="detalle-row">
+        <span class="detalle-key">Monto</span>
+        <span class="detalle-val highlight">Bs. ${parseFloat(resultado.monto).toFixed(2)}</span>
+      </div>
+      <div class="detalle-row">
+        <span class="detalle-key">${t.nuevo_saldo || 'Nuevo saldo'}</span>
+        <span class="detalle-val highlight" style="color:#00c853;">
+          Bs. ${parseFloat(resultado.nuevo_saldo).toFixed(2)}
+        </span>
+      </div>
+      <div class="detalle-row">
+        <span class="detalle-key">Fecha</span>
+        <span class="detalle-val">${new Date().toLocaleString('es-BO')}</span>
+      </div>
+    `;
+
+    // Textos de idioma
+    if (t.otra_operacion) {
+      document.getElementById('lbl-otra-op').textContent = t.otra_operacion;
+    }
+    if (t.si) document.getElementById('btn-si').textContent = t.si + ' — Otra operación';
+    if (t.no) document.getElementById('btn-no').textContent = t.no + ' — Finalizar sesión';
+
+    function otraOperacion() {
+      // Limpiar datos de operación anterior, conservar sesión
+      sessionStorage.removeItem('op_tipo');
+      sessionStorage.removeItem('op_monto');
+      sessionStorage.removeItem('op_resultado');
+      salir('menu.html');
+    }
+
+    async function cerrarSesion() {
+      try { await fetch(`${API}/logout.php`, { method: 'POST' }); } catch {}
+      sessionStorage.clear();
+      salir('index.html');
+    }
+
+    function salir(dest) {
+      document.querySelector('.op-wrapper').style.transition = 'opacity 0.2s ease';
+      document.querySelector('.op-wrapper').style.opacity    = '0';
+      setTimeout(() => window.location.href = dest, 200);
+    }
+  </script>
+</body>
+</html>

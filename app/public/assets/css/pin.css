@@ -1,0 +1,453 @@
+/* =============================================
+   BANCO FIE — Pantalla PIN / Tarjeta
+   pin.css
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #0a0a0a;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  overflow-y: auto;
+  padding: 40px 20px;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: -120px; left: -120px;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(231,0,117,0.09) 0%, transparent 70%);
+  pointer-events: none;
+}
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -100px; right: -100px;
+  width: 380px; height: 380px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,148,214,0.09) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.top-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #e70075 0%, #0094d6 100%);
+  z-index: 10;
+}
+
+.bottom-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #0094d6 0%, #e70075 100%);
+}
+
+/* ── Wrapper ── */
+.pin-wrapper {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+/* ── Mini logo ── */
+.mini-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  animation: fadeDown 0.5s ease both;
+}
+.mini-logo svg { width: 34px; height: 34px; }
+.mini-logo-text { font-size: 1.25rem; font-weight: 900; letter-spacing: -0.5px; }
+.mini-logo-text .b { color: #e70075; }
+.mini-logo-text .f { color: #0094d6; font-style: italic; }
+
+.logo-sep {
+  width: 36px; height: 2px;
+  background: linear-gradient(90deg, #e70075, #0094d6);
+  border-radius: 2px;
+  margin-bottom: 24px;
+  animation: fadeDown 0.5s 0.05s ease both;
+}
+
+/* ── Paso indicator ── */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 28px;
+  animation: fadeDown 0.5s 0.1s ease both;
+}
+
+.step-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  transition: all 0.3s;
+}
+.step-dot.active { background: #e70075; transform: scale(1.3); }
+.step-dot.done   { background: #0094d6; }
+
+.step-line {
+  width: 28px; height: 1.5px;
+  background: rgba(255,255,255,0.1);
+  transition: background 0.3s;
+}
+.step-line.done { background: #0094d6; }
+
+/* ── Título de paso ── */
+.step-title {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 22px;
+  text-align: center;
+  animation: fadeDown 0.5s 0.12s ease both;
+  min-height: 16px;
+  transition: all 0.3s;
+}
+
+/* ── Card principal ── */
+.pin-card {
+  width: 100%;
+  background: #111111;
+  border: 1.5px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: 32px 28px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  animation: fadeUp 0.6s 0.15s ease both;
+  position: relative;
+  overflow: hidden;
+}
+
+.pin-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #e70075, #0094d6);
+  border-radius: 20px 20px 0 0;
+}
+
+/* ── Campo de tarjeta ── */
+.field-block {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+}
+
+.field-input {
+  width: 100%;
+  background: #1a1a1a;
+  border: 1.5px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-family: 'Courier New', monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 4px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  text-align: center;
+}
+
+.field-input:focus {
+  border-color: rgba(0,148,214,0.5);
+  box-shadow: 0 0 0 3px rgba(0,148,214,0.08);
+}
+
+.field-input.error {
+  border-color: rgba(231,0,117,0.6) !important;
+  box-shadow: 0 0 0 3px rgba(231,0,117,0.08) !important;
+  animation: shake 0.35s ease;
+}
+
+.field-input::placeholder {
+  color: rgba(255,255,255,0.15);
+  letter-spacing: 2px;
+}
+
+/* ── Separador entre campos ── */
+.field-sep {
+  width: 100%;
+  height: 1px;
+  background: rgba(255,255,255,0.05);
+}
+
+/* ── Display PIN con puntos ── */
+.pin-dots {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin: 4px 0;
+}
+
+.pin-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.2);
+  background: transparent;
+  transition: all 0.15s ease;
+}
+
+.pin-dot.filled {
+  background: #0094d6;
+  border-color: #0094d6;
+  transform: scale(1.15);
+}
+
+.pin-dot.error-dot {
+  background: #e70075;
+  border-color: #e70075;
+}
+
+/* ── Teclado numérico ── */
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
+.num-btn {
+  height: 54px;
+  background: #1a1a1a;
+  border: 1.5px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  color: #ffffff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.num-btn:hover {
+  background: #222222;
+  border-color: rgba(0,148,214,0.35);
+  color: #0094d6;
+}
+
+.num-btn:active {
+  transform: scale(0.93);
+  background: #0094d6;
+  border-color: #0094d6;
+  color: #ffffff;
+}
+
+.num-btn.btn-clear {
+  background: #1a1a1a;
+  border-color: rgba(231,0,117,0.2);
+  color: rgba(255,255,255,0.4);
+}
+.num-btn.btn-clear:hover {
+  background: rgba(231,0,117,0.1);
+  border-color: #e70075;
+  color: #e70075;
+}
+
+.num-btn.btn-zero {
+  grid-column: span 2;
+}
+
+/* ── Botón confirmar ── */
+.btn-confirm {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #e70075 0%, #b3005a 100%);
+  color: #ffffff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 6px 20px rgba(231,0,117,0.3);
+}
+
+.btn-confirm:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(231,0,117,0.4);
+}
+
+.btn-confirm:active { transform: scale(0.98); }
+
+.btn-confirm:disabled {
+  background: #2a2a2a;
+  color: rgba(255,255,255,0.2);
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Spinner de carga ── */
+.spinner {
+  width: 18px; height: 18px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+/* ── Mensaje de error ── */
+.error-msg {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #e70075;
+  letter-spacing: 1px;
+  text-align: center;
+  min-height: 18px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+  animation: fadeUp 0.3s ease;
+}
+
+.error-msg.hidden { visibility: hidden; }
+
+/* ── Intentos restantes ── */
+.intentos-bar {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.intento-pip {
+  width: 28px; height: 4px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.1);
+  transition: background 0.3s;
+}
+.intento-pip.activo  { background: #0094d6; }
+.intento-pip.perdido { background: #e70075; }
+
+/* ── Volver ── */
+.btn-back {
+  margin-top: 20px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.2);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s;
+  animation: fadeUp 0.5s 0.3s ease both;
+}
+.btn-back:hover { color: rgba(255,255,255,0.5); }
+
+/* ── Éxito overlay ── */
+.success-overlay {
+  position: fixed;
+  inset: 0;
+  background: #0a0a0a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.success-overlay.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.success-icon {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: rgba(0,148,214,0.12);
+  border: 2px solid #0094d6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: popIn 0.4s ease both;
+}
+
+.success-icon svg { width: 32px; height: 32px; }
+
+.success-name {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+  animation: fadeUp 0.4s 0.1s ease both;
+}
+
+.success-sub {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #0094d6;
+  animation: fadeUp 0.4s 0.2s ease both;
+}
+
+/* ── Animaciones ── */
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20%      { transform: translateX(-8px); }
+  40%      { transform: translateX(8px); }
+  60%      { transform: translateX(-5px); }
+  80%      { transform: translateX(5px); }
+}
+@keyframes popIn {
+  from { transform: scale(0.6); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}

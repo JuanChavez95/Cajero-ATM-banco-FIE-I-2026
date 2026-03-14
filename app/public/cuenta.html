@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banco Fie — Seleccionar Cuenta</title>
+  <link rel="stylesheet" href="assets/css/operaciones.css">
+  <style>
+    .op-header-icon     { background: rgba(255,165,0,0.12); }
+    .op-header-icon svg { stroke: #ffa500; }
+  </style>
+</head>
+<body>
+  <div class="top-bar"></div>
+
+  <div class="op-wrapper">
+
+    <!-- Header -->
+    <div class="op-header">
+      <button class="btn-back" onclick="volver()">←</button>
+      <div class="op-header-info">
+        <div class="op-header-title" id="titulo-pagina">Seleccione cuenta</div>
+        <div class="op-header-sub" id="sub-monto"></div>
+      </div>
+      <div class="op-header-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="5" width="20" height="14" rx="2"/>
+          <line x1="2" y1="10" x2="22" y2="10"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Label -->
+    <div class="section-label" style="align-self:flex-start; margin-bottom:12px;
+         animation: fadeDown 0.4s ease both;" id="lbl-cuentas">
+      Cuentas disponibles
+    </div>
+
+    <!-- Lista de cuentas -->
+    <div style="width:100%; display:flex; flex-direction:column; gap:12px;" id="lista-cuentas">
+      <div class="op-msg info visible"><span class="spinner"></span><span>Cargando cuentas...</span></div>
+    </div>
+
+    <!-- Mensaje error -->
+    <div class="op-msg error" id="op-msg" style="margin-top:14px; width:100%;">
+      <span>●</span><span id="msg-text"></span>
+    </div>
+
+  </div>
+  <div class="bottom-bar"></div>
+
+  <script>
+    const API     = '/app/api';
+    const t       = JSON.parse(sessionStorage.getItem('translations') || '{}');
+    const usuario = JSON.parse(sessionStorage.getItem('usuario') || '{}');
+    const tipo    = sessionStorage.getItem('op_tipo')  || '';
+    const monto   = parseFloat(sessionStorage.getItem('op_monto') || '0');
+
+    if (!usuario.id || !tipo || !monto) window.location.href = 'menu.html';
+
+    // Mostrar tipo y monto en el sub-header
+    const tipoLabel = tipo === 'retiro'
+      ? (t.retiro   || 'Retiro')
+      : (t.deposito || 'Depósito');
+
+    document.getElementById('sub-monto').textContent =
+      `${tipoLabel} — Bs. ${monto.toFixed(2)}`;
+
+    async function cargarCuentas() {
+      try {
+        const res  = await fetch(`${API}/balance.php`);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Error');
+
+        const lista = document.getElementById('lista-cuentas');
+
+        if (!data.cuentas || data.cuentas.length === 0) {
+          lista.innerHTML = `<div class="op-msg info visible"><span>Sin cuentas disponibles</span></div>`;
+          return;
+        }
+
+        lista.innerHTML = data.cuentas.map(c => {
+          const esCorriente = c.tipo === 'corriente';
+          const tipoTxt = esCorriente
+            ? (t.cuenta_corriente || 'Cuenta Corriente')
+            : (t.cuenta_ahorros   || 'Cuenta Ahorros');
+
+          const insuficiente = tipo === 'retiro' && parseFloat(c.saldo) < monto;
+
+          return `
+            <button
+              class="cuenta-item ${c.tipo}"
+              onclick="seleccionarCuenta(${c.id}, '${c.tipo}', ${c.saldo})"
+              ${insuficiente ? 'disabled style="opacity:0.35; cursor:not-allowed;"' : ''}
+            >
+              <div class="cuenta-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  ${esCorriente
+                    ? '<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>'
+                    : '<rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="12" cy="12" r="3"/>'}
+                </svg>
+              </div>
+              <div class="cuenta-info">
+                <div class="cuenta-tipo">${tipoTxt}</div>
+                <div class="cuenta-num">**** **** ${c.numero_cuenta.slice(-4)}</div>
+              </div>
+              <div class="cuenta-saldo">
+                <div class="cuenta-saldo-monto">Bs. ${parseFloat(c.saldo).toFixed(2)}</div>
+                <div class="cuenta-saldo-label">${t.saldo_disponible || 'Disponible'}</div>
+              </div>
+              <div class="cuenta-arrow">›</div>
+            </button>
+          `;
+        }).join('');
+
+      } catch (err) {
+        document.getElementById('lista-cuentas').innerHTML = '';
+        document.getElementById('msg-text').textContent = err.message;
+        document.getElementById('op-msg').classList.add('visible');
+      }
+    }
+
+    async function seleccionarCuenta(cuentaId, cuentaTipo, saldo) {
+      const endpoint = tipo === 'retiro' ? 'withdraw.php' : 'deposit.php';
+
+      // Bloquear UI
+      document.querySelectorAll('.cuenta-item').forEach(b => b.disabled = true);
+
+      try {
+        const res  = await fetch(`${API}/${endpoint}`, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ monto, cuenta_id: cuentaId })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error || 'Error en la operación');
+
+        // Guardar resultado para resultado.html
+        sessionStorage.setItem('op_resultado', JSON.stringify({
+          tipo,
+          monto,
+          cuenta_tipo:    cuentaTipo,
+          nuevo_saldo:    data.nuevo_saldo,
+          mensaje:        data.mensaje
+        }));
+
+        salir('resultado.html');
+
+      } catch (err) {
+        document.getElementById('msg-text').textContent = err.message;
+        document.getElementById('op-msg').classList.add('visible');
+        document.querySelectorAll('.cuenta-item').forEach(b => b.disabled = false);
+      }
+    }
+
+    function volver() {
+      const dest = tipo === 'retiro' ? 'retiro.html' : 'deposito.html';
+      salir(dest);
+    }
+
+    function salir(dest) {
+      document.querySelector('.op-wrapper').style.transition = 'opacity 0.2s ease';
+      document.querySelector('.op-wrapper').style.opacity    = '0';
+      setTimeout(() => window.location.href = dest, 200);
+    }
+
+    cargarCuentas();
+  </script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banco Fie — Consulta de Saldo</title>
+  <link rel="stylesheet" href="assets/css/operaciones.css">
+  <style>
+    .op-header-icon     { background: rgba(0,200,83,0.12); }
+    .op-header-icon svg { stroke: #00c853; }
+  </style>
+</head>
+<body>
+  <div class="top-bar"></div>
+
+  <div class="op-wrapper">
+
+    <!-- Header -->
+    <div class="op-header">
+      <button class="btn-back" onclick="volver()">←</button>
+      <div class="op-header-info">
+        <div class="op-header-title" id="titulo-pagina">Consulta de Saldo</div>
+        <div class="op-header-sub">Sus cuentas activas</div>
+      </div>
+      <div class="op-header-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M12 8v4l3 3"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Lista de cuentas -->
+    <div class="saldo-list" id="saldo-list">
+      <div class="op-msg info visible">
+        <span class="spinner"></span>
+        <span>Consultando saldos...</span>
+      </div>
+    </div>
+
+    <!-- Mensaje error -->
+    <div class="op-msg error" id="op-msg" style="margin-top:12px; width:100%;">
+      <span>●</span><span id="msg-text"></span>
+    </div>
+
+    <!-- Otra operación -->
+    <div style="width:100%; margin-top:20px; display:flex; flex-direction:column; gap:10px;
+                animation: fadeUp 0.5s 0.3s ease both; opacity:0; animation-fill-mode:both;">
+      <button class="btn-otra-op si" onclick="salir('menu.html')" id="btn-otra">
+        Realizar otra operación
+      </button>
+      <button class="btn-otra-op no" onclick="cerrarSesion()">
+        Finalizar sesión
+      </button>
+    </div>
+
+  </div>
+  <div class="bottom-bar"></div>
+
+  <script>
+    const API     = '/app/api';
+    const t       = JSON.parse(sessionStorage.getItem('translations') || '{}');
+    const usuario = JSON.parse(sessionStorage.getItem('usuario') || '{}');
+    if (!usuario.id) window.location.href = 'index.html';
+
+    // Íconos por tipo de cuenta
+    const iconos = {
+      ahorros: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="5" width="20" height="14" rx="2"/>
+        <circle cx="12" cy="12" r="3"/>
+      </svg>`,
+      corriente: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>`
+    };
+
+    async function cargarSaldos() {
+      try {
+        const res  = await fetch(`${API}/balance.php`);
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error || 'Error');
+
+        const lista = document.getElementById('saldo-list');
+
+        if (!data.cuentas || data.cuentas.length === 0) {
+          lista.innerHTML = `<div class="op-msg info visible"><span>Sin cuentas activas</span></div>`;
+          return;
+        }
+
+        lista.innerHTML = data.cuentas.map(c => `
+          <div class="saldo-item">
+            <div class="saldo-item-left">
+              <div class="saldo-item-icon">
+                ${iconos[c.tipo] || iconos.ahorros}
+              </div>
+              <div>
+                <div class="saldo-item-tipo">${c.tipo === 'ahorros'
+                  ? (t.cuenta_ahorros   || 'Cuenta Ahorros')
+                  : (t.cuenta_corriente || 'Cuenta Corriente')}</div>
+                <div class="saldo-item-num">${formatearNumCuenta(c.numero_cuenta)}</div>
+              </div>
+            </div>
+            <div style="text-align:right;">
+              <div class="saldo-item-monto">Bs. ${parseFloat(c.saldo).toFixed(2)}</div>
+              <div class="saldo-item-bs">${t.saldo_disponible || 'Disponible'}</div>
+            </div>
+          </div>
+        `).join('');
+
+      } catch (err) {
+        document.getElementById('saldo-list').innerHTML = '';
+        document.getElementById('msg-text').textContent = err.message || 'Error al consultar';
+        document.getElementById('op-msg').classList.add('visible');
+      }
+    }
+
+    function formatearNumCuenta(n) {
+      // Ej: 000100000001 → **** **** 0001
+      return '**** **** ' + n.slice(-4);
+    }
+
+    function volver()  { salir('menu.html'); }
+
+    async function cerrarSesion() {
+      try { await fetch(`${API}/logout.php`, { method: 'POST' }); } catch {}
+      sessionStorage.clear();
+      salir('index.html');
+    }
+
+    function salir(dest) {
+      document.querySelector('.op-wrapper').style.transition = 'opacity 0.2s ease';
+      document.querySelector('.op-wrapper').style.opacity    = '0';
+      setTimeout(() => window.location.href = dest, 200);
+    }
+
+    cargarSaldos();
+  </script>
+</body>
+</html>

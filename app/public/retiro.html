@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banco Fie — Retiro</title>
+  <link rel="stylesheet" href="assets/css/operaciones.css">
+  <style>
+    .op-card::before        { background: linear-gradient(90deg, #e70075, #b3005a); }
+    .monto-btn:hover        { border-color: rgba(231,0,117,0.5); color: #e70075; }
+    .monto-btn.selected     { background: rgba(231,0,117,0.12); border-color: #e70075; color: #e70075; }
+    .monto-btn.otro:hover   { border-color: rgba(231,0,117,0.4); color: #e70075; }
+    .monto-resumen-valor    { color: #e70075; }
+    .op-header-icon         { background: rgba(231,0,117,0.12); }
+    .op-header-icon svg     { stroke: #e70075; }
+    .btn-confirm            { background: linear-gradient(135deg, #e70075, #b3005a);
+                              box-shadow: 0 6px 18px rgba(231,0,117,0.3); }
+    .btn-confirm:not(:disabled):hover { box-shadow: 0 10px 24px rgba(231,0,117,0.4); }
+    .monto-input-wrap:focus-within { border-color: rgba(231,0,117,0.5); }
+  </style>
+</head>
+<body>
+  <div class="top-bar"></div>
+
+  <div class="op-wrapper">
+
+    <!-- Header -->
+    <div class="op-header">
+      <button class="btn-back" onclick="volver()">←</button>
+      <div class="op-header-info">
+        <div class="op-header-title" id="titulo-pagina">Retiro</div>
+        <div class="op-header-sub" id="sub-pagina">Seleccione el monto</div>
+      </div>
+      <div class="op-header-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="6" width="20" height="14" rx="2"/>
+          <path d="M16 12H8M12 9l-4 3 4 3"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Card principal -->
+    <div class="op-card">
+
+      <!-- Montos predefinidos -->
+      <div>
+        <div class="section-label" id="lbl-montos">Montos disponibles</div>
+        <div class="montos-grid">
+          <button class="monto-btn" onclick="elegirMonto(10)">
+            <span>10</span><span class="currency">Bs.</span>
+          </button>
+          <button class="monto-btn" onclick="elegirMonto(20)">
+            <span>20</span><span class="currency">Bs.</span>
+          </button>
+          <button class="monto-btn" onclick="elegirMonto(50)">
+            <span>50</span><span class="currency">Bs.</span>
+          </button>
+          <button class="monto-btn" onclick="elegirMonto(100)">
+            <span>100</span><span class="currency">Bs.</span>
+          </button>
+          <button class="monto-btn" onclick="elegirMonto(200)">
+            <span>200</span><span class="currency">Bs.</span>
+          </button>
+          <button class="monto-btn" onclick="elegirMonto(500)">
+            <span>500</span><span class="currency">Bs.</span>
+          </button>
+          <button class="monto-btn otro" onclick="toggleOtroMonto()">
+            ✎ &nbsp; Otro monto
+          </button>
+        </div>
+      </div>
+
+      <!-- Input monto personalizado -->
+      <div class="monto-custom" id="monto-custom">
+        <label id="lbl-otro">Ingrese el monto (Bs.)</label>
+        <div class="monto-input-wrap">
+          <span class="monto-prefix">Bs.</span>
+          <input
+            type="number"
+            class="monto-input"
+            id="monto-input"
+            min="1"
+            step="0.01"
+            placeholder="0.00"
+            oninput="actualizarDesdeInput()"
+          >
+        </div>
+      </div>
+
+      <div class="op-divider"></div>
+
+      <!-- Resumen del monto elegido -->
+      <div class="monto-resumen" id="monto-resumen">
+        <span class="monto-resumen-label" id="lbl-monto-sel">Monto seleccionado</span>
+        <span class="monto-resumen-valor" id="monto-resumen-val">Bs. 0.00</span>
+      </div>
+
+      <!-- Mensaje error -->
+      <div class="op-msg error" id="op-msg">
+        <span>●</span><span id="msg-text"></span>
+      </div>
+
+      <!-- Botón confirmar -->
+      <button class="btn-confirm" id="btn-confirmar" disabled onclick="confirmar()">
+        <span id="btn-text">Continuar</span>
+      </button>
+
+    </div><!-- /op-card -->
+  </div><!-- /op-wrapper -->
+
+  <div class="bottom-bar"></div>
+
+  <script>
+    const t       = JSON.parse(sessionStorage.getItem('translations') || '{}');
+    const usuario = JSON.parse(sessionStorage.getItem('usuario') || '{}');
+    if (!usuario.id) window.location.href = 'index.html';
+
+    let montoElegido = 0;
+    let otroVisible  = false;
+
+    // Aplicar textos de idioma
+    if (t.retiro) {
+      document.getElementById('titulo-pagina').textContent  = t.retiro            || 'Retiro';
+      document.getElementById('lbl-montos').textContent     = t.seleccione_monto  || 'Montos disponibles';
+      document.getElementById('lbl-otro').textContent       = t.ingrese_monto     || 'Ingrese el monto (Bs.)';
+      document.getElementById('lbl-monto-sel').textContent  = t.monto_seleccionado|| 'Monto seleccionado';
+      document.getElementById('btn-text').textContent       = t.continuar         || 'Continuar';
+    }
+
+    function elegirMonto(m) {
+      montoElegido = m;
+      // Quitar selected de todos
+      document.querySelectorAll('.monto-btn:not(.otro)').forEach(b => b.classList.remove('selected'));
+      // Marcar el clickeado
+      event.currentTarget.classList.add('selected');
+      // Ocultar input personalizado
+      document.getElementById('monto-custom').classList.remove('visible');
+      document.getElementById('monto-input').value = '';
+      otroVisible = false;
+      actualizarResumen();
+    }
+
+    function toggleOtroMonto() {
+      otroVisible = !otroVisible;
+      document.getElementById('monto-custom').classList.toggle('visible', otroVisible);
+      document.querySelectorAll('.monto-btn:not(.otro)').forEach(b => b.classList.remove('selected'));
+      if (otroVisible) {
+        montoElegido = 0;
+        actualizarResumen();
+        document.getElementById('monto-input').focus();
+      }
+    }
+
+    function actualizarDesdeInput() {
+      const val = parseFloat(document.getElementById('monto-input').value);
+      montoElegido = isNaN(val) ? 0 : val;
+      actualizarResumen();
+    }
+
+    function actualizarResumen() {
+      const resumen = document.getElementById('monto-resumen');
+      const valEl   = document.getElementById('monto-resumen-val');
+      const btn     = document.getElementById('btn-confirmar');
+
+      if (montoElegido > 0) {
+        resumen.classList.add('visible');
+        valEl.textContent = 'Bs. ' + montoElegido.toFixed(2);
+        btn.disabled = false;
+      } else {
+        resumen.classList.remove('visible');
+        btn.disabled = true;
+      }
+      ocultarMsg();
+    }
+
+    function confirmar() {
+      if (montoElegido <= 0) return;
+      // Guardar monto y tipo en sessionStorage para cuenta.html
+      sessionStorage.setItem('op_tipo',  'retiro');
+      sessionStorage.setItem('op_monto', montoElegido);
+      salir('cuenta.html');
+    }
+
+    function mostrarMsg(txt) {
+      document.getElementById('msg-text').textContent = txt;
+      document.getElementById('op-msg').classList.add('visible');
+    }
+
+    function ocultarMsg() {
+      document.getElementById('op-msg').classList.remove('visible');
+    }
+
+    function volver() { salir('menu.html'); }
+
+    function salir(dest) {
+      document.querySelector('.op-wrapper').style.transition = 'opacity 0.2s ease';
+      document.querySelector('.op-wrapper').style.opacity    = '0';
+      setTimeout(() => window.location.href = dest, 200);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banco Fie — Últimos Movimientos</title>
+  <link rel="stylesheet" href="assets/css/operaciones.css">
+  <style>
+
+    /* ── Lista de movimientos ── */
+    .mov-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      animation: fadeUp 0.5s 0.15s ease both;
+    }
+
+    .mov-item {
+      background: #111111;
+      border: 1.5px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: background 0.2s;
+    }
+
+    .mov-item:hover { background: #161616; }
+
+    /* Ícono del tipo */
+    .mov-icon {
+      width: 42px; height: 42px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .mov-icon svg { width: 18px; height: 18px; }
+
+    .mov-icon.retiro       { background: rgba(231,0,117,0.10); }
+    .mov-icon.retiro svg   { stroke: #e70075; }
+    .mov-icon.deposito     { background: rgba(0,148,214,0.10); }
+    .mov-icon.deposito svg { stroke: #0094d6; }
+    .mov-icon.transferencia     { background: rgba(255,165,0,0.10); }
+    .mov-icon.transferencia svg { stroke: #ffa500; }
+
+    /* Info central */
+    .mov-info { flex: 1; min-width: 0; }
+
+    .mov-tipo {
+      font-size: 0.80rem;
+      font-weight: 800;
+      color: rgba(255,255,255,0.82);
+      text-transform: capitalize;
+      letter-spacing: 0.2px;
+    }
+
+    .mov-cuenta {
+      font-size: 0.60rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mov-fecha {
+      font-size: 0.58rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.15);
+      letter-spacing: 0.5px;
+      margin-top: 3px;
+    }
+
+    /* Monto derecha */
+    .mov-monto-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 3px;
+      flex-shrink: 0;
+    }
+
+    .mov-monto {
+      font-size: 0.95rem;
+      font-weight: 900;
+      letter-spacing: -0.3px;
+    }
+
+    .mov-monto.retiro       { color: #e70075; }
+    .mov-monto.deposito     { color: #0094d6; }
+    .mov-monto.transferencia { color: #ffa500; }
+
+    .mov-saldo-post {
+      font-size: 0.58rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.15);
+      letter-spacing: 0.5px;
+    }
+
+    /* Signo +/- */
+    .mov-signo { font-size: 0.75rem; font-weight: 700; }
+
+    /* ── Filtros ── */
+    .filtros {
+      width: 100%;
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      animation: fadeDown 0.4s 0.1s ease both;
+      flex-wrap: wrap;
+    }
+
+    .filtro-btn {
+      padding: 7px 14px;
+      border-radius: 20px;
+      border: 1.5px solid rgba(255,255,255,0.07);
+      background: #111111;
+      color: rgba(255,255,255,0.3);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .filtro-btn:hover { color: rgba(255,255,255,0.6); border-color: rgba(255,255,255,0.2); }
+
+    .filtro-btn.active-todos         { background: rgba(255,255,255,0.07); color: #fff; border-color: rgba(255,255,255,0.2); }
+    .filtro-btn.active-retiro        { background: rgba(231,0,117,0.12); color: #e70075; border-color: rgba(231,0,117,0.35); }
+    .filtro-btn.active-deposito      { background: rgba(0,148,214,0.12); color: #0094d6; border-color: rgba(0,148,214,0.35); }
+    .filtro-btn.active-transferencia { background: rgba(255,165,0,0.12); color: #ffa500; border-color: rgba(255,165,0,0.35); }
+
+    /* ── Vacío ── */
+    .mov-empty {
+      text-align: center;
+      padding: 32px 0;
+      color: rgba(255,255,255,0.15);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* ── Resumen rápido ── */
+    .resumen-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+      animation: fadeDown 0.5s 0.08s ease both;
+    }
+
+    .resumen-item {
+      background: #111111;
+      border: 1.5px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: center;
+      text-align: center;
+    }
+
+    .resumen-label {
+      font-size: 0.55rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.18);
+    }
+
+    .resumen-valor {
+      font-size: 0.88rem;
+      font-weight: 900;
+      letter-spacing: -0.3px;
+    }
+
+    .resumen-valor.retiro       { color: #e70075; }
+    .resumen-valor.deposito     { color: #0094d6; }
+    .resumen-valor.total        { color: rgba(255,255,255,0.7); }
+
+    .op-header-icon     { background: rgba(160,90,255,0.12); }
+    .op-header-icon svg { stroke: #a05aff; }
+
+  </style>
+</head>
+<body>
+  <div class="top-bar"></div>
+
+  <div class="op-wrapper">
+
+    <!-- Header -->
+    <div class="op-header">
+      <button class="btn-back" onclick="volver()">←</button>
+      <div class="op-header-info">
+        <div class="op-header-title" id="titulo-pagina">Últimos movimientos</div>
+        <div class="op-header-sub" id="sub-pagina">Historial de transacciones</div>
+      </div>
+      <div class="op-header-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+          <rect x="9" y="3" width="6" height="4" rx="1"/>
+          <path d="M9 12h6M9 16h4"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Resumen rápido -->
+    <div class="resumen-grid" id="resumen-grid" style="display:none;">
+      <div class="resumen-item">
+        <span class="resumen-label">Retiros</span>
+        <span class="resumen-valor retiro" id="total-retiros">—</span>
+      </div>
+      <div class="resumen-item">
+        <span class="resumen-label">Depósitos</span>
+        <span class="resumen-valor deposito" id="total-depositos">—</span>
+      </div>
+      <div class="resumen-item">
+        <span class="resumen-label">Total ops.</span>
+        <span class="resumen-valor total" id="total-ops">—</span>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filtros" id="filtros" style="display:none;">
+      <button class="filtro-btn active-todos" data-filtro="todos"    onclick="filtrar('todos')">Todos</button>
+      <button class="filtro-btn"              data-filtro="retiro"   onclick="filtrar('retiro')">Retiros</button>
+      <button class="filtro-btn"              data-filtro="deposito" onclick="filtrar('deposito')">Depósitos</button>
+      <button class="filtro-btn"              data-filtro="transferencia" onclick="filtrar('transferencia')">Transf.</button>
+    </div>
+
+    <!-- Lista -->
+    <div class="mov-list" id="mov-list">
+      <div class="op-msg info visible">
+        <span class="spinner"></span>
+        <span>Cargando movimientos...</span>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div class="op-msg error" id="op-msg" style="margin-top:12px; width:100%;">
+      <span>●</span><span id="msg-text"></span>
+    </div>
+
+    <!-- Botones finales -->
+    <div style="width:100%; margin-top:22px; display:flex; flex-direction:column; gap:10px;
+                animation: fadeUp 0.5s 0.35s ease both;">
+      <button class="btn-otra-op si" onclick="volver()">
+        Realizar otra operación
+      </button>
+      <button class="btn-otra-op no" onclick="cerrarSesion()">
+        Finalizar sesión
+      </button>
+    </div>
+
+  </div>
+  <div class="bottom-bar"></div>
+
+  <script>
+    const API     = '/app/api';
+    const t       = JSON.parse(sessionStorage.getItem('translations') || '{}');
+    const usuario = JSON.parse(sessionStorage.getItem('usuario') || '{}');
+    if (!usuario.id) window.location.href = 'index.html';
+
+    let todosLosMov = [];
+    let filtroActual = 'todos';
+
+    // Íconos SVG por tipo
+    const svgIconos = {
+      retiro: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="6" width="20" height="14" rx="2"/>
+        <path d="M16 12H8M12 9l-4 3 4 3"/>
+      </svg>`,
+      deposito: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="6" width="20" height="14" rx="2"/>
+        <path d="M8 12h8M12 9l4 3-4 3"/>
+      </svg>`,
+      transferencia: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M15 7l5 5-5 5"/>
+        <path d="M19 12H5M9 17l-5-5 5-5"/>
+      </svg>`
+    };
+
+    const tipoLabel = {
+      retiro:        t.retiro        || 'Retiro',
+      deposito:      t.deposito      || 'Depósito',
+      transferencia: t.transferencia || 'Transferencia'
+    };
+
+    const cuentaLabel = {
+      ahorros:   t.cuenta_ahorros   || 'Cta. Ahorros',
+      corriente: t.cuenta_corriente || 'Cta. Corriente'
+    };
+
+    const signo = { retiro: '−', deposito: '+', transferencia: '⇄' };
+
+    // ── Cargar movimientos ────────────────────────────────────
+    async function cargarMovimientos() {
+      try {
+        const res  = await fetch(`${API}/transactions.php`);
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error || 'Error');
+
+        todosLosMov = data.movimientos || [];
+        calcularResumen();
+        renderLista(todosLosMov);
+
+        // Mostrar filtros y resumen si hay datos
+        if (todosLosMov.length > 0) {
+          document.getElementById('resumen-grid').style.display = 'grid';
+          document.getElementById('filtros').style.display      = 'flex';
+        }
+
+      } catch (err) {
+        document.getElementById('mov-list').innerHTML = '';
+        document.getElementById('msg-text').textContent = err.message || 'Error al cargar';
+        document.getElementById('op-msg').classList.add('visible');
+      }
+    }
+
+    // ── Calcular totales para el resumen ──────────────────────
+    function calcularResumen() {
+      const totalRetiros   = todosLosMov
+        .filter(m => m.tipo === 'retiro')
+        .reduce((s, m) => s + parseFloat(m.monto), 0);
+
+      const totalDepositos = todosLosMov
+        .filter(m => m.tipo === 'deposito')
+        .reduce((s, m) => s + parseFloat(m.monto), 0);
+
+      document.getElementById('total-retiros').textContent   = 'Bs. ' + totalRetiros.toFixed(2);
+      document.getElementById('total-depositos').textContent = 'Bs. ' + totalDepositos.toFixed(2);
+      document.getElementById('total-ops').textContent       = todosLosMov.length;
+    }
+
+    // ── Renderizar lista ──────────────────────────────────────
+    function renderLista(movs) {
+      const lista = document.getElementById('mov-list');
+
+      if (!movs.length) {
+        lista.innerHTML = `<div class="mov-empty">Sin movimientos registrados</div>`;
+        return;
+      }
+
+      lista.innerHTML = movs.map(m => {
+        const fecha = new Date(m.fecha);
+        const fechaStr = fecha.toLocaleDateString('es-BO', {
+          day: '2-digit', month: 'short', year: 'numeric'
+        });
+        const horaStr = fecha.toLocaleTimeString('es-BO', {
+          hour: '2-digit', minute: '2-digit'
+        });
+
+        const numCorta = m.numero_cuenta
+          ? '**** ' + m.numero_cuenta.slice(-4)
+          : '****';
+
+        return `
+          <div class="mov-item">
+            <div class="mov-icon ${m.tipo}">
+              ${svgIconos[m.tipo] || svgIconos.deposito}
+            </div>
+            <div class="mov-info">
+              <div class="mov-tipo">${tipoLabel[m.tipo] || m.tipo}</div>
+              <div class="mov-cuenta">${cuentaLabel[m.cuenta_tipo] || ''} ${numCorta}</div>
+              <div class="mov-fecha">${fechaStr} · ${horaStr}</div>
+            </div>
+            <div class="mov-monto-col">
+              <div class="mov-monto ${m.tipo}">
+                <span class="mov-signo">${signo[m.tipo] || ''}</span>
+                Bs. ${parseFloat(m.monto).toFixed(2)}
+              </div>
+              <div class="mov-saldo-post">
+                Saldo: Bs. ${parseFloat(m.saldo_posterior).toFixed(2)}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ── Filtrar ───────────────────────────────────────────────
+    function filtrar(tipo) {
+      filtroActual = tipo;
+
+      // Actualizar botones
+      document.querySelectorAll('.filtro-btn').forEach(b => {
+        b.className = 'filtro-btn';
+        if (b.dataset.filtro === tipo) b.classList.add(`active-${tipo}`);
+      });
+
+      const filtrados = tipo === 'todos'
+        ? todosLosMov
+        : todosLosMov.filter(m => m.tipo === tipo);
+
+      renderLista(filtrados);
+    }
+
+    // ── Navegación ────────────────────────────────────────────
+    function volver() { salir('menu.html'); }
+
+    async function cerrarSesion() {
+      try { await fetch(`${API}/logout.php`, { method: 'POST' }); } catch {}
+      sessionStorage.clear();
+      salir('index.html');
+    }
+
+    function salir(dest) {
+      document.querySelector('.op-wrapper').style.transition = 'opacity 0.2s ease';
+      document.querySelector('.op-wrapper').style.opacity    = '0';
+      setTimeout(() => window.location.href = dest, 200);
+    }
+
+    // Aplicar idioma
+    if (t.movimientos) {
+      document.getElementById('titulo-pagina').textContent = t.movimientos;
+    }
+
+    cargarMovimientos();
+  </script>
+</body>
+</html>

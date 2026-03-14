@@ -1,0 +1,50 @@
+{
+  "idioma": "es",
+
+  "bienvenida": "Bienvenido",
+  "sé_parte": "Sé parte de la comunidad Fie",
+  "insertar_tarjeta": "Inserte su tarjeta para comenzar",
+  "chip_arriba": "Introduzca la tarjeta con el chip hacia arriba",
+  "disponible_24h": "Cajero ATM disponible las 24 horas del día",
+  "continuar": "Presione Enter o toque para continuar",
+
+  "elegir_idioma": "Elija el idioma",
+  "seleccione_opcion": "Seleccione una opción para continuar",
+
+  "ingrese_pin": "Ingrese su PIN",
+  "pin_placeholder": "••••",
+  "ingresar": "Ingresar",
+  "pin_incorrecto": "PIN incorrecto. Intente nuevamente.",
+  "intentos_restantes": "Intentos restantes",
+  "cuenta_bloqueada": "Cuenta bloqueada por demasiados intentos.",
+
+  "menu_titulo": "¿Qué operación desea realizar?",
+  "retiro": "Retiro",
+  "deposito": "Depósito",
+  "transferencia": "Transferencia",
+  "consulta_saldo": "Consulta de saldo",
+  "cambio_pin": "Cambio de PIN",
+
+  "seleccione_monto": "Seleccione el monto",
+  "otro_monto": "Otro monto",
+  "ingrese_monto": "Ingrese el monto",
+  "confirmar": "Confirmar",
+  "cancelar": "Cancelar",
+
+  "seleccione_cuenta": "Seleccione la cuenta",
+  "cuenta_ahorros": "Cuenta de Ahorros",
+  "cuenta_corriente": "Cuenta Corriente",
+  "saldo_disponible": "Saldo disponible",
+
+  "saldo_insuficiente": "Saldo insuficiente para esta operación.",
+  "operacion_exitosa": "Operación realizada con éxito",
+  "nuevo_saldo": "Nuevo saldo",
+
+  "desea_comprobante": "¿Desea su comprobante?",
+  "si": "Sí",
+  "no": "No",
+
+  "otra_operacion": "¿Desea realizar otra operación?",
+  "fin_sesion": "Sesión finalizada. Retire su tarjeta.",
+  "gracias": "Gracias por usar Banco Fie"
+}

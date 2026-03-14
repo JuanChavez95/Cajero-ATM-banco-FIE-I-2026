@@ -1,0 +1,697 @@
+/* =============================================
+   BANCO FIE — Operaciones compartidas
+   operaciones.css
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #0a0a0a;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  overflow-y: auto;
+  padding: 48px 20px;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: -100px; left: -100px;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(231,0,117,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -100px; right: -100px;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,148,214,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.top-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #e70075 0%, #0094d6 100%);
+  z-index: 10;
+}
+
+.bottom-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #0094d6 0%, #e70075 100%);
+}
+
+/* ── Wrapper ── */
+.op-wrapper {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── Header ── */
+.op-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+  animation: fadeDown 0.5s ease both;
+}
+
+.btn-back {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: #1a1a1a;
+  border: 1.5px solid rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.4);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.btn-back:hover {
+  border-color: rgba(255,255,255,0.2);
+  color: #ffffff;
+}
+
+.op-header-info { flex: 1; }
+
+.op-header-title {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+}
+
+.op-header-sub {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.op-header-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.op-header-icon svg { width: 22px; height: 22px; }
+
+/* ── Card ── */
+.op-card {
+  width: 100%;
+  background: #111111;
+  border: 1.5px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  animation: fadeUp 0.5s 0.1s ease both;
+  position: relative;
+  overflow: hidden;
+}
+
+.op-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 20px 20px 0 0;
+}
+
+/* ── Sección label ── */
+.section-label {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  margin-bottom: 12px;
+}
+
+/* ── Grid de montos ── */
+.montos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.monto-btn {
+  height: 58px;
+  background: #1a1a1a;
+  border: 1.5px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  color: rgba(255,255,255,0.8);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.monto-btn .currency {
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.monto-btn:hover {
+  transform: translateY(-2px);
+  color: #ffffff;
+}
+
+.monto-btn:active {
+  transform: scale(0.95);
+}
+
+.monto-btn.selected {
+  color: #ffffff;
+}
+
+/* Botón "Otro monto" ocupa todo el ancho */
+.monto-btn.otro {
+  grid-column: span 3;
+  height: 48px;
+  flex-direction: row;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.35);
+  border-style: dashed;
+}
+
+.monto-btn.otro:hover { color: rgba(255,255,255,0.7); }
+
+/* ── Input monto personalizado ── */
+.monto-custom {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.monto-custom.visible { display: flex; }
+
+.monto-custom label {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+}
+
+.monto-input-wrap {
+  display: flex;
+  align-items: center;
+  background: #1a1a1a;
+  border: 1.5px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.monto-input-wrap:focus-within {
+  border-color: rgba(0,148,214,0.5);
+}
+
+.monto-prefix {
+  padding: 0 14px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 1px;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  height: 52px;
+  display: flex; align-items: center;
+}
+
+.monto-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0 16px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #ffffff;
+  height: 52px;
+}
+
+.monto-input::placeholder { color: rgba(255,255,255,0.12); }
+
+/* ── Divider ── */
+.op-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255,255,255,0.05);
+}
+
+/* ── Resumen monto elegido ── */
+.monto-resumen {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: #1a1a1a;
+  border-radius: 12px;
+  border: 1.5px solid rgba(255,255,255,0.06);
+}
+
+.monto-resumen.visible { display: flex; }
+
+.monto-resumen-label {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+}
+
+.monto-resumen-valor {
+  font-size: 1.3rem;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+}
+
+/* ── Botón confirmar ── */
+.btn-confirm {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  color: #ffffff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-confirm:disabled {
+  background: #1e1e1e !important;
+  color: rgba(255,255,255,0.15) !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-confirm:not(:disabled):hover { transform: translateY(-2px); }
+.btn-confirm:not(:disabled):active { transform: scale(0.98); }
+
+/* ── Mensaje error / info ── */
+.op-msg {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 12px 16px;
+  border-radius: 10px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  animation: fadeUp 0.3s ease;
+}
+
+.op-msg.visible { display: flex; }
+.op-msg.error   { background: rgba(231,0,117,0.08); color: #e70075; border: 1px solid rgba(231,0,117,0.2); }
+.op-msg.success { background: rgba(0,200,83,0.08);  color: #00c853; border: 1px solid rgba(0,200,83,0.2); }
+.op-msg.info    { background: rgba(0,148,214,0.08); color: #0094d6; border: 1px solid rgba(0,148,214,0.2); }
+
+/* ── Spinner ── */
+.spinner {
+  width: 16px; height: 16px;
+  border: 2.5px solid rgba(255,255,255,0.25);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+/* ══════════════════════════════════════
+   CONSULTA DE SALDO — estilos específicos
+══════════════════════════════════════ */
+
+.saldo-card {
+  width: 100%;
+  border-radius: 16px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  overflow: hidden;
+  animation: fadeUp 0.5s 0.1s ease both;
+}
+
+.saldo-card .saldo-label {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+}
+
+.saldo-card .saldo-cuenta {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.saldo-card .saldo-monto {
+  font-size: 2.6rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -1.5px;
+  line-height: 1;
+}
+
+.saldo-card .saldo-monto .saldo-bs {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  margin-right: 4px;
+}
+
+.saldo-card .saldo-update {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.15);
+  letter-spacing: 1.5px;
+  margin-top: 8px;
+}
+
+.saldo-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: fadeUp 0.5s 0.2s ease both;
+}
+
+.saldo-item {
+  background: #111111;
+  border: 1.5px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.saldo-item:hover {
+  border-color: rgba(0,148,214,0.3);
+  background: #161616;
+}
+
+.saldo-item-left { display: flex; align-items: center; gap: 14px; }
+
+.saldo-item-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: rgba(0,148,214,0.1);
+  display: flex; align-items: center; justify-content: center;
+}
+.saldo-item-icon svg { width: 18px; height: 18px; stroke: #0094d6; }
+
+.saldo-item-tipo {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: rgba(255,255,255,0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.saldo-item-num {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 2px;
+  margin-top: 2px;
+}
+
+.saldo-item-monto {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+}
+
+.saldo-item-bs {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.25);
+}
+
+/* ══════════════════════════════════════
+   SELECCIÓN DE CUENTA
+══════════════════════════════════════ */
+
+.cuenta-item {
+  background: #111111;
+  border: 1.5px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.cuenta-item:hover {
+  background: #161616;
+  transform: translateX(4px);
+}
+
+.cuenta-item.ahorros:hover   { border-color: rgba(0,148,214,0.4); }
+.cuenta-item.corriente:hover { border-color: rgba(255,165,0,0.4); }
+
+.cuenta-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.cuenta-item.ahorros   .cuenta-icon { background: rgba(0,148,214,0.12); }
+.cuenta-item.corriente .cuenta-icon { background: rgba(255,165,0,0.12); }
+.cuenta-item.ahorros   .cuenta-icon svg { stroke: #0094d6; }
+.cuenta-item.corriente .cuenta-icon svg { stroke: #ffa500; }
+.cuenta-icon svg { width: 20px; height: 20px; }
+
+.cuenta-info { flex: 1; }
+
+.cuenta-tipo {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: rgba(255,255,255,0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cuenta-num {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 2px;
+  margin-top: 3px;
+}
+
+.cuenta-saldo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.cuenta-saldo-monto {
+  font-size: 1rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.cuenta-saldo-label {
+  font-size: 0.58rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.18);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.cuenta-arrow {
+  color: rgba(255,255,255,0.1);
+  font-size: 1rem;
+  transition: color 0.2s;
+}
+
+.cuenta-item:hover .cuenta-arrow { color: rgba(255,255,255,0.4); }
+
+/* ══════════════════════════════════════
+   OTRA OPERACIÓN / RESULTADO FINAL
+══════════════════════════════════════ */
+
+.resultado-card {
+  width: 100%;
+  background: #111111;
+  border: 1.5px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  animation: fadeUp 0.5s ease both;
+  text-align: center;
+}
+
+.resultado-icon {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 8px;
+}
+
+.resultado-icon svg { width: 28px; height: 28px; }
+
+.resultado-title {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+}
+
+.resultado-sub {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.resultado-detalle {
+  width: 100%;
+  background: #1a1a1a;
+  border-radius: 12px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.detalle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detalle-key {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.detalle-val {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: rgba(255,255,255,0.8);
+}
+
+.detalle-val.highlight {
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+.btn-otra-op {
+  width: 100%;
+  padding: 15px;
+  border-radius: 12px;
+  border: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 4px;
+}
+
+.btn-otra-op.si {
+  background: linear-gradient(135deg, #0094d6, #006fa6);
+  color: white;
+  box-shadow: 0 6px 18px rgba(0,148,214,0.3);
+}
+
+.btn-otra-op.si:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0,148,214,0.4);
+}
+
+.btn-otra-op.no {
+  background: transparent;
+  border: 1.5px dashed rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.25);
+}
+
+.btn-otra-op.no:hover {
+  border-color: rgba(231,0,117,0.4);
+  color: #e70075;
+}
+
+/* ── Animaciones ── */
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25%      { transform: translateX(-8px); }
+  75%      { transform: translateX(8px); }
+}

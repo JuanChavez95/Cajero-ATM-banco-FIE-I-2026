@@ -1,0 +1,360 @@
+/* =============================================
+   BANCO FIE — Menú Principal
+   menu.css
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #0a0a0a;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  overflow-y: auto;
+  padding: 48px 20px;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: -100px; left: -100px;
+  width: 420px; height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(231,0,117,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -100px; right: -100px;
+  width: 420px; height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,148,214,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.top-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #e70075 0%, #0094d6 100%);
+  z-index: 10;
+}
+
+.bottom-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #0094d6 0%, #e70075 100%);
+}
+
+/* ── Wrapper ── */
+.menu-wrapper {
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+/* ── Header ── */
+.menu-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  animation: fadeDown 0.5s ease both;
+}
+
+.mini-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.mini-logo svg { width: 32px; height: 32px; }
+.mini-logo-text { font-size: 1.1rem; font-weight: 900; letter-spacing: -0.5px; }
+.mini-logo-text .b { color: #e70075; }
+.mini-logo-text .f { color: #0094d6; font-style: italic; }
+
+/* Hora */
+.menu-clock {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Tarjeta de usuario ── */
+.user-card {
+  width: 100%;
+  background: #111111;
+  border: 1.5px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  animation: fadeDown 0.5s 0.08s ease both;
+  position: relative;
+  overflow: hidden;
+}
+
+.user-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #e70075, #0094d6);
+  border-radius: 16px 16px 0 0;
+}
+
+.user-avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: rgba(0,148,214,0.12);
+  border: 2px solid rgba(0,148,214,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.user-avatar svg { width: 22px; height: 22px; }
+
+.user-info { flex: 1; }
+
+.user-name {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+  margin-bottom: 3px;
+}
+
+.user-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+}
+
+.user-session {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.session-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #00c853;
+  box-shadow: 0 0 6px rgba(0,200,83,0.5);
+  animation: pulse-green 2s ease-in-out infinite;
+  align-self: flex-end;
+}
+
+.session-text {
+  font-size: 0.58rem;
+  color: rgba(255,255,255,0.18);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* ── Título menú ── */
+.menu-title {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  margin-bottom: 16px;
+  align-self: flex-start;
+  animation: fadeDown 0.5s 0.12s ease both;
+}
+
+/* ── Grid de operaciones ── */
+.ops-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+/* Botón de operación */
+.op-btn {
+  background: #111111;
+  border: 1.5px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 22px 16px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  text-align: left;
+  animation: fadeUp 0.5s ease both;
+}
+
+.op-btn:nth-child(1) { animation-delay: 0.15s; }
+.op-btn:nth-child(2) { animation-delay: 0.20s; }
+.op-btn:nth-child(3) { animation-delay: 0.25s; }
+.op-btn:nth-child(4) { animation-delay: 0.30s; }
+
+/* Brillo hover por color */
+.op-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  border-radius: 16px;
+  transition: opacity 0.25s;
+}
+
+.op-btn.retiro::after      { background: radial-gradient(circle at 50% 0%, rgba(231,0,117,0.10) 0%, transparent 70%); }
+.op-btn.deposito::after    { background: radial-gradient(circle at 50% 0%, rgba(0,148,214,0.10) 0%, transparent 70%); }
+.op-btn.consulta::after    { background: radial-gradient(circle at 50% 0%, rgba(0,200,83,0.10)  0%, transparent 70%); }
+.op-btn.transferencia::after { background: radial-gradient(circle at 50% 0%, rgba(255,165,0,0.10) 0%, transparent 70%); }
+.op-btn.movimientos::after { background: radial-gradient(circle at 50% 0%, rgba(160,90,255,0.10) 0%, transparent 70%); }
+.op-btn.cambio-pin::after  { background: radial-gradient(circle at 50% 0%, rgba(255,80,80,0.10)  0%, transparent 70%); }
+
+.op-btn:hover::after { opacity: 1; }
+
+.op-btn:hover {
+  transform: translateY(-3px);
+  background: #161616;
+}
+
+.op-btn.retiro:hover      { border-color: rgba(231,0,117,0.4); }
+.op-btn.deposito:hover    { border-color: rgba(0,148,214,0.4); }
+.op-btn.consulta:hover    { border-color: rgba(0,200,83,0.4);  }
+.op-btn.transferencia:hover { border-color: rgba(255,165,0,0.4); }
+.op-btn.movimientos:hover { border-color: rgba(160,90,255,0.4); }
+.op-btn.cambio-pin:hover  { border-color: rgba(255,80,80,0.4);  }
+
+.op-btn:active { transform: scale(0.97); }
+
+/* Ícono */
+.op-icon {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.op-icon svg { width: 20px; height: 20px; }
+
+.op-btn.retiro      .op-icon { background: rgba(231,0,117,0.12); }
+.op-btn.deposito    .op-icon { background: rgba(0,148,214,0.12); }
+.op-btn.consulta    .op-icon { background: rgba(0,200,83,0.12);  }
+.op-btn.transferencia .op-icon { background: rgba(255,165,0,0.12); }
+.op-btn.movimientos .op-icon { background: rgba(160,90,255,0.12); }
+.op-btn.cambio-pin  .op-icon { background: rgba(255,80,80,0.12);  }
+
+.op-btn.retiro      .op-icon svg { stroke: #e70075; }
+.op-btn.deposito    .op-icon svg { stroke: #0094d6; }
+.op-btn.consulta    .op-icon svg { stroke: #00c853; }
+.op-btn.transferencia .op-icon svg { stroke: #ffa500; }
+.op-btn.movimientos .op-icon svg { stroke: #a05aff; }
+.op-btn.cambio-pin  .op-icon svg { stroke: #ff5050; }
+
+/* Texto del botón */
+.op-name {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: rgba(255,255,255,0.85);
+  letter-spacing: 0.2px;
+  line-height: 1.2;
+}
+
+.op-desc {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 0.5px;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+/* Flecha esquina */
+.op-arrow {
+  position: absolute;
+  bottom: 14px; right: 14px;
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.08);
+  transition: color 0.2s, transform 0.2s;
+  font-weight: 700;
+}
+
+.op-btn:hover .op-arrow {
+  color: rgba(255,255,255,0.3);
+  transform: translate(2px, -2px);
+}
+
+/* Botón ancho completo (para el último si es impar) */
+.op-btn.full-width {
+  grid-column: span 2;
+  flex-direction: row;
+  align-items: center;
+  padding: 18px 22px;
+  gap: 16px;
+}
+
+.op-btn.full-width .op-text { flex: 1; }
+
+/* ── Botón salir ── */
+.btn-exit {
+  width: 100%;
+  margin-top: 4px;
+  padding: 14px;
+  background: transparent;
+  border: 1.5px dashed rgba(255,255,255,0.08);
+  border-radius: 12px;
+  color: rgba(255,255,255,0.2);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  animation: fadeUp 0.5s 0.4s ease both;
+}
+
+.btn-exit:hover {
+  border-color: rgba(231,0,117,0.4);
+  color: #e70075;
+  background: rgba(231,0,117,0.05);
+}
+
+/* ── Animaciones ── */
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-green {
+  0%, 100% { box-shadow: 0 0 6px rgba(0,200,83,0.5); }
+  50%       { box-shadow: 0 0 12px rgba(0,200,83,0.9); }
+}

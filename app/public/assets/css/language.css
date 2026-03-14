@@ -1,0 +1,272 @@
+/* =============================================
+   BANCO FIE — Pantalla de Idioma
+   language.css
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #0a0a0a;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Fondo decorativo izquierda */
+body::before {
+  content: '';
+  position: fixed;
+  top: -100px; left: -100px;
+  width: 380px; height: 380px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(231,0,117,0.10) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Fondo decorativo derecha */
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -100px; right: -100px;
+  width: 380px; height: 380px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,148,214,0.10) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Línea superior */
+.top-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #e70075 0%, #0094d6 100%);
+  z-index: 10;
+}
+
+/* ── Contenedor principal ── */
+.lang-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  max-width: 520px;
+  padding: 32px 20px;
+  animation: fadeUp 0.6s ease both;
+}
+
+/* ── Mini logo superior ── */
+.mini-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 32px;
+  animation: fadeDown 0.5s ease both;
+}
+
+.mini-logo svg {
+  width: 36px;
+  height: 36px;
+}
+
+.mini-logo-text {
+  font-size: 1.3rem;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+}
+
+.mini-logo-text .b { color: #e70075; }
+.mini-logo-text .f { color: #0094d6; font-style: italic; }
+
+/* ── Separador ── */
+.logo-sep {
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, #e70075, #0094d6);
+  border-radius: 2px;
+  margin-bottom: 28px;
+  animation: fadeDown 0.5s 0.05s ease both;
+}
+
+/* ── Título ── */
+.lang-title {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 36px;
+  text-align: center;
+  animation: fadeDown 0.5s 0.1s ease both;
+}
+
+/* ── Grid de opciones ── */
+.lang-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  width: 100%;
+  margin-bottom: 44px;
+}
+
+/* ── Tarjeta de idioma ── */
+.lang-card {
+  position: relative;
+  background: #111111;
+  border: 1.5px solid rgba(255,255,255,0.07);
+  border-radius: 18px;
+  padding: 32px 20px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: border-color 0.25s, transform 0.25s, background 0.25s;
+  overflow: hidden;
+  animation: fadeUp 0.6s ease both;
+  text-decoration: none;
+}
+
+.lang-card:first-child { animation-delay: 0.15s; }
+.lang-card:last-child  { animation-delay: 0.25s; }
+
+/* Brillo en hover */
+.lang-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s;
+  border-radius: 18px;
+}
+
+.lang-card.es::before {
+  background: radial-gradient(circle at 50% 0%, rgba(231,0,117,0.12) 0%, transparent 70%);
+}
+
+.lang-card.en::before {
+  background: radial-gradient(circle at 50% 0%, rgba(0,148,214,0.12) 0%, transparent 70%);
+}
+
+.lang-card:hover::before { opacity: 1; }
+
+.lang-card:hover {
+  transform: translateY(-5px);
+  background: #161616;
+}
+
+.lang-card.es:hover { border-color: rgba(231,0,117,0.5); }
+.lang-card.en:hover { border-color: rgba(0,148,214,0.5); }
+
+/* Estado activo al hacer clic */
+.lang-card:active { transform: scale(0.97); }
+
+/* ── Bandera ── */
+.flag-wrap {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+  transition: border-color 0.25s;
+}
+
+.lang-card.es:hover .flag-wrap { border-color: rgba(231,0,117,0.4); }
+.lang-card.en:hover .flag-wrap { border-color: rgba(0,148,214,0.4); }
+
+.flag-wrap svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Nombre del idioma ── */
+.lang-name {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: color 0.25s;
+}
+
+.lang-card.es .lang-name { color: rgba(255,255,255,0.75); }
+.lang-card.en .lang-name { color: rgba(255,255,255,0.75); }
+
+.lang-card.es:hover .lang-name { color: #e70075; }
+.lang-card.en:hover .lang-name { color: #0094d6; }
+
+/* ── Sub-label ── */
+.lang-sub {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+}
+
+/* ── Check indicator ── */
+.lang-check {
+  position: absolute;
+  top: 14px; right: 14px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  opacity: 0;
+}
+
+.lang-card:hover .lang-check { opacity: 1; }
+.lang-card.es:hover .lang-check { border-color: #e70075; background: rgba(231,0,117,0.15); }
+.lang-card.en:hover .lang-check { border-color: #0094d6; background: rgba(0,148,214,0.15); }
+
+.lang-check svg {
+  width: 10px; height: 10px;
+}
+
+/* ── Hint inferior ── */
+.lang-hint {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.14);
+  text-align: center;
+  animation: pulse 2.5s ease-in-out infinite;
+}
+
+/* ── Línea inferior ── */
+.bottom-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #0094d6 0%, #e70075 100%);
+}
+
+/* ── Animaciones ── */
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.14; }
+  50%       { opacity: 0.4; }
+}

@@ -1,0 +1,50 @@
+{
+  "idioma": "en",
+
+  "bienvenida": "Welcome",
+  "sé_parte": "Be part of the Fie community",
+  "insertar_tarjeta": "Insert your card to begin",
+  "chip_arriba": "Insert card with chip facing up",
+  "disponible_24h": "ATM available 24 hours a day",
+  "continuar": "Press Enter or tap to continue",
+
+  "elegir_idioma": "Choose your language",
+  "seleccione_opcion": "Select an option to continue",
+
+  "ingrese_pin": "Enter your PIN",
+  "pin_placeholder": "••••",
+  "ingresar": "Confirm",
+  "pin_incorrecto": "Incorrect PIN. Please try again.",
+  "intentos_restantes": "Remaining attempts",
+  "cuenta_bloqueada": "Account locked due to too many attempts.",
+
+  "menu_titulo": "What would you like to do?",
+  "retiro": "Withdrawal",
+  "deposito": "Deposit",
+  "transferencia": "Transfer",
+  "consulta_saldo": "Balance inquiry",
+  "cambio_pin": "PIN change",
+
+  "seleccione_monto": "Select amount",
+  "otro_monto": "Other amount",
+  "ingrese_monto": "Enter amount",
+  "confirmar": "Confirm",
+  "cancelar": "Cancel",
+
+  "seleccione_cuenta": "Select account",
+  "cuenta_ahorros": "Savings Account",
+  "cuenta_corriente": "Checking Account",
+  "saldo_disponible": "Available balance",
+
+  "saldo_insuficiente": "Insufficient funds for this transaction.",
+  "operacion_exitosa": "Transaction completed successfully",
+  "nuevo_saldo": "New balance",
+
+  "desea_comprobante": "Would you like a receipt?",
+  "si": "Yes",
+  "no": "No",
+
+  "otra_operacion": "Would you like to perform another transaction?",
+  "fin_sesion": "Session ended. Please take your card.",
+  "gracias": "Thank you for using Banco Fie"
+}
