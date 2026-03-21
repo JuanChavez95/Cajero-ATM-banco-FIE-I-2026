@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banco Fie — Transferencia</title>
+  <link rel="stylesheet" href="assets/css/operaciones.css">
+  <style>
+    .op-header-icon { background: rgba(255,165,0,0.12); }
+    .op-header-icon svg { stroke: #ffa500; }
+    .op-card::before { background: linear-gradient(90deg, #ffa500, #cc8400); }
+    .monto-btn:hover { border-color: rgba(255,165,0,0.5); color: #ffa500; }
+    .monto-btn.selected { background: rgba(255,165,0,0.12); border-color: #ffa500; color: #ffa500; }
+    .monto-btn.otro:hover { border-color: rgba(255,165,0,0.4); color: #ffa500; }
+    .monto-resumen-valor { color: #ffa500; }
+    .btn-confirm { background: linear-gradient(135deg, #ffa500, #cc8400); box-shadow: 0 6px 18px rgba(255,165,0,0.3); }
+    .btn-confirm:not(:disabled):hover { box-shadow: 0 10px 24px rgba(255,165,0,0.4); }
+
+    .paso-indicator { width: 100%; display: flex; align-items: center; margin-bottom: 24px; animation: fadeDown 0.4s ease both; }
+    .paso-step { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .paso-circle { width: 28px; height: 28px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 800; color: rgba(255,255,255,0.2); transition: all 0.3s; }
+    .paso-circle.active { border-color: #ffa500; color: #ffa500; background: rgba(255,165,0,0.1); }
+    .paso-circle.done { border-color: #0094d6; background: #0094d6; color: white; }
+    .paso-label { font-size: 0.52rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.15); text-align: center; transition: color 0.3s; }
+    .paso-step.active .paso-label { color: #ffa500; }
+    .paso-step.done .paso-label { color: #0094d6; }
+    .paso-line { height: 2px; width: 36px; background: rgba(255,255,255,0.07); margin-bottom: 18px; transition: background 0.3s; flex-shrink: 0; }
+    .paso-line.done { background: #0094d6; }
+
+    .cuenta-badge { display: flex; align-items: center; gap: 12px; background: #1a1a1a; border: 1.5px solid rgba(255,165,0,0.3); border-radius: 12px; padding: 14px 16px; margin-bottom: 4px; }
+    .cuenta-badge-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: rgba(255,165,0,0.12); }
+    .cuenta-badge-icon svg { width: 16px; height: 16px; stroke: #ffa500; }
+    .cuenta-badge-info { flex: 1; }
+    .cuenta-badge-tipo { font-size: 0.78rem; font-weight: 800; color: rgba(255,255,255,0.75); }
+    .cuenta-badge-saldo { font-size: 0.62rem; font-weight: 600; color: rgba(255,255,255,0.2); margin-top: 2px; }
+  </style>
+</head>
+<body>
+  <div class="top-bar"></div>
+  <div class="op-wrapper">
+
+    <div class="op-header">
+      <button class="btn-back" onclick="retroceder()">←</button>
+      <div class="op-header-info">
+        <div class="op-header-title">Transferencia</div>
+        <div class="op-header-sub" id="sub-paso">Cuenta origen</div>
+      </div>
+      <div class="op-header-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M15 7l5 5-5 5"/><path d="M19 12H5M9 17l-5-5 5-5"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="paso-indicator">
+      <div class="paso-step active" id="ps1"><div class="paso-circle active" id="pc1">1</div><div class="paso-label">Origen</div></div>
+      <div class="paso-line" id="pl1"></div>
+      <div class="paso-step" id="ps2"><div class="paso-circle" id="pc2">2</div><div class="paso-label">Destino</div></div>
+      <div class="paso-line" id="pl2"></div>
+      <div class="paso-step" id="ps3"><div class="paso-circle" id="pc3">3</div><div class="paso-label">Monto</div></div>
+      <div class="paso-line" id="pl3"></div>
+      <div class="paso-step" id="ps4"><div class="paso-circle" id="pc4">4</div><div class="paso-label">Confirmar</div></div>
+    </div>
+
+    <!-- PASO 1: Cuenta origen -->
+    <div id="paso1" style="width:100%;">
+      <div class="section-label" style="margin-bottom:12px;">Seleccione cuenta origen</div>
+      <div id="lista-origen" style="display:flex; flex-direction:column; gap:10px;">
+        <div class="op-msg info visible"><span class="spinner"></span><span>Cargando cuentas...</span></div>
+      </div>
+      <div class="op-msg error" id="err1" style="margin-top:12px;"><span>●</span><span id="err1-text"></span></div>
+    </div>
+
+    <!-- PASO 2: Cuenta destino -->
+    <div id="paso2" style="width:100%; display:none;">
+      <div class="cuenta-badge" id="badge-origen">
+        <div class="cuenta-badge-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <div class="cuenta-badge-info">
+          <div class="cuenta-badge-tipo" id="badge-origen-tipo">—</div>
+          <div class="cuenta-badge-saldo" id="badge-origen-saldo">—</div>
+        </div>
+      </div>
+      <div class="section-label" style="margin-bottom:12px; margin-top:16px;">Seleccione cuenta destino</div>
+      <div id="lista-destino" style="display:flex; flex-direction:column; gap:10px;"></div>
+      <div class="op-msg error" id="err2" style="margin-top:12px;"><span>●</span><span id="err2-text"></span></div>
+    </div>
+
+    <!-- PASO 3: Monto -->
+    <div id="paso3" style="width:100%; display:none;">
+      <div class="cuenta-badge" style="margin-bottom:8px;">
+        <div class="cuenta-badge-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M15 7l5 5-5 5"/></svg></div>
+        <div class="cuenta-badge-info">
+          <div class="cuenta-badge-tipo" id="badge-resumen-tipos">— → —</div>
+          <div class="cuenta-badge-saldo">Transferencia entre sus cuentas</div>
+        </div>
+      </div>
+      <div class="op-card" style="margin-top:8px;">
+        <div>
+          <div class="section-label">Montos disponibles</div>
+          <div class="montos-grid">
+            <button class="monto-btn" onclick="elegirMonto(10)"><span>10</span><span class="currency">Bs.</span></button>
+            <button class="monto-btn" onclick="elegirMonto(20)"><span>20</span><span class="currency">Bs.</span></button>
+            <button class="monto-btn" onclick="elegirMonto(50)"><span>50</span><span class="currency">Bs.</span></button>
+            <button class="monto-btn" onclick="elegirMonto(100)"><span>100</span><span class="currency">Bs.</span></button>
+            <button class="monto-btn" onclick="elegirMonto(200)"><span>200</span><span class="currency">Bs.</span></button>
+            <button class="monto-btn" onclick="elegirMonto(500)"><span>500</span><span class="currency">Bs.</span></button>
+            <button class="monto-btn otro" onclick="toggleOtro()">✎ &nbsp; Otro monto</button>
+          </div>
+        </div>
+        <div class="monto-custom" id="monto-custom">
+          <label>Ingrese el monto (Bs.)</label>
+          <div class="monto-input-wrap" style="border-color: rgba(255,165,0,0.3);">
+            <span class="monto-prefix">Bs.</span>
+            <input type="number" class="monto-input" id="monto-input" min="1" step="0.01" placeholder="0.00" oninput="actualizarDesdeInput()">
+          </div>
+        </div>
+        <div class="op-divider"></div>
+        <div class="monto-resumen" id="monto-resumen">
+          <span class="monto-resumen-label">Monto a transferir</span>
+          <span class="monto-resumen-valor" id="monto-resumen-val">Bs. 0.00</span>
+        </div>
+        <div class="op-msg error" id="err3"><span>●</span><span id="err3-text"></span></div>
+        <button class="btn-confirm" id="btn-paso3" disabled onclick="irPaso4()">Continuar</button>
+      </div>
+    </div>
+
+    <!-- PASO 4: Confirmación -->
+    <div id="paso4" style="width:100%; display:none;">
+      <div class="op-card">
+        <div class="section-label">Resumen de la transferencia</div>
+        <div class="resultado-detalle" id="resumen-final" style="margin-top:4px;"></div>
+        <div class="op-divider"></div>
+        <div class="op-msg error" id="err4"><span>●</span><span id="err4-text"></span></div>
+        <button class="btn-confirm" id="btn-confirmar-tf" onclick="confirmarTransferencia()">Confirmar transferencia</button>
+        <button class="btn-otra-op no" style="margin-top:8px;" onclick="irPaso3()">← Modificar monto</button>
+      </div>
+    </div>
+
+  </div>
+  <div class="bottom-bar"></div>
+
+  <script>
+    const API     = '/app/api';
+    const t       = JSON.parse(sessionStorage.getItem('translations') || '{}');
+    const usuario = JSON.parse(sessionStorage.getItem('usuario') || '{}');
+    if (!usuario.id) window.location.href = 'index.html';
+
+    let cuentas       = [];
+    let origenId      = null;
+    let origenTipo    = '';
+    let origenSaldo   = 0;
+    let destinoId     = null;
+    let destinoTipo   = '';
+    let montoElegido  = 0;
+    let otroVisible   = false;
+    let paso          = 1;
+
+    const iconoSVG = {
+      ahorros:   '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="12" cy="12" r="3"/></svg>',
+      corriente: '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>'
+    };
+
+    const labelCuenta = { ahorros: t.cuenta_ahorros || 'Cta. Ahorros', corriente: t.cuenta_corriente || 'Cta. Corriente' };
+
+    function colorCuenta(tipo) { return tipo === 'ahorros' ? '#0094d6' : '#ffa500'; }
+
+    function renderCuentaItem(c, onclick, disabled) {
+      const col = colorCuenta(c.tipo);
+      return `<button class="cuenta-item ${c.tipo}" onclick="${onclick}" ${disabled ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>
+        <div class="cuenta-icon" style="background:${col}18;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            ${c.tipo === 'ahorros' ? '<rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="12" cy="12" r="3"/>' : '<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>'}
+          </svg>
+        </div>
+        <div class="cuenta-info">
+          <div class="cuenta-tipo">${labelCuenta[c.tipo]}</div>
+          <div class="cuenta-num">**** **** ${c.numero_cuenta.slice(-4)}</div>
+        </div>
+        <div class="cuenta-saldo">
+          <div class="cuenta-saldo-monto">Bs. ${parseFloat(c.saldo).toFixed(2)}</div>
+          <div class="cuenta-saldo-label">${t.saldo_disponible || 'Disponible'}</div>
+        </div>
+        <div class="cuenta-arrow">›</div>
+      </button>`;
+    }
+
+    async function cargarCuentas() {
+      try {
+        const res  = await fetch(`${API}/balance.php`);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Error');
+        cuentas = data.cuentas || [];
+        if (cuentas.length < 2) {
+          document.getElementById('lista-origen').innerHTML =
+            '<div class="op-msg info visible"><span>Necesita al menos 2 cuentas activas para transferir</span></div>';
+          return;
+        }
+        document.getElementById('lista-origen').innerHTML =
+          cuentas.map(c => renderCuentaItem(c, `elegirOrigen(${c.id})`, false)).join('');
+      } catch (err) {
+        document.getElementById('err1-text').textContent = err.message;
+        document.getElementById('err1').classList.add('visible');
+      }
+    }
+
+    function elegirOrigen(id) {
+      const c = cuentas.find(x => x.id === id);
+      origenId    = c.id;
+      origenTipo  = c.tipo;
+      origenSaldo = parseFloat(c.saldo);
+      document.getElementById('badge-origen-tipo').textContent  = labelCuenta[c.tipo] + ' — **** ' + c.numero_cuenta.slice(-4);
+      document.getElementById('badge-origen-saldo').textContent = 'Saldo: Bs. ' + origenSaldo.toFixed(2);
+      // Listar destinos (excluir origen)
+      document.getElementById('lista-destino').innerHTML =
+        cuentas.filter(x => x.id !== id)
+               .map(c2 => renderCuentaItem(c2, `elegirDestino(${c2.id})`, false)).join('');
+      irPasoUI(2);
+    }
+
+    function elegirDestino(id) {
+      const c = cuentas.find(x => x.id === id);
+      destinoId   = c.id;
+      destinoTipo = c.tipo;
+      document.getElementById('badge-resumen-tipos').textContent =
+        labelCuenta[origenTipo] + '  →  ' + labelCuenta[destinoTipo];
+      irPasoUI(3);
+    }
+
+    function elegirMonto(m) {
+      montoElegido = m;
+      document.querySelectorAll('.monto-btn:not(.otro)').forEach(b => b.classList.remove('selected'));
+      event.currentTarget.classList.add('selected');
+      document.getElementById('monto-custom').classList.remove('visible');
+      document.getElementById('monto-input').value = '';
+      otroVisible = false;
+      actualizarResumen();
+    }
+
+    function toggleOtro() {
+      otroVisible = !otroVisible;
+      document.getElementById('monto-custom').classList.toggle('visible', otroVisible);
+      document.querySelectorAll('.monto-btn:not(.otro)').forEach(b => b.classList.remove('selected'));
+      if (otroVisible) { montoElegido = 0; actualizarResumen(); document.getElementById('monto-input').focus(); }
+    }
+
+    function actualizarDesdeInput() {
+      const v = parseFloat(document.getElementById('monto-input').value);
+      montoElegido = isNaN(v) ? 0 : v;
+      actualizarResumen();
+    }
+
+    function actualizarResumen() {
+      const resumen = document.getElementById('monto-resumen');
+      const btn     = document.getElementById('btn-paso3');
+      if (montoElegido > 0) {
+        resumen.classList.add('visible');
+        document.getElementById('monto-resumen-val').textContent = 'Bs. ' + montoElegido.toFixed(2);
+        btn.disabled = false;
+      } else {
+        resumen.classList.remove('visible');
+        btn.disabled = true;
+      }
+    }
+
+    function irPaso3() { irPasoUI(3); }
+
+    function irPaso4() {
+      if (montoElegido <= 0) return;
+      if (montoElegido > origenSaldo) {
+        document.getElementById('err3-text').textContent = t.saldo_insuficiente || 'Saldo insuficiente en cuenta origen';
+        document.getElementById('err3').classList.add('visible');
+        return;
+      }
+      document.getElementById('err3').classList.remove('visible');
+      const cOrigen  = cuentas.find(x => x.id === origenId);
+      const cDestino = cuentas.find(x => x.id === destinoId);
+      document.getElementById('resumen-final').innerHTML = `
+        <div class="detalle-row"><span class="detalle-key">Origen</span><span class="detalle-val">${labelCuenta[origenTipo]} **** ${cOrigen.numero_cuenta.slice(-4)}</span></div>
+        <div class="detalle-row"><span class="detalle-key">Destino</span><span class="detalle-val">${labelCuenta[destinoTipo]} **** ${cDestino.numero_cuenta.slice(-4)}</span></div>
+        <div class="detalle-row"><span class="detalle-key">Monto</span><span class="detalle-val highlight">Bs. ${montoElegido.toFixed(2)}</span></div>
+        <div class="detalle-row"><span class="detalle-key">Saldo origen tras op.</span><span class="detalle-val" style="color:#e70075;">Bs. ${(origenSaldo - montoElegido).toFixed(2)}</span></div>
+        <div class="detalle-row"><span class="detalle-key">Fecha</span><span class="detalle-val">${new Date().toLocaleString('es-BO')}</span></div>`;
+      irPasoUI(4);
+    }
+
+    async function confirmarTransferencia() {
+      const btn = document.getElementById('btn-confirmar-tf');
+      btn.innerHTML = '<span class="spinner"></span>';
+      btn.disabled  = true;
+      try {
+        const res  = await fetch(`${API}/transfer.php`, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ cuenta_origen_id: origenId, cuenta_destino_id: destinoId, monto: montoElegido })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Error');
+        sessionStorage.setItem('op_resultado', JSON.stringify({
+          tipo:         'transferencia',
+          monto:        montoElegido,
+          cuenta_tipo:  origenTipo,
+          nuevo_saldo:  data.nuevo_saldo_origen,
+          mensaje:      data.mensaje
+        }));
+        salir('resultado.html');
+      } catch (err) {
+        document.getElementById('err4-text').textContent = err.message;
+        document.getElementById('err4').classList.add('visible');
+        btn.textContent = 'Confirmar transferencia';
+        btn.disabled    = false;
+      }
+    }
+
+    function irPasoUI(n) {
+      paso = n;
+      [1,2,3,4].forEach(i => {
+        document.getElementById(`paso${i}`).style.display = i === n ? 'block' : 'none';
+        const ps = document.getElementById(`ps${i}`);
+        const pc = document.getElementById(`pc${i}`);
+        ps.className = 'paso-step' + (i === n ? ' active' : i < n ? ' done' : '');
+        pc.className = 'paso-circle' + (i === n ? ' active' : i < n ? ' done' : '');
+        if (pc.classList.contains('done')) pc.innerHTML = '✓';
+        else pc.textContent = i;
+        if (i < 4) {
+          const pl = document.getElementById(`pl${i}`);
+          pl.className = 'paso-line' + (i < n ? ' done' : '');
+        }
+      });
+      const subs = ['Cuenta origen','Cuenta destino','Seleccione monto','Confirmar operación'];
+      document.getElementById('sub-paso').textContent = subs[n-1];
+    }
+
+    function retroceder() {
+      if (paso === 1) salir('menu.html');
+      else if (paso === 2) irPasoUI(1);
+      else if (paso === 3) irPasoUI(2);
+      else if (paso === 4) irPasoUI(3);
+    }
+
+    function salir(dest) {
+      document.querySelector('.op-wrapper').style.transition = 'opacity 0.2s ease';
+      document.querySelector('.op-wrapper').style.opacity    = '0';
+      setTimeout(() => window.location.href = dest, 200);
+    }
+
+    cargarCuentas();
+  </script>
+</body>
+</html>

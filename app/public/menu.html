@@ -101,7 +101,7 @@
         <div class="op-arrow">↗</div>
       </button>
 
-      <!-- Transferencia -->
+      <!-- Transferencia entre mis cuentas -->
       <button class="op-btn transferencia" onclick="irA('transferencia.html')">
         <div class="op-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
@@ -111,9 +111,33 @@
           </svg>
         </div>
         <div class="op-text">
-          <div class="op-name" id="op-transferencia">Transferencia</div>
-          <div class="op-desc">Transfiera entre cuentas</div>
+          <div class="op-name" id="op-transferencia">Entre mis cuentas</div>
+          <div class="op-desc">Transfiera entre sus cuentas</div>
         </div>
+        <div class="op-arrow">↗</div>
+      </button>
+
+      <!-- Transferencia a terceros -->
+      <button class="op-btn transferencia" onclick="irA('transferencia-terceros.html')">
+        <div class="op-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+        </div>
+        <div class="op-text">
+          <div class="op-name">A terceros</div>
+          <div class="op-desc">Transfiera a otra cuenta</div>
+        </div>
+        <div class="op-arrow">↗</div>
+      </button>
+
+      <!-- Cambio de PIN -->
+      <button class="op-btn cambio-pin" onclick="irA('cambio-pin.html')">
+        <div class="op-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+        <div class="op-text"><div class="op-name">Cambio de PIN</div><div class="op-desc">Actualice su clave de acceso</div></div>
         <div class="op-arrow">↗</div>
       </button>
 
@@ -169,7 +193,7 @@
         'op-retiro'        : t.retiro           || 'Retiro',
         'op-deposito'      : t.deposito         || 'Depósito',
         'op-consulta'      : t.consulta_saldo   || 'Consulta de saldo',
-        'op-transferencia' : t.transferencia    || 'Transferencia',
+        'op-transferencia' : t.transferencia    || 'Entre mis cuentas',
         'op-movimientos'   : t.movimientos      || 'Últimos movimientos',
       };
       for (const [id, text] of Object.entries(ids)) {
@@ -193,7 +217,6 @@
 
     // ── Navegación ────────────────────────────────────────────
     function irA(pagina) {
-      // Animación de salida
       document.querySelector('.menu-wrapper').style.transition = 'opacity 0.25s ease, transform 0.25s ease';
       document.querySelector('.menu-wrapper').style.opacity    = '0';
       document.querySelector('.menu-wrapper').style.transform  = 'translateY(-12px)';

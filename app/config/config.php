@@ -4,8 +4,9 @@
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
-define('DB_NAME', 'atm_bd');
+define('DB_NAME', 'atm_db');
 
+session_set_cookie_params(['lifetime' => 3600, 'path' => '/']);
 session_start();
 
 header('Content-Type: application/json');

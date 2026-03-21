@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banco Fie — Cambio de PIN</title>
+  <link rel="stylesheet" href="assets/css/operaciones.css">
+  <link rel="stylesheet" href="assets/css/pin.css">
+  <style>
+    .op-header-icon     { background: rgba(255,80,80,0.12); }
+    .op-header-icon svg { stroke: #ff5050; }
+    body { justify-content: center; }
+
+    .pin-step-card {
+      width: 100%; background: #111111;
+      border: 1.5px solid rgba(255,255,255,0.07);
+      border-radius: 20px; padding: 28px 24px;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 20px;
+      animation: fadeUp 0.5s 0.1s ease both;
+      position: relative; overflow: hidden;
+    }
+
+    .pin-step-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, #ff5050, #cc0000);
+      border-radius: 20px 20px 0 0;
+    }
+
+    .paso-indicator { width: 100%; display: flex; align-items: center; margin-bottom: 4px; }
+    .paso-step { flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; }
+    .paso-circle { width:28px; height:28px; border-radius:50%; border:2px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; font-size:0.65rem; font-weight:800; color:rgba(255,255,255,0.2); transition:all 0.3s; }
+    .paso-circle.active { border-color:#ff5050; color:#ff5050; background:rgba(255,80,80,0.1); }
+    .paso-circle.done   { border-color:#0094d6; background:#0094d6; color:white; }
+    .paso-label { font-size:0.52rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,0.15); text-align:center; }
+    .paso-step.active .paso-label { color:#ff5050; }
+    .paso-step.done   .paso-label { color:#0094d6; }
+    .paso-line { height:2px; width:36px; background:rgba(255,255,255,0.07); margin-bottom:18px; transition:background 0.3s; flex-shrink:0; }
+    .paso-line.done { background:#0094d6; }
+
+    .step-title-pin { font-size:0.68rem; font-weight:800; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.25); }
+
+    .btn-confirm-pin {
+      width:100%; padding:16px; border:none; border-radius:12px;
+      background:linear-gradient(135deg,#ff5050,#cc0000);
+      box-shadow:0 6px 18px rgba(255,80,80,0.3);
+      color:white; font-family:'Montserrat',sans-serif;
+      font-size:0.78rem; font-weight:800; letter-spacing:3px;
+      text-transform:uppercase; cursor:pointer; transition:all 0.2s;
+    }
+    .btn-confirm-pin:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 10px 24px rgba(255,80,80,0.4); }
+    .btn-confirm-pin:disabled { background:#1e1e1e; color:rgba(255,255,255,0.15); box-shadow:none; cursor:not-allowed; }
+
+    .success-overlay { position:fixed; inset:0; background:#0a0a0a; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; z-index:100; opacity:0; pointer-events:none; transition:opacity 0.4s ease; }
+    .success-overlay.show { opacity:1; pointer-events:all; }
+    .success-icon { width:72px; height:72px; border-radius:50%; background:rgba(0,148,214,0.12); border:2px solid #0094d6; display:flex; align-items:center; justify-content:center; animation:popIn 0.4s ease both; }
+    .success-icon svg { width:32px; height:32px; }
+    .success-name { font-size:1.1rem; font-weight:800; color:#ffffff; animation:fadeUp 0.4s 0.1s ease both; }
+    .success-sub  { font-size:0.68rem; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#0094d6; animation:fadeUp 0.4s 0.2s ease both; }
+    @keyframes popIn { from{transform:scale(0.6);opacity:0;} to{transform:scale(1);opacity:1;} }
+  </style>
+</head>
+<body>
+  <div class="top-bar"></div>
+
+  <div class="success-overlay" id="success-overlay">
+    <div class="success-icon">
+      <svg viewBox="0 0 32 32" fill="none">
+        <polyline points="6,16 13,23 26,9" stroke="#0094d6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="success-name">PIN actualizado</div>
+    <div class="success-sub">Volviendo al menú...</div>
+  </div>
+
+  <div class="op-wrapper" id="main-wrapper">
+
+    <div class="op-header">
+      <button class="btn-back" onclick="retroceder()">←</button>
+      <div class="op-header-info">
+        <div class="op-header-title">Cambio de PIN</div>
+        <div class="op-header-sub" id="sub-paso">PIN actual</div>
+      </div>
+      <div class="op-header-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0110 0v4"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Indicador de pasos -->
+    <div class="paso-indicator">
+      <div class="paso-step active" id="ps1"><div class="paso-circle active" id="pc1">1</div><div class="paso-label">Actual</div></div>
+      <div class="paso-line" id="pl1"></div>
+      <div class="paso-step" id="ps2"><div class="paso-circle" id="pc2">2</div><div class="paso-label">Nuevo</div></div>
+      <div class="paso-line" id="pl2"></div>
+      <div class="paso-step" id="ps3"><div class="paso-circle" id="pc3">3</div><div class="paso-label">Confirmar</div></div>
+    </div>
+
+    <!-- Card PIN -->
+    <div class="pin-step-card">
+      <div class="step-title-pin" id="step-label">Ingrese su PIN actual</div>
+
+      <!-- Puntos visuales -->
+      <div class="pin-dots">
+        <div class="pin-dot" id="d1"></div>
+        <div class="pin-dot" id="d2"></div>
+        <div class="pin-dot" id="d3"></div>
+        <div class="pin-dot" id="d4"></div>
+      </div>
+
+      <!-- Teclado -->
+      <div class="numpad">
+        <button class="num-btn" onclick="presionar('1')">1</button>
+        <button class="num-btn" onclick="presionar('2')">2</button>
+        <button class="num-btn" onclick="presionar('3')">3</button>
+        <button class="num-btn" onclick="presionar('4')">4</button>
+        <button class="num-btn" onclick="presionar('5')">5</button>
+        <button class="num-btn" onclick="presionar('6')">6</button>
+        <button class="num-btn" onclick="presionar('7')">7</button>
+        <button class="num-btn" onclick="presionar('8')">8</button>
+        <button class="num-btn" onclick="presionar('9')">9</button>
+        <button class="num-btn btn-clear" onclick="borrar()">⌫</button>
+        <button class="num-btn btn-zero" onclick="presionar('0')">0</button>
+      </div>
+
+      <div class="error-msg hidden" id="error-msg">
+        <span>●</span><span id="error-text"></span>
+      </div>
+
+      <button class="btn-confirm-pin" id="btn-siguiente" disabled onclick="avanzar()">
+        <span id="btn-text">Continuar</span>
+      </button>
+    </div>
+
+    <button class="btn-back" style="margin-top:16px; width:auto; padding:0 16px; height:36px; font-size:0.62rem; letter-spacing:2px; text-transform:uppercase;"
+            onclick="salir('menu.html')">
+      ← Cancelar
+    </button>
+
+  </div>
+  <div class="bottom-bar"></div>
+
+  <script>
+    const API     = '/app/api';
+    const t       = JSON.parse(sessionStorage.getItem('translations') || '{}');
+    const usuario = JSON.parse(sessionStorage.getItem('usuario') || '{}');
+    if (!usuario.id) window.location.href = 'index.html';
+
+    let paso       = 1;
+    let pinActual  = '';
+    let pinNuevo   = '';
+    let pinConfirm = '';
+    let pinBuffer  = '';
+
+    const stepLabels = ['Ingrese su PIN actual', 'Ingrese su PIN nuevo', 'Confirme el PIN nuevo'];
+    const stepSubs   = ['PIN actual', 'PIN nuevo', 'Confirmación'];
+
+    function presionar(n) {
+      if (pinBuffer.length >= 4) return;
+      pinBuffer += n;
+      actualizarDots();
+      document.getElementById('btn-siguiente').disabled = pinBuffer.length < 4;
+    }
+
+    function borrar() {
+      pinBuffer = pinBuffer.slice(0, -1);
+      actualizarDots();
+      document.getElementById('btn-siguiente').disabled = pinBuffer.length < 4;
+      ocultarError();
+    }
+
+    function actualizarDots() {
+      ['d1','d2','d3','d4'].forEach((id, i) => {
+        const d = document.getElementById(id);
+        d.classList.toggle('filled', i < pinBuffer.length);
+        d.classList.remove('error-dot');
+      });
+    }
+
+    function errorDots(msg) {
+      ['d1','d2','d3','d4'].forEach(id => {
+        document.getElementById(id).classList.remove('filled');
+        document.getElementById(id).classList.add('error-dot');
+      });
+      document.getElementById('error-text').textContent = msg;
+      document.getElementById('error-msg').classList.remove('hidden');
+      setTimeout(() => {
+        ['d1','d2','d3','d4'].forEach(id => document.getElementById(id).classList.remove('error-dot'));
+      }, 700);
+    }
+
+    function ocultarError() {
+      document.getElementById('error-msg').classList.add('hidden');
+    }
+
+    function avanzar() {
+      if (pinBuffer.length < 4) return;
+      if (paso === 1) {
+        pinActual = pinBuffer;
+        irPasoUI(2);
+      } else if (paso === 2) {
+        pinNuevo = pinBuffer;
+        irPasoUI(3);
+      } else if (paso === 3) {
+        pinConfirm = pinBuffer;
+        if (pinNuevo !== pinConfirm) {
+          errorDots('Los PINs nuevos no coinciden');
+          pinBuffer = '';
+          actualizarDots();
+          document.getElementById('btn-siguiente').disabled = true;
+          return;
+        }
+        enviarCambio();
+      }
+    }
+
+    async function enviarCambio() {
+      const btn = document.getElementById('btn-siguiente');
+      btn.innerHTML = '<span class="spinner"></span>';
+      btn.disabled  = true;
+
+      try {
+        const res  = await fetch(`${API}/change_pin.php`, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ pin_actual: pinActual, pin_nuevo: pinNuevo, pin_confirm: pinConfirm })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Error');
+
+        document.getElementById('success-overlay').classList.add('show');
+        setTimeout(() => salir('menu.html'), 2500);
+
+      } catch (err) {
+        // Mostrar error sin llamar irPasoUI (causa crash)
+        document.getElementById('error-text').textContent = err.message;
+        document.getElementById('error-msg').classList.remove('hidden');
+        btn.textContent = paso === 3 ? 'Confirmar cambio' : 'Continuar';
+        btn.disabled    = false;
+        pinBuffer = '';
+        actualizarDots();
+      }
+    }
+
+    function irPasoUI(n) {
+      paso      = n;
+      pinBuffer = '';
+      actualizarDots();
+      ocultarError();
+      document.getElementById('btn-siguiente').disabled = true;
+      document.getElementById('btn-text').textContent   = n < 3 ? 'Continuar' : 'Confirmar cambio';
+      document.getElementById('step-label').textContent = stepLabels[n-1];
+      document.getElementById('sub-paso').textContent   = stepSubs[n-1];
+
+      [1,2,3].forEach(i => {
+        const ps = document.getElementById(`ps${i}`);
+        const pc = document.getElementById(`pc${i}`);
+        ps.className = 'paso-step' + (i === n ? ' active' : i < n ? ' done' : '');
+        pc.className = 'paso-circle' + (i === n ? ' active' : i < n ? ' done' : '');
+        if (pc.classList.contains('done')) pc.innerHTML = '✓';
+        else pc.textContent = i;
+        if (i < 3) {
+          document.getElementById(`pl${i}`).className = 'paso-line' + (i < n ? ' done' : '');
+        }
+      });
+    }
+
+    function retroceder() {
+      if (paso === 1) salir('menu.html');
+      else irPasoUI(paso - 1);
+    }
+
+    function salir(dest) {
+      document.getElementById('main-wrapper').style.transition = 'opacity 0.2s ease';
+      document.getElementById('main-wrapper').style.opacity    = '0';
+      setTimeout(() => window.location.href = dest, 200);
+    }
+  </script>
+</body>
+</html>
