@@ -145,12 +145,15 @@
     let bloqueado    = false;
 
     // Aplicar idioma si hay traducciones cargadas
-    if (t.ingrese_pin) {
-      document.getElementById('lbl-tarjeta').textContent =
-        t.numero_tarjeta || 'Número de tarjeta';
-      document.getElementById('btn-siguiente-text').textContent =
-        t.continuar || 'Continuar';
-    }
+
+      document.getElementById('step-title').textContent      = t.numero_tarjeta  || 'Número de tarjeta';
+      document.getElementById('lbl-tarjeta').textContent     = t.numero_tarjeta  || 'Número de tarjeta';
+      document.getElementById('btn-siguiente-text').textContent = t.continuar_btn || 'Continuar';
+      document.getElementById('btn-confirmar-text').textContent = t.confirmar_pin || 'Confirmar PIN';
+      document.getElementById('success-nombre').textContent  = t.bienvenida      || 'Bienvenido';
+      document.getElementById('success-sub').textContent     = t.acceso_verificado || 'Acceso verificado';
+      document.querySelector('.btn-back').textContent        = t.volver_inicio   || '← Volver al inicio';
+    
 
     // ── FORMATEAR número de tarjeta mientras escribe ──────────
     const inputTarjeta = document.getElementById('input-tarjeta');

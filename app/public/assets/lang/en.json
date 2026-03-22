@@ -11,19 +11,30 @@
   "elegir_idioma": "Choose your language",
   "seleccione_opcion": "Select an option to continue",
 
+  "numero_tarjeta": "Card number",
+  "tarjeta_invalida": "Please enter all 16 card digits",
+  "continuar_btn": "Continue",
   "ingrese_pin": "Enter your PIN",
   "pin_placeholder": "••••",
   "ingresar": "Confirm",
+  "confirmar_pin": "Confirm PIN",
   "pin_incorrecto": "Incorrect PIN. Please try again.",
   "intentos_restantes": "Remaining attempts",
   "cuenta_bloqueada": "Account locked due to too many attempts.",
+  "acceso_verificado": "Access verified",
+  "volver_inicio": "← Back to start",
 
   "menu_titulo": "What would you like to do?",
   "retiro": "Withdrawal",
   "deposito": "Deposit",
   "transferencia": "Transfer",
+  "entre_mis_cuentas": "Between my accounts",
+  "a_terceros": "To third parties",
   "consulta_saldo": "Balance inquiry",
   "cambio_pin": "PIN change",
+  "movimientos": "Recent transactions",
+  "sesion_activa": "Active session",
+  "terminar_sesion": "End session",
 
   "seleccione_monto": "Select amount",
   "otro_monto": "Other amount",
@@ -46,5 +57,14 @@
 
   "otra_operacion": "Would you like to perform another transaction?",
   "fin_sesion": "Session ended. Please take your card.",
-  "gracias": "Thank you for using Banco Fie"
+  "gracias": "Thank you for using Banco Fie",
+  
+  "retiro_desc":        "Withdraw cash from your account",
+  "deposito_desc":      "Deposit money into your account",
+  "consulta_desc":      "Check your available balance",
+  "transferencia_desc": "Transfer between your accounts",
+  "terceros_desc":      "Transfer to another account",
+  "cambio_pin_desc":    "Update your access PIN",
+  "movimientos_desc":   "History of your last transactions",
+  "en_linea": "Online"
 }

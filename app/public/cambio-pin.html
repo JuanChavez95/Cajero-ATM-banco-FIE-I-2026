@@ -226,7 +226,9 @@
         const res  = await fetch(`${API}/change_pin.php`, {
           method:  'POST',
           headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify({ pin_actual: pinActual, pin_nuevo: pinNuevo, pin_confirm: pinConfirm })
+          // ANTIGUO: body:    JSON.stringify({ pin_actual: pinActual, pin_nuevo: pinNuevo, pin_confirm: pinConfirm })
+          body: JSON.stringify({ usuario_id: usuario.id, pin_actual: pinActual, pin_nuevo: pinNuevo, pin_confirm: pinConfirm })
+          
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Error');

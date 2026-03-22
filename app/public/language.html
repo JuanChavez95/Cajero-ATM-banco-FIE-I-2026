@@ -105,7 +105,7 @@
     // Carga el JSON del idioma elegido
     async function cargarIdioma(lang) {
       try {
-        const res  = await fetch(`assets/lang/${lang}.json`);
+        const res = await fetch(`assets/lang/${lang}.json?v=${Date.now()}`);
         const data = await res.json();
         translations[lang] = data;
       } catch (e) {
@@ -116,6 +116,7 @@
     // Guardar en sessionStorage y navegar al PIN
     async function elegirIdioma(lang) {
       await cargarIdioma(lang);
+      sessionStorage.clear();
       sessionStorage.setItem('idioma', lang);
       sessionStorage.setItem('translations', JSON.stringify(translations[lang] || {}));
 

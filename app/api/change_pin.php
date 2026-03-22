@@ -7,8 +7,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-$usuario_id = requiereAutenticacion();
+// ANTIGUO $usuario_id = requiereAutenticacion();
+// ANTIGUO $data        = json_decode(file_get_contents('php://input'), true);
+
 $data        = json_decode(file_get_contents('php://input'), true);
+$usuario_id  = requiereAutenticacion() ?? (int)($data['usuario_id'] ?? 0);
 
 $pin_actual  = trim($data['pin_actual']  ?? '');
 $pin_nuevo   = trim($data['pin_nuevo']   ?? '');
