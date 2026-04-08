@@ -18,8 +18,8 @@
           stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
-    <div class="success-name" id="success-nombre">Bienvenido</div>
-    <div class="success-sub" id="success-sub">Acceso verificado</div>
+    <div class="success-name" id="success-nombre">Welcome</div>
+    <div class="success-sub" id="success-sub">Access verified</div>
   </div>
 
   <div class="pin-wrapper" id="pin-wrapper">
@@ -46,7 +46,7 @@
       <div class="step-dot"       id="dot-2"></div>
     </div>
 
-    <div class="step-title" id="step-title">Número de tarjeta</div>
+    <div class="step-title" id="step-title">Card number</div>
 
     <!-- ── CARD PRINCIPAL ── -->
     <div class="pin-card" id="pin-card">
@@ -55,7 +55,7 @@
       <div id="paso-tarjeta" style="width:100%; display:flex; flex-direction:column; gap:20px;">
 
         <div class="field-block">
-          <div class="field-label" id="lbl-tarjeta">Número de tarjeta</div>
+          <div class="field-label" id="lbl-tarjeta">Card number</div>
           <input
             type="text"
             class="field-input"
@@ -68,7 +68,7 @@
         </div>
 
         <button class="btn-confirm" id="btn-siguiente" onclick="irAPIN()">
-          <span id="btn-siguiente-text">Continuar</span>
+          <span id="btn-siguiente-text">Continue</span>
         </button>
 
       </div>
@@ -107,7 +107,7 @@
         </div>
 
         <button class="btn-confirm" id="btn-confirmar" disabled onclick="verificarLogin()">
-          <span id="btn-confirmar-text">Confirmar PIN</span>
+          <span id="btn-confirmar-text">Confirm PIN</span>
         </button>
 
       </div>
@@ -119,8 +119,8 @@
 
     </div><!-- /pin-card -->
 
-    <button class="btn-back" onclick="window.location.href='language.html'">
-      ← Volver al inicio
+    <button class="btn-back" id="btn-volver" onclick="window.location.href='language.html'">
+      ← Back to start
     </button>
 
   </div><!-- /pin-wrapper -->
@@ -145,15 +145,13 @@
     let bloqueado    = false;
 
     // Aplicar idioma si hay traducciones cargadas
-
-      document.getElementById('step-title').textContent      = t.numero_tarjeta  || 'Número de tarjeta';
-      document.getElementById('lbl-tarjeta').textContent     = t.numero_tarjeta  || 'Número de tarjeta';
-      document.getElementById('btn-siguiente-text').textContent = t.continuar_btn || 'Continuar';
-      document.getElementById('btn-confirmar-text').textContent = t.confirmar_pin || 'Confirmar PIN';
-      document.getElementById('success-nombre').textContent  = t.bienvenida      || 'Bienvenido';
-      document.getElementById('success-sub').textContent     = t.acceso_verificado || 'Acceso verificado';
-      document.querySelector('.btn-back').textContent        = t.volver_inicio   || '← Volver al inicio';
-    
+    document.getElementById('step-title').textContent         = t.numero_tarjeta      || 'Card number';
+    document.getElementById('lbl-tarjeta').textContent        = t.numero_tarjeta      || 'Card number';
+    document.getElementById('btn-siguiente-text').textContent = t.continuar_btn       || 'Continue';
+    document.getElementById('btn-confirmar-text').textContent = t.confirmar_pin       || 'Confirm PIN';
+    document.getElementById('success-nombre').textContent     = t.bienvenida          || 'Welcome';
+    document.getElementById('success-sub').textContent        = t.acceso_verificado   || 'Access verified';
+    document.getElementById('btn-volver').textContent         = t.volver_inicio       || '← Back to start';
 
     // ── FORMATEAR número de tarjeta mientras escribe ──────────
     const inputTarjeta = document.getElementById('input-tarjeta');
@@ -172,7 +170,7 @@
       const val = inputTarjeta.value.trim();
 
       if (val.length !== 16) {
-        mostrarError(t.tarjeta_invalida || 'Ingrese los 16 dígitos de la tarjeta');
+        mostrarError(t.tarjeta_invalida || 'Enter the 16 digits of your card');
         inputTarjeta.classList.add('error');
         setTimeout(() => inputTarjeta.classList.remove('error'), 600);
         return;
@@ -187,7 +185,7 @@
       document.getElementById('line-1').classList.add('done');
       document.getElementById('dot-2').classList.add('active');
       document.getElementById('step-title').textContent =
-        t.ingrese_pin || 'Ingrese su PIN';
+        t.ingrese_pin || 'Enter your PIN';
 
       // Cambiar vista
       document.getElementById('paso-tarjeta').style.display = 'none';
@@ -247,27 +245,27 @@
           // Fallo
           intentos--;
           actualizarPips();
-          errorPIN(data.error || (t.pin_incorrecto || 'PIN incorrecto'));
+          errorPIN(data.error || (t.pin_incorrecto || 'Incorrect PIN'));
 
           if (intentos <= 0) {
             bloqueado = true;
-            mostrarError(t.cuenta_bloqueada || 'Demasiados intentos. Sesión bloqueada.');
+            mostrarError(t.cuenta_bloqueada || 'Too many attempts. Session locked.');
             btn.disabled = true;
-            btnText.textContent = t.cuenta_bloqueada || 'Bloqueado';
+            btnText.textContent = t.cuenta_bloqueada || 'Too many attempts. Session locked.';
             setTimeout(() => window.location.href = 'index.html', 3000);
             return;
           }
 
-          btnText.textContent = t.ingresar || 'Confirmar PIN';
+          btnText.textContent = t.ingresar || 'Confirm PIN';
           btn.disabled = false;
           pinActual = '';
           actualizarDots();
         }
 
       } catch (err) {
-        btnText.textContent = t.ingresar || 'Confirmar PIN';
+        btnText.textContent = t.ingresar || 'Confirm PIN';
         btn.disabled = false;
-        mostrarError('Error de conexión con el servidor');
+        mostrarError(t.error_conexion || 'Connection error with the server');
       }
     }
 
@@ -310,9 +308,9 @@
     // ── OVERLAY ÉXITO ────────────────────────────────────────
     function mostrarExito(nombre) {
       document.getElementById('success-nombre').textContent =
-        (t.bienvenida || 'Bienvenido') + ', ' + nombre;
+        (t.bienvenida || 'Welcome') + ', ' + nombre;
       document.getElementById('success-sub').textContent =
-        t.acceso_verificado || 'Acceso verificado';
+        t.acceso_verificado || 'Access verified';
       document.getElementById('success-overlay').classList.add('show');
 
       setTimeout(() => {

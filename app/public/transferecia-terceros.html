@@ -78,8 +78,8 @@
     <div class="op-header">
       <button class="btn-back" onclick="retroceder()">←</button>
       <div class="op-header-info">
-        <div class="op-header-title">Transferencia a terceros</div>
-        <div class="op-header-sub" id="sub-paso">Cuenta origen</div>
+        <div class="op-header-title" id="header-titulo">Third-Party Transfer</div>
+        <div class="op-header-sub" id="sub-paso">Origin account</div>
       </div>
       <div class="op-header-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -92,20 +92,20 @@
 
     <!-- Indicador de pasos -->
     <div class="paso-indicator">
-      <div class="paso-step active" id="ps1"><div class="paso-circle active" id="pc1">1</div><div class="paso-label">Origen</div></div>
+      <div class="paso-step active" id="ps1"><div class="paso-circle active" id="pc1">1</div><div class="paso-label" id="lbl-paso1">Origin</div></div>
       <div class="paso-line" id="pl1"></div>
-      <div class="paso-step" id="ps2"><div class="paso-circle" id="pc2">2</div><div class="paso-label">Destino</div></div>
+      <div class="paso-step" id="ps2"><div class="paso-circle" id="pc2">2</div><div class="paso-label" id="lbl-paso2">Destination</div></div>
       <div class="paso-line" id="pl2"></div>
-      <div class="paso-step" id="ps3"><div class="paso-circle" id="pc3">3</div><div class="paso-label">Monto</div></div>
+      <div class="paso-step" id="ps3"><div class="paso-circle" id="pc3">3</div><div class="paso-label" id="lbl-paso3">Amount</div></div>
       <div class="paso-line" id="pl3"></div>
-      <div class="paso-step" id="ps4"><div class="paso-circle" id="pc4">4</div><div class="paso-label">Confirmar</div></div>
+      <div class="paso-step" id="ps4"><div class="paso-circle" id="pc4">4</div><div class="paso-label" id="lbl-paso4">Confirm</div></div>
     </div>
 
     <!-- PASO 1: Cuenta origen -->
     <div id="paso1" style="width:100%;">
-      <div class="section-label" style="margin-bottom:12px;">Seleccione su cuenta origen</div>
+      <div class="section-label" id="lbl-seleccione-origen" style="margin-bottom:12px;">Select your origin account</div>
       <div id="lista-origen" style="display:flex; flex-direction:column; gap:10px;">
-        <div class="op-msg info visible"><span class="spinner"></span><span>Cargando cuentas...</span></div>
+        <div class="op-msg info visible"><span class="spinner"></span><span id="txt-cargando-cuentas">Loading accounts...</span></div>
       </div>
       <div class="op-msg error" id="err1" style="margin-top:12px;"><span>●</span><span id="err1-text"></span></div>
     </div>
@@ -122,10 +122,10 @@
         </div>
       </div>
 
-      <div class="section-label" style="margin:16px 0 12px;">Ingrese el número de cuenta destino</div>
+      <div class="section-label" id="lbl-ingrese-num-destino" style="margin:16px 0 12px;">Enter destination account number</div>
 
       <div class="destino-card">
-        <div class="destino-label">Número de cuenta (12 dígitos)</div>
+        <div class="destino-label" id="lbl-destino-label">Account number (12 digits)</div>
         <div class="destino-input-wrap">
           <input type="text" class="destino-input" id="input-num-destino"
             maxlength="12" placeholder="000000000000" inputmode="numeric"
@@ -147,11 +147,11 @@
 
       <div style="display:flex; gap:10px; margin-top:16px;">
         <button class="btn-confirm" style="flex:1;" onclick="verificarCuentaDestino()" id="btn-verificar">
-          <span id="btn-verificar-text">Verificar cuenta</span>
+          <span id="btn-verificar-text">Verify account</span>
         </button>
       </div>
       <button class="btn-confirm" style="margin-top:10px; display:none;" id="btn-continuar-dest" onclick="irPasoUI(3)">
-        Continuar →
+        Continue →
       </button>
     </div>
 
@@ -171,7 +171,7 @@
       </div>
       <div class="op-card" style="margin-top:8px;">
         <div>
-          <div class="section-label">Seleccione el monto</div>
+          <div class="section-label" id="lbl-seleccione-monto">Select amount</div>
           <div class="montos-grid">
             <button class="monto-btn" onclick="elegirMonto(10)"><span>10</span><span class="currency">Bs.</span></button>
             <button class="monto-btn" onclick="elegirMonto(20)"><span>20</span><span class="currency">Bs.</span></button>
@@ -179,11 +179,11 @@
             <button class="monto-btn" onclick="elegirMonto(100)"><span>100</span><span class="currency">Bs.</span></button>
             <button class="monto-btn" onclick="elegirMonto(200)"><span>200</span><span class="currency">Bs.</span></button>
             <button class="monto-btn" onclick="elegirMonto(500)"><span>500</span><span class="currency">Bs.</span></button>
-            <button class="monto-btn otro" onclick="toggleOtro()">✎ &nbsp; Otro monto</button>
+            <button class="monto-btn otro" id="btn-otro-monto" onclick="toggleOtro()">✎ &nbsp; Other amount</button>
           </div>
         </div>
         <div class="monto-custom" id="monto-custom">
-          <label>Ingrese el monto (Bs.)</label>
+          <label id="lbl-ingresar-monto">Enter amount (Bs.)</label>
           <div class="monto-input-wrap">
             <span class="monto-prefix">Bs.</span>
             <input type="number" class="monto-input" id="monto-input" min="1" step="0.01" placeholder="0.00" oninput="actualizarDesdeInput()">
@@ -191,23 +191,23 @@
         </div>
         <div class="op-divider"></div>
         <div class="monto-resumen" id="monto-resumen">
-          <span class="monto-resumen-label">Monto a transferir</span>
+          <span class="monto-resumen-label" id="lbl-monto-a-transferir">Amount to transfer</span>
           <span class="monto-resumen-valor" id="monto-resumen-val">Bs. 0.00</span>
         </div>
         <div class="op-msg error" id="err3"><span>●</span><span id="err3-text"></span></div>
-        <button class="btn-confirm" id="btn-paso3" disabled onclick="irPaso4()">Continuar</button>
+        <button class="btn-confirm" id="btn-paso3" disabled onclick="irPaso4()" id="btn-continuar">Continue</button>
       </div>
     </div>
 
     <!-- PASO 4: Confirmación -->
     <div id="paso4" style="width:100%; display:none;">
       <div class="op-card">
-        <div class="section-label">Confirme la transferencia</div>
+        <div class="section-label" id="lbl-confirme-transferencia">Confirm the transfer</div>
         <div class="resultado-detalle" id="resumen-final" style="margin-top:4px;"></div>
         <div class="op-divider"></div>
         <div class="op-msg error" id="err4"><span>●</span><span id="err4-text"></span></div>
-        <button class="btn-confirm" id="btn-confirmar-tf" onclick="confirmarTransferencia()">Confirmar transferencia</button>
-        <button class="btn-otra-op no" style="margin-top:8px;" onclick="irPasoUI(3)">← Modificar monto</button>
+        <button class="btn-confirm" id="btn-confirmar-tf" onclick="confirmarTransferencia()">Confirm transfer</button>
+        <button class="btn-otra-op no" style="margin-top:8px;" onclick="irPasoUI(3)" id="btn-modificar-monto">← Modify amount</button>
       </div>
     </div>
 
@@ -231,9 +231,30 @@
     let otroVisible       = false;
 
     const labelCuenta = {
-      ahorros:   t.cuenta_ahorros   || 'Cta. Ahorros',
-      corriente: t.cuenta_corriente || 'Cta. Corriente'
+      ahorros:   t.cuenta_ahorros   || 'Savings Acc.',
+      corriente: t.cuenta_corriente || 'Checking Acc.'
     };
+
+    // Aplicar idioma
+    document.getElementById('header-titulo').textContent            = t.terceros_titulo          || 'Third-Party Transfer';
+    document.getElementById('lbl-paso1').textContent                = t.paso_origen              || 'Origin';
+    document.getElementById('lbl-paso2').textContent                = t.paso_destino             || 'Destination';
+    document.getElementById('lbl-paso3').textContent                = t.paso_monto               || 'Amount';
+    document.getElementById('lbl-paso4').textContent                = t.paso_confirmar           || 'Confirm';
+    document.getElementById('lbl-seleccione-origen').textContent    = t.seleccione_origen        || 'Select your origin account';
+    document.getElementById('txt-cargando-cuentas').textContent     = t.cargando_cuentas         || 'Loading accounts...';
+    document.getElementById('lbl-ingrese-num-destino').textContent  = t.ingrese_num_destino      || 'Enter destination account number';
+    document.getElementById('lbl-destino-label').textContent        = t.destino_label            || 'Account number (12 digits)';
+    document.getElementById('btn-verificar-text').textContent       = t.verificar_cuenta         || 'Verify account';
+    document.getElementById('btn-continuar-dest').textContent       = t.continuar_destino        || 'Continue →';
+    document.getElementById('lbl-seleccione-monto').textContent     = t.seleccione_monto         || 'Select amount';
+    document.getElementById('btn-otro-monto').innerHTML             = t.otro_monto               || '✎ &nbsp; Other amount';
+    document.getElementById('lbl-ingresar-monto').textContent       = t.ingresar_monto           || 'Enter amount (Bs.)';
+    document.getElementById('lbl-monto-a-transferir').textContent   = t.monto_a_transferir       || 'Amount to transfer';
+    document.getElementById('btn-paso3').textContent                = t.continuar                || 'Continue';
+    document.getElementById('lbl-confirme-transferencia').textContent = t.confirme_transferencia || 'Confirm the transfer';
+    document.getElementById('btn-confirmar-tf').textContent         = t.confirmar_transferencia  || 'Confirm transfer';
+    document.getElementById('btn-modificar-monto').textContent      = t.modificar_monto          || '← Modify amount';
 
     // ── Cargar cuentas propias ────────────────────────────────
     async function cargarCuentas() {
@@ -244,7 +265,7 @@
         cuentas = data.cuentas || [];
         if (!cuentas.length) {
           document.getElementById('lista-origen').innerHTML =
-            '<div class="op-msg info visible"><span>No tiene cuentas activas</span></div>';
+            `<div class="op-msg info visible"><span>${t.no_cuentas_activas || 'You have no active accounts'}</span></div>`;
           return;
         }
         document.getElementById('lista-origen').innerHTML = cuentas.map(c => {
@@ -261,7 +282,7 @@
             </div>
             <div class="cuenta-saldo">
               <div class="cuenta-saldo-monto">Bs. ${parseFloat(c.saldo).toFixed(2)}</div>
-              <div class="cuenta-saldo-label">${t.saldo_disponible || 'Disponible'}</div>
+              <div class="cuenta-saldo-label">${t.saldo_disponible || 'Available'}</div>
             </div>
             <div class="cuenta-arrow">›</div>
           </button>`;
@@ -278,7 +299,7 @@
       origenTipo  = c.tipo;
       origenSaldo = parseFloat(c.saldo);
       document.getElementById('badge-origen-tipo').textContent  = labelCuenta[c.tipo] + ' — **** ' + c.numero_cuenta.slice(-4);
-      document.getElementById('badge-origen-saldo').textContent = 'Saldo disponible: Bs. ' + origenSaldo.toFixed(2);
+      document.getElementById('badge-origen-saldo').textContent = 'Bs. ' + origenSaldo.toFixed(2);
       irPasoUI(2);
     }
 
@@ -293,7 +314,7 @@
     async function verificarCuentaDestino() {
       const num = document.getElementById('input-num-destino').value.trim();
       if (num.length !== 12) {
-        document.getElementById('err2-text').textContent = 'El número de cuenta debe tener 12 dígitos';
+        document.getElementById('err2-text').textContent = t.num_cuenta_12 || 'Account number must have 12 digits';
         document.getElementById('err2').classList.add('visible');
         return;
       }
@@ -324,14 +345,14 @@
 
         // Actualizar paso 3
         document.getElementById('badge-dest-nombre-3').textContent = data.nombre;
-        document.getElementById('badge-dest-cuenta-3').textContent = 'Cuenta **** ' + num.slice(-4);
+        document.getElementById('badge-dest-cuenta-3').textContent = 'Account **** ' + num.slice(-4);
 
       } catch (err) {
         document.getElementById('err2-text').textContent = err.message;
         document.getElementById('err2').classList.add('visible');
         destinoVerificado = false;
       } finally {
-        document.getElementById('btn-verificar-text').textContent = 'Verificar cuenta';
+        document.getElementById('btn-verificar-text').textContent = t.verificar_cuenta || 'Verify account';
         btn.disabled = false;
       }
     }
@@ -376,19 +397,19 @@
     function irPaso4() {
       if (montoElegido <= 0) return;
       if (montoElegido > origenSaldo) {
-        document.getElementById('err3-text').textContent = t.saldo_insuficiente || 'Saldo insuficiente';
+        document.getElementById('err3-text').textContent = t.saldo_insuficiente || 'Insufficient balance';
         document.getElementById('err3').classList.add('visible');
         return;
       }
       document.getElementById('err3').classList.remove('visible');
       const cOrigen = cuentas.find(x => x.id === origenId);
       document.getElementById('resumen-final').innerHTML = `
-        <div class="detalle-row"><span class="detalle-key">Desde</span><span class="detalle-val">${labelCuenta[origenTipo]} **** ${cOrigen.numero_cuenta.slice(-4)}</span></div>
-        <div class="detalle-row"><span class="detalle-key">Para</span><span class="detalle-val">${destinoNombre}</span></div>
-        <div class="detalle-row"><span class="detalle-key">Cuenta destino</span><span class="detalle-val">**** **** ${numeroCuentaDest.slice(-4)}</span></div>
-        <div class="detalle-row"><span class="detalle-key">Monto</span><span class="detalle-val highlight">Bs. ${montoElegido.toFixed(2)}</span></div>
-        <div class="detalle-row"><span class="detalle-key">Saldo tras operación</span><span class="detalle-val" style="color:#e70075;">Bs. ${(origenSaldo - montoElegido).toFixed(2)}</span></div>
-        <div class="detalle-row"><span class="detalle-key">Fecha</span><span class="detalle-val">${new Date().toLocaleString('es-BO')}</span></div>`;
+        <div class="detalle-row"><span class="detalle-key">${t.detalle_desde || 'From'}</span><span class="detalle-val">${labelCuenta[origenTipo]} **** ${cOrigen.numero_cuenta.slice(-4)}</span></div>
+        <div class="detalle-row"><span class="detalle-key">${t.detalle_para || 'To'}</span><span class="detalle-val">${destinoNombre}</span></div>
+        <div class="detalle-row"><span class="detalle-key">${t.detalle_cuenta_destino || 'Destination account'}</span><span class="detalle-val">**** **** ${numeroCuentaDest.slice(-4)}</span></div>
+        <div class="detalle-row"><span class="detalle-key">${t.detalle_monto || 'Amount'}</span><span class="detalle-val highlight">Bs. ${montoElegido.toFixed(2)}</span></div>
+        <div class="detalle-row"><span class="detalle-key">${t.detalle_saldo_post || 'Balance after operation'}</span><span class="detalle-val" style="color:#e70075;">Bs. ${(origenSaldo - montoElegido).toFixed(2)}</span></div>
+        <div class="detalle-row"><span class="detalle-key">${t.detalle_fecha || 'Date'}</span><span class="detalle-val">${new Date().toLocaleString('es-BO')}</span></div>`;
       irPasoUI(4);
     }
 
@@ -419,13 +440,19 @@
       } catch (err) {
         document.getElementById('err4-text').textContent = err.message;
         document.getElementById('err4').classList.add('visible');
-        btn.textContent = 'Confirmar transferencia';
+        btn.textContent = t.confirmar_transferencia || 'Confirm transfer';
         btn.disabled    = false;
       }
     }
 
     // ── Navegación de pasos ───────────────────────────────────
     function irPasoUI(n) {
+      const subs = [
+        t.sub_paso_1 || 'Origin account',
+        t.sub_paso_2 || 'Destination account',
+        t.sub_paso_3 || 'Select amount',
+        t.sub_paso_4 || 'Confirm operation'
+      ];
       [1,2,3,4].forEach(i => {
         document.getElementById(`paso${i}`).style.display = i === n ? 'block' : 'none';
         const ps = document.getElementById(`ps${i}`);
@@ -435,7 +462,6 @@
         pc.innerHTML = pc.classList.contains('done') ? '✓' : i;
         if (i < 4) document.getElementById(`pl${i}`).className = 'paso-line' + (i < n ? ' done' : '');
       });
-      const subs = ['Cuenta origen','Cuenta destino','Seleccione monto','Confirmar operación'];
       document.getElementById('sub-paso').textContent = subs[n-1];
     }
 

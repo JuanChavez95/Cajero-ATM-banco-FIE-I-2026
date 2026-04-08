@@ -39,7 +39,7 @@
 
     <!-- Lista de cuentas -->
     <div style="width:100%; display:flex; flex-direction:column; gap:12px;" id="lista-cuentas">
-      <div class="op-msg info visible"><span class="spinner"></span><span>Cargando cuentas...</span></div>
+      <div class="op-msg info visible"><span class="spinner"></span><span id="txt-cargando">Cargando cuentas...</span></div>
     </div>
 
     <!-- Mensaje error -->
@@ -59,13 +59,17 @@
 
     if (!usuario.id || !tipo || !monto) window.location.href = 'menu.html';
 
+    // Aplicar idioma
+    document.getElementById('titulo-pagina').textContent = t.seleccione_cuenta_titulo || 'Seleccione cuenta';
+    document.getElementById('lbl-cuentas').textContent   = t.cuentas_disponibles      || 'Cuentas disponibles';
+    document.getElementById('txt-cargando').textContent  = t.cargando_cuentas         || 'Cargando cuentas...';
+
     // Mostrar tipo y monto en el sub-header
     const tipoLabel = tipo === 'retiro'
       ? (t.retiro   || 'Retiro')
       : (t.deposito || 'Depósito');
 
-    document.getElementById('sub-monto').textContent =
-      `${tipoLabel} — Bs. ${monto.toFixed(2)}`;
+    document.getElementById('sub-monto').textContent = `${tipoLabel} — Bs. ${monto.toFixed(2)}`;
 
     async function cargarCuentas() {
       try {
@@ -76,7 +80,7 @@
         const lista = document.getElementById('lista-cuentas');
 
         if (!data.cuentas || data.cuentas.length === 0) {
-          lista.innerHTML = `<div class="op-msg info visible"><span>Sin cuentas disponibles</span></div>`;
+          lista.innerHTML = `<div class="op-msg info visible"><span>${t.sin_cuentas_disp || 'Sin cuentas disponibles'}</span></div>`;
           return;
         }
 
@@ -125,7 +129,6 @@
     async function seleccionarCuenta(cuentaId, cuentaTipo, saldo) {
       const endpoint = tipo === 'retiro' ? 'withdraw.php' : 'deposit.php';
 
-      // Bloquear UI
       document.querySelectorAll('.cuenta-item').forEach(b => b.disabled = true);
 
       try {
@@ -139,13 +142,12 @@
 
         if (!res.ok) throw new Error(data.error || 'Error en la operación');
 
-        // Guardar resultado para resultado.html
         sessionStorage.setItem('op_resultado', JSON.stringify({
           tipo,
           monto,
-          cuenta_tipo:    cuentaTipo,
-          nuevo_saldo:    data.nuevo_saldo,
-          mensaje:        data.mensaje
+          cuenta_tipo:  cuentaTipo,
+          nuevo_saldo:  data.nuevo_saldo,
+          mensaje:      data.mensaje
         }));
 
         salir('resultado.html');

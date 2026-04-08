@@ -202,8 +202,8 @@
     <div class="op-header">
       <button class="btn-back" onclick="volver()">←</button>
       <div class="op-header-info">
-        <div class="op-header-title" id="titulo-pagina">Últimos movimientos</div>
-        <div class="op-header-sub" id="sub-pagina">Historial de transacciones</div>
+        <div class="op-header-title" id="titulo-pagina">Recent Transactions</div>
+        <div class="op-header-sub" id="sub-pagina">Transaction history</div>
       </div>
       <div class="op-header-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
@@ -218,32 +218,32 @@
     <!-- Resumen rápido -->
     <div class="resumen-grid" id="resumen-grid" style="display:none;">
       <div class="resumen-item">
-        <span class="resumen-label">Retiros</span>
+        <span class="resumen-label" id="lbl-retiros">Withdrawals</span>
         <span class="resumen-valor retiro" id="total-retiros">—</span>
       </div>
       <div class="resumen-item">
-        <span class="resumen-label">Depósitos</span>
+        <span class="resumen-label" id="lbl-depositos">Deposits</span>
         <span class="resumen-valor deposito" id="total-depositos">—</span>
       </div>
       <div class="resumen-item">
-        <span class="resumen-label">Total ops.</span>
+        <span class="resumen-label" id="lbl-total-ops">Total ops.</span>
         <span class="resumen-valor total" id="total-ops">—</span>
       </div>
     </div>
 
     <!-- Filtros -->
     <div class="filtros" id="filtros" style="display:none;">
-      <button class="filtro-btn active-todos" data-filtro="todos"    onclick="filtrar('todos')">Todos</button>
-      <button class="filtro-btn"              data-filtro="retiro"   onclick="filtrar('retiro')">Retiros</button>
-      <button class="filtro-btn"              data-filtro="deposito" onclick="filtrar('deposito')">Depósitos</button>
-      <button class="filtro-btn"              data-filtro="transferencia" onclick="filtrar('transferencia')">Transf.</button>
+      <button class="filtro-btn active-todos" data-filtro="todos"         id="fbtn-todos"    onclick="filtrar('todos')">All</button>
+      <button class="filtro-btn"              data-filtro="retiro"        id="fbtn-retiro"   onclick="filtrar('retiro')">Withdrawals</button>
+      <button class="filtro-btn"              data-filtro="deposito"      id="fbtn-deposito" onclick="filtrar('deposito')">Deposits</button>
+      <button class="filtro-btn"              data-filtro="transferencia" id="fbtn-transf"   onclick="filtrar('transferencia')">Transfer</button>
     </div>
 
     <!-- Lista -->
     <div class="mov-list" id="mov-list">
       <div class="op-msg info visible">
         <span class="spinner"></span>
-        <span>Cargando movimientos...</span>
+        <span id="txt-cargando">Loading transactions...</span>
       </div>
     </div>
 
@@ -255,11 +255,11 @@
     <!-- Botones finales -->
     <div style="width:100%; margin-top:22px; display:flex; flex-direction:column; gap:10px;
                 animation: fadeUp 0.5s 0.35s ease both;">
-      <button class="btn-otra-op si" onclick="volver()">
-        Realizar otra operación
+      <button class="btn-otra-op si" onclick="volver()" id="btn-otra">
+        Perform another operation
       </button>
-      <button class="btn-otra-op no" onclick="cerrarSesion()">
-        Finalizar sesión
+      <button class="btn-otra-op no" onclick="cerrarSesion()" id="btn-finalizar">
+        End session
       </button>
     </div>
 
@@ -274,6 +274,20 @@
 
     let todosLosMov = [];
     let filtroActual = 'todos';
+
+    // Aplicar idioma
+    document.getElementById('titulo-pagina').textContent  = t.movimientos_titulo   || 'Recent Transactions';
+    document.getElementById('sub-pagina').textContent     = t.historial_sub        || 'Transaction history';
+    document.getElementById('lbl-retiros').textContent    = t.lbl_retiros          || 'Withdrawals';
+    document.getElementById('lbl-depositos').textContent  = t.lbl_depositos        || 'Deposits';
+    document.getElementById('lbl-total-ops').textContent  = t.lbl_total_ops        || 'Total ops.';
+    document.getElementById('fbtn-todos').textContent     = t.filtro_todos         || 'All';
+    document.getElementById('fbtn-retiro').textContent    = t.filtro_retiros       || 'Withdrawals';
+    document.getElementById('fbtn-deposito').textContent  = t.filtro_depositos     || 'Deposits';
+    document.getElementById('fbtn-transf').textContent    = t.filtro_transf        || 'Transfer';
+    document.getElementById('txt-cargando').textContent   = t.cargando_movimientos || 'Loading transactions...';
+    document.getElementById('btn-otra').textContent       = t.realizar_otra_op     || 'Perform another operation';
+    document.getElementById('btn-finalizar').textContent  = t.finalizar_sesion     || 'End session';
 
     // Íconos SVG por tipo
     const svgIconos = {
@@ -292,14 +306,14 @@
     };
 
     const tipoLabel = {
-      retiro:        t.retiro        || 'Retiro',
-      deposito:      t.deposito      || 'Depósito',
-      transferencia: t.transferencia || 'Transferencia'
+      retiro:        t.retiro        || 'Withdrawal',
+      deposito:      t.deposito      || 'Deposit',
+      transferencia: t.transferencia || 'Transfer'
     };
 
     const cuentaLabel = {
-      ahorros:   t.cuenta_ahorros   || 'Cta. Ahorros',
-      corriente: t.cuenta_corriente || 'Cta. Corriente'
+      ahorros:   t.cuenta_ahorros   || 'Savings Acc.',
+      corriente: t.cuenta_corriente || 'Checking Acc.'
     };
 
     const signo = { retiro: '−', deposito: '+', transferencia: '⇄' };
@@ -349,7 +363,7 @@
       const lista = document.getElementById('mov-list');
 
       if (!movs.length) {
-        lista.innerHTML = `<div class="mov-empty">Sin movimientos registrados</div>`;
+        lista.innerHTML = `<div class="mov-empty">${t.sin_movimientos || 'No transactions recorded'}</div>`;
         return;
       }
 
@@ -382,7 +396,7 @@
                 Bs. ${parseFloat(m.monto).toFixed(2)}
               </div>
               <div class="mov-saldo-post">
-                Saldo: Bs. ${parseFloat(m.saldo_posterior).toFixed(2)}
+                ${t.lbl_saldo_post || 'Balance:'} Bs. ${parseFloat(m.saldo_posterior).toFixed(2)}
               </div>
             </div>
           </div>
@@ -420,11 +434,6 @@
       document.querySelector('.op-wrapper').style.transition = 'opacity 0.2s ease';
       document.querySelector('.op-wrapper').style.opacity    = '0';
       setTimeout(() => window.location.href = dest, 200);
-    }
-
-    // Aplicar idioma
-    if (t.movimientos) {
-      document.getElementById('titulo-pagina').textContent = t.movimientos;
     }
 
     cargarMovimientos();

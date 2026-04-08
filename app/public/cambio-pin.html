@@ -70,8 +70,8 @@
         <polyline points="6,16 13,23 26,9" stroke="#0094d6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
-    <div class="success-name">PIN actualizado</div>
-    <div class="success-sub">Volviendo al menú...</div>
+    <div class="success-name" id="success-name">PIN updated</div>
+    <div class="success-sub" id="success-sub">Returning to menu...</div>
   </div>
 
   <div class="op-wrapper" id="main-wrapper">
@@ -79,8 +79,8 @@
     <div class="op-header">
       <button class="btn-back" onclick="retroceder()">←</button>
       <div class="op-header-info">
-        <div class="op-header-title">Cambio de PIN</div>
-        <div class="op-header-sub" id="sub-paso">PIN actual</div>
+        <div class="op-header-title" id="header-titulo">PIN Change</div>
+        <div class="op-header-sub" id="sub-paso">Current PIN</div>
       </div>
       <div class="op-header-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -92,16 +92,16 @@
 
     <!-- Indicador de pasos -->
     <div class="paso-indicator">
-      <div class="paso-step active" id="ps1"><div class="paso-circle active" id="pc1">1</div><div class="paso-label">Actual</div></div>
+      <div class="paso-step active" id="ps1"><div class="paso-circle active" id="pc1">1</div><div class="paso-label" id="lbl-paso1">Current</div></div>
       <div class="paso-line" id="pl1"></div>
-      <div class="paso-step" id="ps2"><div class="paso-circle" id="pc2">2</div><div class="paso-label">Nuevo</div></div>
+      <div class="paso-step" id="ps2"><div class="paso-circle" id="pc2">2</div><div class="paso-label" id="lbl-paso2">New</div></div>
       <div class="paso-line" id="pl2"></div>
-      <div class="paso-step" id="ps3"><div class="paso-circle" id="pc3">3</div><div class="paso-label">Confirmar</div></div>
+      <div class="paso-step" id="ps3"><div class="paso-circle" id="pc3">3</div><div class="paso-label" id="lbl-paso3">Confirm</div></div>
     </div>
 
     <!-- Card PIN -->
     <div class="pin-step-card">
-      <div class="step-title-pin" id="step-label">Ingrese su PIN actual</div>
+      <div class="step-title-pin" id="step-label">Enter your current PIN</div>
 
       <!-- Puntos visuales -->
       <div class="pin-dots">
@@ -131,13 +131,13 @@
       </div>
 
       <button class="btn-confirm-pin" id="btn-siguiente" disabled onclick="avanzar()">
-        <span id="btn-text">Continuar</span>
+        <span id="btn-text">Continue</span>
       </button>
     </div>
 
     <button class="btn-back" style="margin-top:16px; width:auto; padding:0 16px; height:36px; font-size:0.62rem; letter-spacing:2px; text-transform:uppercase;"
-            onclick="salir('menu.html')">
-      ← Cancelar
+            id="btn-cancelar" onclick="salir('menu.html')">
+      ← Cancel
     </button>
 
   </div>
@@ -155,8 +155,30 @@
     let pinConfirm = '';
     let pinBuffer  = '';
 
-    const stepLabels = ['Ingrese su PIN actual', 'Ingrese su PIN nuevo', 'Confirme el PIN nuevo'];
-    const stepSubs   = ['PIN actual', 'PIN nuevo', 'Confirmación'];
+    const stepLabels = [
+      t.cambiopin_paso1_label || 'Enter your current PIN',
+      t.cambiopin_paso2_label || 'Enter your new PIN',
+      t.cambiopin_paso3_label || 'Confirm your new PIN'
+    ];
+    const stepSubs = [
+      t.cambiopin_paso1_sub || 'Current PIN',
+      t.cambiopin_paso2_sub || 'New PIN',
+      t.cambiopin_paso3_sub || 'Confirmation'
+    ];
+    const stepSteps = [
+      t.cambiopin_paso1_step || 'Current',
+      t.cambiopin_paso2_step || 'New',
+      t.cambiopin_paso3_step || 'Confirm'
+    ];
+
+    // Aplicar idioma
+    document.getElementById('header-titulo').textContent  = t.cambiopin_titulo    || 'PIN Change';
+    document.getElementById('lbl-paso1').textContent      = stepSteps[0];
+    document.getElementById('lbl-paso2').textContent      = stepSteps[1];
+    document.getElementById('lbl-paso3').textContent      = stepSteps[2];
+    document.getElementById('success-name').textContent   = t.cambiopin_actualizado || 'PIN updated';
+    document.getElementById('success-sub').textContent    = t.cambiopin_volviendo   || 'Returning to menu...';
+    document.getElementById('btn-cancelar').textContent   = t.cambiopin_cancelar    || '← Cancel';
 
     function presionar(n) {
       if (pinBuffer.length >= 4) return;
@@ -207,7 +229,7 @@
       } else if (paso === 3) {
         pinConfirm = pinBuffer;
         if (pinNuevo !== pinConfirm) {
-          errorDots('Los PINs nuevos no coinciden');
+          errorDots(t.cambiopin_no_coinciden || 'New PINs do not match');
           pinBuffer = '';
           actualizarDots();
           document.getElementById('btn-siguiente').disabled = true;
@@ -240,7 +262,7 @@
         // Mostrar error sin llamar irPasoUI (causa crash)
         document.getElementById('error-text').textContent = err.message;
         document.getElementById('error-msg').classList.remove('hidden');
-        btn.textContent = paso === 3 ? 'Confirmar cambio' : 'Continuar';
+        btn.textContent = paso === 3 ? (t.cambiopin_confirmar || 'Confirm change') : (t.cambiopin_continuar || 'Continue');
         btn.disabled    = false;
         pinBuffer = '';
         actualizarDots();
@@ -253,7 +275,7 @@
       actualizarDots();
       ocultarError();
       document.getElementById('btn-siguiente').disabled = true;
-      document.getElementById('btn-text').textContent   = n < 3 ? 'Continuar' : 'Confirmar cambio';
+      document.getElementById('btn-text').textContent   = n < 3 ? (t.cambiopin_continuar || 'Continue') : (t.cambiopin_confirmar || 'Confirm change');
       document.getElementById('step-label').textContent = stepLabels[n-1];
       document.getElementById('sub-paso').textContent   = stepSubs[n-1];
 
