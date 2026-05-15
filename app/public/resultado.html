@@ -5,69 +5,108 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Banco Fie — Operación Exitosa</title>
   <link rel="stylesheet" href="assets/css/operaciones.css">
+  <style>
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0;
+      margin: -1px; overflow: hidden; clip: rect(0,0,0,0);
+      white-space: nowrap; border: 0;
+    }
+  </style>
 </head>
 <body>
-  <div class="top-bar"></div>
+  <div class="top-bar" role="presentation" aria-hidden="true"></div>
 
-  <div class="op-wrapper">
+  <div class="op-wrapper"
+       role="main"
+       aria-label="Pantalla de resultado de operación">
 
     <!-- Header mínimo -->
-    <div class="op-header" style="margin-bottom:20px;">
-      <div class="mini-logo" style="display:flex; align-items:center; gap:10px;">
-        <svg width="32" height="32" viewBox="0 0 56 56" fill="none">
+    <div class="op-header"
+         style="margin-bottom:20px;"
+         aria-label="Encabezado Banco Fie">
+      <div class="mini-logo"
+           role="img"
+           aria-label="Logotipo de Banco Fie"
+           style="display:flex; align-items:center; gap:10px;">
+        <svg width="32"
+             height="32"
+             viewBox="0 0 56 56"
+             fill="none"
+             aria-hidden="true"
+             focusable="false">
           <circle cx="28" cy="28" r="24" fill="#0a0a0a" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
           <path d="M20 16 C12 20, 12 36, 20 40" stroke="#e70075" stroke-width="4" stroke-linecap="round" fill="none"/>
           <path d="M28 20 C38 24, 38 32, 28 36" stroke="#0094d6" stroke-width="4" stroke-linecap="round" fill="none"/>
           <circle cx="24" cy="28" r="3" fill="#e70075"/>
         </svg>
-        <div style="font-size:1.1rem; font-weight:900;">
+        <div style="font-size:1.1rem; font-weight:900;" aria-hidden="true">
           <span style="color:#e70075;">Banco</span><span style="color:#0094d6; font-style:italic;">Fie</span>
         </div>
       </div>
     </div>
 
     <!-- Card resultado -->
-    <div class="resultado-card">
+    <div class="resultado-card"
+         role="region"
+         aria-label="Resumen de la operación realizada">
 
       <!-- Ícono éxito -->
-      <div class="resultado-icon" id="resultado-icon"
+      <div class="resultado-icon"
+           id="resultado-icon"
+           role="img"
+           aria-label="Operación completada exitosamente"
            style="background: rgba(0,200,83,0.1); border: 2px solid rgba(0,200,83,0.3);">
-        <svg viewBox="0 0 28 28" fill="none">
+        <svg viewBox="0 0 28 28"
+             fill="none"
+             aria-hidden="true"
+             focusable="false">
           <polyline points="5,14 11,20 23,8" stroke="#00c853" stroke-width="2.5"
             stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
 
-      <div class="resultado-title" id="resultado-titulo">Operación exitosa</div>
-      <div class="resultado-sub"   id="resultado-sub">Transacción completada</div>
+      <h1 class="resultado-title" id="resultado-titulo">Operación exitosa</h1>
+      <p  class="resultado-sub"   id="resultado-sub">Transacción completada</p>
 
       <!-- Detalle -->
-      <div class="resultado-detalle" id="resultado-detalle">
+      <dl class="resultado-detalle"
+          id="resultado-detalle"
+          aria-label="Detalle de la transacción">
         <!-- se llena con JS -->
-      </div>
+      </dl>
 
       <!-- Separador -->
-      <div style="width:100%; height:1px; background:rgba(255,255,255,0.05);"></div>
+      <div style="width:100%; height:1px; background:rgba(255,255,255,0.05);"
+           role="separator"
+           aria-hidden="true"></div>
 
       <!-- ¿Otra operación? -->
-      <div style="font-size:0.65rem; font-weight:800; letter-spacing:3px;
-                  text-transform:uppercase; color:rgba(255,255,255,0.2); margin-top:4px;"
-           id="lbl-otra-op">
+      <p style="font-size:0.65rem; font-weight:800; letter-spacing:3px;
+                text-transform:uppercase; color:rgba(255,255,255,0.2); margin-top:4px;"
+         id="lbl-otra-op"
+         aria-hidden="true">
         ¿Desea realizar otra operación?
-      </div>
+      </p>
 
-      <button class="btn-otra-op si" onclick="otraOperacion()" id="btn-si">
+      <button class="btn-otra-op si"
+              id="btn-si"
+              aria-label="Sí, realizar otra operación — volver al menú"
+              onclick="otraOperacion()">
         Sí, otra operación
       </button>
-      <button class="btn-otra-op no" onclick="cerrarSesion()" id="btn-no">
+      <button class="btn-otra-op no"
+              id="btn-no"
+              aria-label="No, finalizar sesión y salir"
+              onclick="cerrarSesion()">
         No, finalizar sesión
       </button>
 
     </div><!-- /resultado-card -->
   </div>
 
-  <div class="bottom-bar"></div>
+  <div class="bottom-bar" role="presentation" aria-hidden="true"></div>
 
+  <script src="assets/js/voz.js"></script>
   <script>
     const API      = '/app/api';
     const t        = JSON.parse(sessionStorage.getItem('translations') || '{}');
@@ -88,48 +127,68 @@
       corriente: t.cuenta_corriente || 'Cuenta Corriente'
     };
 
-    // Rellenar detalle
+    // Títulos de la pantalla
     document.getElementById('resultado-titulo').textContent = t.operacion_exitosa || 'Operación exitosa';
     document.getElementById('resultado-sub').textContent    = tipoLabel[resultado.tipo] || resultado.tipo;
 
+    // Datos formateados
+    const montoFmt      = parseFloat(resultado.monto).toFixed(2);
+    const nuevoSaldoFmt = parseFloat(resultado.nuevo_saldo).toFixed(2);
+    const fechaTxt      = new Date().toLocaleString('es-BO');
+    const opTxt         = tipoLabel[resultado.tipo] || resultado.tipo;
+    const cuentaTxt     = cuentaLabel[resultado.cuenta_tipo] || resultado.cuenta_tipo;
+
+    // Rellenar detalle como lista de definición (dl/dt/dd)
+    // — semánticamente correcto para pares clave:valor
     document.getElementById('resultado-detalle').innerHTML = `
       <div class="detalle-row">
-        <span class="detalle-key">${t.lbl_operacion || 'Operación'}</span>
-        <span class="detalle-val">${tipoLabel[resultado.tipo] || resultado.tipo}</span>
+        <dt class="detalle-key">${t.lbl_operacion || 'Operación'}</dt>
+        <dd class="detalle-val">${opTxt}</dd>
       </div>
       <div class="detalle-row">
-        <span class="detalle-key">${t.lbl_cuenta || 'Cuenta'}</span>
-        <span class="detalle-val">${cuentaLabel[resultado.cuenta_tipo] || resultado.cuenta_tipo}</span>
+        <dt class="detalle-key">${t.lbl_cuenta || 'Cuenta'}</dt>
+        <dd class="detalle-val">${cuentaTxt}</dd>
       </div>
       <div class="detalle-row">
-        <span class="detalle-key">${t.lbl_monto || 'Monto'}</span>
-        <span class="detalle-val highlight">Bs. ${parseFloat(resultado.monto).toFixed(2)}</span>
+        <dt class="detalle-key">${t.lbl_monto || 'Monto'}</dt>
+        <dd class="detalle-val highlight">Bs. ${montoFmt}</dd>
       </div>
       <div class="detalle-row">
-        <span class="detalle-key">${t.nuevo_saldo || 'Nuevo saldo'}</span>
-        <span class="detalle-val highlight" style="color:#00c853;">
-          Bs. ${parseFloat(resultado.nuevo_saldo).toFixed(2)}
-        </span>
+        <dt class="detalle-key">${t.nuevo_saldo || 'Nuevo saldo'}</dt>
+        <dd class="detalle-val highlight" style="color:#00c853;">
+          Bs. ${nuevoSaldoFmt}
+        </dd>
       </div>
       <div class="detalle-row">
-        <span class="detalle-key">${t.lbl_fecha || 'Fecha'}</span>
-        <span class="detalle-val">${new Date().toLocaleString('es-BO')}</span>
+        <dt class="detalle-key">${t.lbl_fecha || 'Fecha'}</dt>
+        <dd class="detalle-val">${fechaTxt}</dd>
       </div>
     `;
 
-    // Textos de idioma
+    // Textos de idioma en botones
     document.getElementById('lbl-otra-op').textContent = t.otra_operacion || '¿Desea realizar otra operación?';
     document.getElementById('btn-si').textContent      = t.lbl_otra_op_si || 'Sí — Otra operación';
     document.getElementById('btn-no').textContent      = t.lbl_otra_op_no || 'No — Finalizar sesión';
 
+    // Sincronizar aria-label de botones con texto traducido
+    document.getElementById('btn-si').setAttribute('aria-label',
+      (t.lbl_otra_op_si || 'Sí, realizar otra operación') + ' — volver al menú'
+    );
+    document.getElementById('btn-no').setAttribute('aria-label',
+      (t.lbl_otra_op_no || 'No, finalizar sesión') + ' y salir'
+    );
+
+    // ── ACCIONES ─────────────────────────────────────────────
     function otraOperacion() {
       sessionStorage.removeItem('op_tipo');
       sessionStorage.removeItem('op_monto');
       sessionStorage.removeItem('op_resultado');
+      Voz.detenerHabla();
       salir('menu.html');
     }
 
     async function cerrarSesion() {
+      Voz.detenerHabla();
       try { await fetch(`${API}/logout.php`, { method: 'POST' }); } catch {}
       sessionStorage.clear();
       salir('index.html');
@@ -140,6 +199,21 @@
       document.querySelector('.op-wrapper').style.opacity    = '0';
       setTimeout(() => window.location.href = dest, 200);
     }
+
+    // ── VOZ ──────────────────────────────────────────────────
+    // Construye el resumen completo para que el lector lo lea de una vez
+    document.addEventListener('DOMContentLoaded', function () {
+      const resumenVoz = [
+        t.operacion_exitosa || 'Operación exitosa.',
+        `${t.lbl_operacion || 'Operación'}: ${opTxt}.`,
+        `${t.lbl_cuenta    || 'Cuenta'}: ${cuentaTxt}.`,
+        `${t.lbl_monto     || 'Monto'}: ${montoFmt} bolivianos.`,
+        `${t.nuevo_saldo   || 'Nuevo saldo'}: ${nuevoSaldoFmt} bolivianos.`,
+        t.otra_operacion   || '¿Desea realizar otra operación?'
+      ].join(' ');
+
+      Voz.iniciarVozPagina(resumenVoz);
+    });
   </script>
 </body>
 </html>

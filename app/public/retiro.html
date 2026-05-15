@@ -17,65 +17,118 @@
                               box-shadow: 0 6px 18px rgba(231,0,117,0.3); }
     .btn-confirm:not(:disabled):hover { box-shadow: 0 10px 24px rgba(231,0,117,0.4); }
     .monto-input-wrap:focus-within { border-color: rgba(231,0,117,0.5); }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0;
+      margin: -1px; overflow: hidden; clip: rect(0,0,0,0);
+      white-space: nowrap; border: 0;
+    }
   </style>
 </head>
 <body>
-  <div class="top-bar"></div>
+  <div class="top-bar" role="presentation" aria-hidden="true"></div>
 
-  <div class="op-wrapper">
+  <div class="op-wrapper"
+       role="main"
+       aria-label="Pantalla de retiro de efectivo">
 
     <!-- Header -->
-    <div class="op-header">
-      <button class="btn-back" onclick="volver()">←</button>
+    <header class="op-header" aria-label="Encabezado de operación">
+      <button class="btn-back"
+              aria-label="Volver al menú principal"
+              onclick="volver()">←</button>
       <div class="op-header-info">
-        <div class="op-header-title" id="titulo-pagina">Retiro</div>
-        <div class="op-header-sub" id="sub-pagina">Seleccione el monto</div>
+        <h1 class="op-header-title" id="titulo-pagina">Retiro</h1>
+        <p class="op-header-sub" id="sub-pagina">Seleccione el monto</p>
       </div>
-      <div class="op-header-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
-             stroke-linecap="round" stroke-linejoin="round">
+      <div class="op-header-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"
+             fill="none"
+             stroke-width="2"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             aria-hidden="true"
+             focusable="false">
           <rect x="2" y="6" width="20" height="14" rx="2"/>
           <path d="M16 12H8M12 9l-4 3 4 3"/>
         </svg>
       </div>
-    </div>
+    </header>
 
     <!-- Card principal -->
     <div class="op-card">
 
       <!-- Montos predefinidos -->
-      <div>
-        <div class="section-label" id="lbl-montos">Montos disponibles</div>
-        <div class="montos-grid">
-          <button class="monto-btn" onclick="elegirMonto(10)">
-            <span>10</span><span class="currency">Bs.</span>
+      <section aria-label="Montos predefinidos para retiro">
+        <div class="section-label" id="lbl-montos" aria-hidden="true">
+          Montos disponibles
+        </div>
+        <div class="montos-grid"
+             role="group"
+             aria-labelledby="lbl-montos">
+          <button class="monto-btn"
+                  aria-label="Retirar 10 bolivianos"
+                  aria-pressed="false"
+                  onclick="elegirMonto(10, this)">
+            <span aria-hidden="true">10</span>
+            <span class="currency" aria-hidden="true">Bs.</span>
           </button>
-          <button class="monto-btn" onclick="elegirMonto(20)">
-            <span>20</span><span class="currency">Bs.</span>
+          <button class="monto-btn"
+                  aria-label="Retirar 20 bolivianos"
+                  aria-pressed="false"
+                  onclick="elegirMonto(20, this)">
+            <span aria-hidden="true">20</span>
+            <span class="currency" aria-hidden="true">Bs.</span>
           </button>
-          <button class="monto-btn" onclick="elegirMonto(50)">
-            <span>50</span><span class="currency">Bs.</span>
+          <button class="monto-btn"
+                  aria-label="Retirar 50 bolivianos"
+                  aria-pressed="false"
+                  onclick="elegirMonto(50, this)">
+            <span aria-hidden="true">50</span>
+            <span class="currency" aria-hidden="true">Bs.</span>
           </button>
-          <button class="monto-btn" onclick="elegirMonto(100)">
-            <span>100</span><span class="currency">Bs.</span>
+          <button class="monto-btn"
+                  aria-label="Retirar 100 bolivianos"
+                  aria-pressed="false"
+                  onclick="elegirMonto(100, this)">
+            <span aria-hidden="true">100</span>
+            <span class="currency" aria-hidden="true">Bs.</span>
           </button>
-          <button class="monto-btn" onclick="elegirMonto(200)">
-            <span>200</span><span class="currency">Bs.</span>
+          <button class="monto-btn"
+                  aria-label="Retirar 200 bolivianos"
+                  aria-pressed="false"
+                  onclick="elegirMonto(200, this)">
+            <span aria-hidden="true">200</span>
+            <span class="currency" aria-hidden="true">Bs.</span>
           </button>
-          <button class="monto-btn" onclick="elegirMonto(500)">
-            <span>500</span><span class="currency">Bs.</span>
+          <button class="monto-btn"
+                  aria-label="Retirar 500 bolivianos"
+                  aria-pressed="false"
+                  onclick="elegirMonto(500, this)">
+            <span aria-hidden="true">500</span>
+            <span class="currency" aria-hidden="true">Bs.</span>
           </button>
-          <button class="monto-btn otro" id="btn-otro-monto" onclick="toggleOtroMonto()">
+          <button class="monto-btn otro"
+                  id="btn-otro-monto"
+                  aria-label="Ingresar otro monto personalizado"
+                  aria-expanded="false"
+                  aria-controls="monto-custom"
+                  onclick="toggleOtroMonto()">
             ✎ &nbsp; Otro monto
           </button>
         </div>
-      </div>
+      </section>
 
       <!-- Input monto personalizado -->
-      <div class="monto-custom" id="monto-custom">
-        <label id="lbl-otro">Ingrese el monto (Bs.)</label>
+      <div class="monto-custom"
+           id="monto-custom"
+           role="region"
+           aria-label="Campo para monto personalizado"
+           aria-hidden="true">
+        <label id="lbl-otro" for="monto-input">
+          Ingrese el monto (Bs.)
+        </label>
         <div class="monto-input-wrap">
-          <span class="monto-prefix">Bs.</span>
+          <span class="monto-prefix" aria-hidden="true">Bs.</span>
           <input
             type="number"
             class="monto-input"
@@ -83,34 +136,59 @@
             min="1"
             step="0.01"
             placeholder="0.00"
+            aria-label="Monto personalizado en bolivianos"
+            aria-describedby="monto-hint"
             oninput="actualizarDesdeInput()"
           >
         </div>
+        <span id="monto-hint" class="sr-only">
+          Ingrese el monto en bolivianos que desea retirar. Solo números.
+        </span>
       </div>
 
-      <div class="op-divider"></div>
+      <div class="op-divider" role="separator" aria-hidden="true"></div>
 
       <!-- Resumen del monto elegido -->
-      <div class="monto-resumen" id="monto-resumen">
-        <span class="monto-resumen-label" id="lbl-monto-sel">Monto seleccionado</span>
-        <span class="monto-resumen-valor" id="monto-resumen-val">Bs. 0.00</span>
+      <div class="monto-resumen"
+           id="monto-resumen"
+           role="status"
+           aria-live="polite"
+           aria-atomic="true"
+           aria-label="Monto seleccionado: 0 bolivianos">
+        <span class="monto-resumen-label" id="lbl-monto-sel" aria-hidden="true">
+          Monto seleccionado
+        </span>
+        <span class="monto-resumen-valor" id="monto-resumen-val" aria-hidden="true">
+          Bs. 0.00
+        </span>
       </div>
 
       <!-- Mensaje error -->
-      <div class="op-msg error" id="op-msg">
-        <span>●</span><span id="msg-text"></span>
+      <div class="op-msg error"
+           id="op-msg"
+           role="alert"
+           aria-live="assertive"
+           aria-atomic="true">
+        <span aria-hidden="true">●</span>
+        <span id="msg-text"></span>
       </div>
 
       <!-- Botón confirmar -->
-      <button class="btn-confirm" id="btn-confirmar" disabled onclick="confirmar()">
+      <button class="btn-confirm"
+              id="btn-confirmar"
+              disabled
+              aria-label="Continuar con el retiro"
+              aria-disabled="true"
+              onclick="confirmar()">
         <span id="btn-text">Continuar</span>
       </button>
 
     </div><!-- /op-card -->
   </div><!-- /op-wrapper -->
 
-  <div class="bottom-bar"></div>
+  <div class="bottom-bar" role="presentation" aria-hidden="true"></div>
 
+  <script src="assets/js/voz.js"></script>
   <script>
     const t       = JSON.parse(sessionStorage.getItem('translations') || '{}');
     const usuario = JSON.parse(sessionStorage.getItem('usuario') || '{}');
@@ -128,24 +206,60 @@
     document.getElementById('btn-text').textContent       = t.continuar_btn2       || 'Continuar';
     document.getElementById('btn-otro-monto').innerHTML   = '✎ &nbsp;' + (t.otro_monto_btn || 'Otro monto');
 
-    function elegirMonto(m) {
+    // ── MONTO PREDEFINIDO ────────────────────────────────────
+    // Se añade `el` como segundo argumento para no depender de `event.currentTarget`
+    // (más robusto y compatible con el llamado desde voz)
+    function elegirMonto(m, el) {
       montoElegido = m;
-      document.querySelectorAll('.monto-btn:not(.otro)').forEach(b => b.classList.remove('selected'));
-      event.currentTarget.classList.add('selected');
-      document.getElementById('monto-custom').classList.remove('visible');
+
+      // Actualiza visual y aria-pressed en todos los botones de monto fijo
+      document.querySelectorAll('.monto-btn:not(.otro)').forEach(b => {
+        b.classList.remove('selected');
+        b.setAttribute('aria-pressed', 'false');
+      });
+
+      if (el) {
+        el.classList.add('selected');
+        el.setAttribute('aria-pressed', 'true');
+      }
+
+      // Oculta campo personalizado
+      const custom = document.getElementById('monto-custom');
+      custom.classList.remove('visible');
+      custom.setAttribute('aria-hidden', 'true');
       document.getElementById('monto-input').value = '';
+
+      // Resetea botón "Otro monto"
+      document.getElementById('btn-otro-monto').setAttribute('aria-expanded', 'false');
       otroVisible = false;
+
       actualizarResumen();
+
+      // Voz: confirma la selección
+      Voz.hablar(`${t.monto_seleccionado || 'Monto seleccionado'}: ${m} bolivianos.`);
     }
 
+    // ── MONTO PERSONALIZADO ──────────────────────────────────
     function toggleOtroMonto() {
       otroVisible = !otroVisible;
-      document.getElementById('monto-custom').classList.toggle('visible', otroVisible);
-      document.querySelectorAll('.monto-btn:not(.otro)').forEach(b => b.classList.remove('selected'));
+
+      const custom  = document.getElementById('monto-custom');
+      const btnOtro = document.getElementById('btn-otro-monto');
+
+      custom.classList.toggle('visible', otroVisible);
+      custom.setAttribute('aria-hidden', String(!otroVisible));
+      btnOtro.setAttribute('aria-expanded', String(otroVisible));
+
+      document.querySelectorAll('.monto-btn:not(.otro)').forEach(b => {
+        b.classList.remove('selected');
+        b.setAttribute('aria-pressed', 'false');
+      });
+
       if (otroVisible) {
         montoElegido = 0;
         actualizarResumen();
         document.getElementById('monto-input').focus();
+        Voz.hablar(t.ingrese_monto_lbl || 'Ingrese el monto en bolivianos que desea retirar.');
       }
     }
 
@@ -155,26 +269,39 @@
       actualizarResumen();
     }
 
+    // ── RESUMEN ──────────────────────────────────────────────
     function actualizarResumen() {
       const resumen = document.getElementById('monto-resumen');
       const valEl   = document.getElementById('monto-resumen-val');
       const btn     = document.getElementById('btn-confirmar');
 
       if (montoElegido > 0) {
+        const textoMonto = 'Bs. ' + montoElegido.toFixed(2);
         resumen.classList.add('visible');
-        valEl.textContent = 'Bs. ' + montoElegido.toFixed(2);
+        valEl.textContent = textoMonto;
+        resumen.setAttribute(
+          'aria-label',
+          `${t.monto_seleccionado || 'Monto seleccionado'}: ${montoElegido.toFixed(2)} bolivianos`
+        );
         btn.disabled = false;
+        btn.removeAttribute('aria-disabled');
+        btn.setAttribute('aria-label', `Continuar con el retiro de ${montoElegido.toFixed(2)} bolivianos`);
       } else {
         resumen.classList.remove('visible');
+        resumen.setAttribute('aria-label', `${t.monto_seleccionado || 'Monto seleccionado'}: ninguno`);
         btn.disabled = true;
+        btn.setAttribute('aria-disabled', 'true');
+        btn.setAttribute('aria-label', 'Continuar con el retiro');
       }
       ocultarMsg();
     }
 
+    // ── CONFIRMAR ────────────────────────────────────────────
     function confirmar() {
       if (montoElegido <= 0) return;
       sessionStorage.setItem('op_tipo',  'retiro');
       sessionStorage.setItem('op_monto', montoElegido);
+      Voz.detenerHabla();
       salir('cuenta.html');
     }
 
@@ -194,6 +321,14 @@
       document.querySelector('.op-wrapper').style.opacity    = '0';
       setTimeout(() => window.location.href = dest, 200);
     }
+
+    // ── VOZ ──────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', function () {
+      Voz.iniciarVozPagina(
+        t.retiro_titulo        || 'Retiro de efectivo.',
+        t.seleccione_monto_sub || 'Seleccione el monto que desea retirar o ingrese uno personalizado.'
+      );
+    });
   </script>
 </body>
 </html>

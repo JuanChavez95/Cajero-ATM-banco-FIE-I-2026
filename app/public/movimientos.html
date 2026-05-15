@@ -29,7 +29,6 @@
 
     .mov-item:hover { background: #161616; }
 
-    /* Ícono del tipo */
     .mov-icon {
       width: 42px; height: 42px;
       border-radius: 12px;
@@ -45,7 +44,6 @@
     .mov-icon.transferencia     { background: rgba(255,165,0,0.10); }
     .mov-icon.transferencia svg { stroke: #ffa500; }
 
-    /* Info central */
     .mov-info { flex: 1; min-width: 0; }
 
     .mov-tipo {
@@ -76,7 +74,6 @@
       margin-top: 3px;
     }
 
-    /* Monto derecha */
     .mov-monto-col {
       display: flex;
       flex-direction: column;
@@ -91,8 +88,8 @@
       letter-spacing: -0.3px;
     }
 
-    .mov-monto.retiro       { color: #e70075; }
-    .mov-monto.deposito     { color: #0094d6; }
+    .mov-monto.retiro        { color: #e70075; }
+    .mov-monto.deposito      { color: #0094d6; }
     .mov-monto.transferencia { color: #ffa500; }
 
     .mov-saldo-post {
@@ -102,7 +99,6 @@
       letter-spacing: 0.5px;
     }
 
-    /* Signo +/- */
     .mov-signo { font-size: 0.75rem; font-weight: 700; }
 
     /* ── Filtros ── */
@@ -184,9 +180,9 @@
       letter-spacing: -0.3px;
     }
 
-    .resumen-valor.retiro       { color: #e70075; }
-    .resumen-valor.deposito     { color: #0094d6; }
-    .resumen-valor.total        { color: rgba(255,255,255,0.7); }
+    .resumen-valor.retiro   { color: #e70075; }
+    .resumen-valor.deposito { color: #0094d6; }
+    .resumen-valor.total    { color: rgba(255,255,255,0.7); }
 
     .op-header-icon     { background: rgba(160,90,255,0.12); }
     .op-header-icon svg { stroke: #a05aff; }
@@ -194,85 +190,138 @@
   </style>
 </head>
 <body>
-  <div class="top-bar"></div>
+  <div class="top-bar" role="presentation" aria-hidden="true"></div>
 
-  <div class="op-wrapper">
+  <div class="op-wrapper"
+       role="main"
+       aria-label="Pantalla de últimos movimientos">
 
     <!-- Header -->
-    <div class="op-header">
-      <button class="btn-back" onclick="volver()">←</button>
+    <header class="op-header" aria-label="Encabezado de operación">
+      <button class="btn-back"
+              aria-label="Volver al menú principal"
+              onclick="volver()">←</button>
       <div class="op-header-info">
-        <div class="op-header-title" id="titulo-pagina">Recent Transactions</div>
-        <div class="op-header-sub" id="sub-pagina">Transaction history</div>
+        <h1 class="op-header-title" id="titulo-pagina">Recent Transactions</h1>
+        <p  class="op-header-sub"   id="sub-pagina">Transaction history</p>
       </div>
-      <div class="op-header-icon">
+      <div class="op-header-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
-             stroke-linecap="round" stroke-linejoin="round">
+             stroke-linecap="round" stroke-linejoin="round"
+             aria-hidden="true" focusable="false">
           <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
           <rect x="9" y="3" width="6" height="4" rx="1"/>
           <path d="M9 12h6M9 16h4"/>
         </svg>
       </div>
-    </div>
+    </header>
 
     <!-- Resumen rápido -->
-    <div class="resumen-grid" id="resumen-grid" style="display:none;">
-      <div class="resumen-item">
-        <span class="resumen-label" id="lbl-retiros">Withdrawals</span>
-        <span class="resumen-valor retiro" id="total-retiros">—</span>
+    <section class="resumen-grid"
+             id="resumen-grid"
+             aria-label="Resumen de movimientos"
+             style="display:none;">
+      <div class="resumen-item" aria-label="Total de retiros">
+        <span class="resumen-label" id="lbl-retiros" aria-hidden="true">Withdrawals</span>
+        <span class="resumen-valor retiro"   id="total-retiros"   aria-live="polite">—</span>
       </div>
-      <div class="resumen-item">
-        <span class="resumen-label" id="lbl-depositos">Deposits</span>
-        <span class="resumen-valor deposito" id="total-depositos">—</span>
+      <div class="resumen-item" aria-label="Total de depósitos">
+        <span class="resumen-label" id="lbl-depositos" aria-hidden="true">Deposits</span>
+        <span class="resumen-valor deposito" id="total-depositos" aria-live="polite">—</span>
       </div>
-      <div class="resumen-item">
-        <span class="resumen-label" id="lbl-total-ops">Total ops.</span>
-        <span class="resumen-valor total" id="total-ops">—</span>
+      <div class="resumen-item" aria-label="Total de operaciones">
+        <span class="resumen-label" id="lbl-total-ops" aria-hidden="true">Total ops.</span>
+        <span class="resumen-valor total"    id="total-ops"       aria-live="polite">—</span>
       </div>
-    </div>
+    </section>
 
     <!-- Filtros -->
-    <div class="filtros" id="filtros" style="display:none;">
-      <button class="filtro-btn active-todos" data-filtro="todos"         id="fbtn-todos"    onclick="filtrar('todos')">All</button>
-      <button class="filtro-btn"              data-filtro="retiro"        id="fbtn-retiro"   onclick="filtrar('retiro')">Withdrawals</button>
-      <button class="filtro-btn"              data-filtro="deposito"      id="fbtn-deposito" onclick="filtrar('deposito')">Deposits</button>
-      <button class="filtro-btn"              data-filtro="transferencia" id="fbtn-transf"   onclick="filtrar('transferencia')">Transfer</button>
+    <div class="filtros"
+         id="filtros"
+         role="group"
+         aria-label="Filtrar movimientos por tipo"
+         style="display:none;">
+      <button class="filtro-btn active-todos"
+              data-filtro="todos"
+              id="fbtn-todos"
+              aria-pressed="true"
+              aria-label="Mostrar todos los movimientos"
+              onclick="filtrar('todos')">All</button>
+      <button class="filtro-btn"
+              data-filtro="retiro"
+              id="fbtn-retiro"
+              aria-pressed="false"
+              aria-label="Mostrar solo retiros"
+              onclick="filtrar('retiro')">Withdrawals</button>
+      <button class="filtro-btn"
+              data-filtro="deposito"
+              id="fbtn-deposito"
+              aria-pressed="false"
+              aria-label="Mostrar solo depósitos"
+              onclick="filtrar('deposito')">Deposits</button>
+      <button class="filtro-btn"
+              data-filtro="transferencia"
+              id="fbtn-transf"
+              aria-pressed="false"
+              aria-label="Mostrar solo transferencias"
+              onclick="filtrar('transferencia')">Transfer</button>
     </div>
 
-    <!-- Lista -->
-    <div class="mov-list" id="mov-list">
-      <div class="op-msg info visible">
-        <span class="spinner"></span>
+    <!-- Lista de movimientos -->
+    <div class="mov-list"
+         id="mov-list"
+         role="list"
+         aria-label="Lista de movimientos"
+         aria-live="polite"
+         aria-atomic="false">
+      <div class="op-msg info visible" role="status" aria-live="polite">
+        <span class="spinner" aria-hidden="true"></span>
         <span id="txt-cargando">Loading transactions...</span>
       </div>
     </div>
 
     <!-- Error -->
-    <div class="op-msg error" id="op-msg" style="margin-top:12px; width:100%;">
-      <span>●</span><span id="msg-text"></span>
+    <div class="op-msg error"
+         id="op-msg"
+         role="alert"
+         aria-live="assertive"
+         aria-atomic="true"
+         style="margin-top:12px; width:100%;">
+      <span aria-hidden="true">●</span>
+      <span id="msg-text"></span>
     </div>
 
     <!-- Botones finales -->
     <div style="width:100%; margin-top:22px; display:flex; flex-direction:column; gap:10px;
-                animation: fadeUp 0.5s 0.35s ease both;">
-      <button class="btn-otra-op si" onclick="volver()" id="btn-otra">
+                animation: fadeUp 0.5s 0.35s ease both;"
+         role="group"
+         aria-label="Opciones tras consultar movimientos">
+      <button class="btn-otra-op si"
+              id="btn-otra"
+              aria-label="Realizar otra operación — volver al menú"
+              onclick="volver()">
         Perform another operation
       </button>
-      <button class="btn-otra-op no" onclick="cerrarSesion()" id="btn-finalizar">
+      <button class="btn-otra-op no"
+              id="btn-finalizar"
+              aria-label="Finalizar sesión y salir"
+              onclick="cerrarSesion()">
         End session
       </button>
     </div>
 
-  </div>
-  <div class="bottom-bar"></div>
+  </div><!-- /op-wrapper -->
 
+  <div class="bottom-bar" role="presentation" aria-hidden="true"></div>
+
+  <script src="assets/js/voz.js"></script>
   <script>
     const API     = '/app/api';
     const t       = JSON.parse(sessionStorage.getItem('translations') || '{}');
     const usuario = JSON.parse(sessionStorage.getItem('usuario') || '{}');
     if (!usuario.id) window.location.href = 'index.html';
 
-    let todosLosMov = [];
+    let todosLosMov  = [];
     let filtroActual = 'todos';
 
     // Aplicar idioma
@@ -289,17 +338,31 @@
     document.getElementById('btn-otra').textContent       = t.realizar_otra_op     || 'Perform another operation';
     document.getElementById('btn-finalizar').textContent  = t.finalizar_sesion     || 'End session';
 
-    // Íconos SVG por tipo
+    // Sincronizar aria-label de botones con traducción activa
+    document.getElementById('fbtn-todos').setAttribute('aria-label',
+      `${t.filtro_todos || 'Todos'}: mostrar todos los movimientos`);
+    document.getElementById('fbtn-retiro').setAttribute('aria-label',
+      `${t.filtro_retiros || 'Retiros'}: mostrar solo retiros`);
+    document.getElementById('fbtn-deposito').setAttribute('aria-label',
+      `${t.filtro_depositos || 'Depósitos'}: mostrar solo depósitos`);
+    document.getElementById('fbtn-transf').setAttribute('aria-label',
+      `${t.filtro_transf || 'Transferencias'}: mostrar solo transferencias`);
+    document.getElementById('btn-otra').setAttribute('aria-label',
+      (t.realizar_otra_op || 'Perform another operation') + ' — volver al menú');
+    document.getElementById('btn-finalizar').setAttribute('aria-label',
+      (t.finalizar_sesion || 'End session') + ' y salir');
+
+    // SVGs decorativos por tipo (todos con aria-hidden)
     const svgIconos = {
-      retiro: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      retiro: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
         <rect x="2" y="6" width="20" height="14" rx="2"/>
         <path d="M16 12H8M12 9l-4 3 4 3"/>
       </svg>`,
-      deposito: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      deposito: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
         <rect x="2" y="6" width="20" height="14" rx="2"/>
         <path d="M8 12h8M12 9l4 3-4 3"/>
       </svg>`,
-      transferencia: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      transferencia: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
         <path d="M5 12h14M15 7l5 5-5 5"/>
         <path d="M19 12H5M9 17l-5-5 5-5"/>
       </svg>`
@@ -316,102 +379,144 @@
       corriente: t.cuenta_corriente || 'Checking Acc.'
     };
 
-    const signo = { retiro: '−', deposito: '+', transferencia: '⇄' };
+    // Signo verbal para voz (±) y visual
+    const signoVisual = { retiro: '−', deposito: '+', transferencia: '⇄' };
+    const signoVoz    = {
+      retiro:        t.signo_retiro  || 'menos',
+      deposito:      t.signo_dep     || 'más',
+      transferencia: t.signo_transf  || ''
+    };
 
-    // ── Cargar movimientos ────────────────────────────────────
+    // ── CARGAR MOVIMIENTOS ───────────────────────────────────
     async function cargarMovimientos() {
       try {
         const res  = await fetch(`${API}/transactions.php`);
         const data = await res.json();
-
         if (!res.ok) throw new Error(data.error || 'Error');
 
         todosLosMov = data.movimientos || [];
         calcularResumen();
         renderLista(todosLosMov);
 
-        // Mostrar filtros y resumen si hay datos
         if (todosLosMov.length > 0) {
           document.getElementById('resumen-grid').style.display = 'grid';
           document.getElementById('filtros').style.display      = 'flex';
+        }
+
+        // Voz: resumen al cargar
+        const totalOps = todosLosMov.length;
+        if (totalOps === 0) {
+          Voz.hablar(t.sin_movimientos || 'No hay movimientos registrados.');
+        } else {
+          const totalRet = todosLosMov.filter(m => m.tipo === 'retiro').reduce((s, m) => s + parseFloat(m.monto), 0);
+          const totalDep = todosLosMov.filter(m => m.tipo === 'deposito').reduce((s, m) => s + parseFloat(m.monto), 0);
+          Voz.hablar(
+            `${t.movimientos_titulo || 'Movimientos'}. ` +
+            `${totalOps} ${totalOps === 1 ? 'operación' : 'operaciones'}. ` +
+            `${t.lbl_retiros || 'Retiros'}: ${totalRet.toFixed(2)} bolivianos. ` +
+            `${t.lbl_depositos || 'Depósitos'}: ${totalDep.toFixed(2)} bolivianos.`
+          );
         }
 
       } catch (err) {
         document.getElementById('mov-list').innerHTML = '';
         document.getElementById('msg-text').textContent = err.message || 'Error al cargar';
         document.getElementById('op-msg').classList.add('visible');
+        Voz.hablar(err.message || 'Error al cargar los movimientos.');
       }
     }
 
-    // ── Calcular totales para el resumen ──────────────────────
+    // ── CALCULAR RESUMEN ─────────────────────────────────────
     function calcularResumen() {
       const totalRetiros   = todosLosMov
         .filter(m => m.tipo === 'retiro')
         .reduce((s, m) => s + parseFloat(m.monto), 0);
-
       const totalDepositos = todosLosMov
         .filter(m => m.tipo === 'deposito')
         .reduce((s, m) => s + parseFloat(m.monto), 0);
 
-      document.getElementById('total-retiros').textContent   = 'Bs. ' + totalRetiros.toFixed(2);
-      document.getElementById('total-depositos').textContent = 'Bs. ' + totalDepositos.toFixed(2);
-      document.getElementById('total-ops').textContent       = todosLosMov.length;
+      const elRetiros   = document.getElementById('total-retiros');
+      const elDepositos = document.getElementById('total-depositos');
+      const elOps       = document.getElementById('total-ops');
+
+      elRetiros.textContent   = 'Bs. ' + totalRetiros.toFixed(2);
+      elDepositos.textContent = 'Bs. ' + totalDepositos.toFixed(2);
+      elOps.textContent       = todosLosMov.length;
+
+      // aria-label en cada celda de resumen para contexto completo
+      elRetiros.closest('.resumen-item').setAttribute(
+        'aria-label', `${t.lbl_retiros || 'Retiros'}: ${totalRetiros.toFixed(2)} bolivianos`
+      );
+      elDepositos.closest('.resumen-item').setAttribute(
+        'aria-label', `${t.lbl_depositos || 'Depósitos'}: ${totalDepositos.toFixed(2)} bolivianos`
+      );
+      elOps.closest('.resumen-item').setAttribute(
+        'aria-label', `${t.lbl_total_ops || 'Total operaciones'}: ${todosLosMov.length}`
+      );
     }
 
-    // ── Renderizar lista ──────────────────────────────────────
+    // ── RENDERIZAR LISTA ─────────────────────────────────────
     function renderLista(movs) {
       const lista = document.getElementById('mov-list');
 
       if (!movs.length) {
-        lista.innerHTML = `<div class="mov-empty">${t.sin_movimientos || 'No transactions recorded'}</div>`;
+        lista.innerHTML = `<div class="mov-empty" role="status">${t.sin_movimientos || 'No transactions recorded'}</div>`;
         return;
       }
 
       lista.innerHTML = movs.map(m => {
-        const fecha = new Date(m.fecha);
+        const fecha    = new Date(m.fecha);
         const fechaStr = fecha.toLocaleDateString('es-BO', {
           day: '2-digit', month: 'short', year: 'numeric'
         });
-        const horaStr = fecha.toLocaleTimeString('es-BO', {
+        const horaStr  = fecha.toLocaleTimeString('es-BO', {
           hour: '2-digit', minute: '2-digit'
         });
+        const numCorta  = m.numero_cuenta ? '**** ' + m.numero_cuenta.slice(-4) : '****';
+        const montoFmt  = parseFloat(m.monto).toFixed(2);
+        const saldoFmt  = parseFloat(m.saldo_posterior).toFixed(2);
+        const tipoTxt   = tipoLabel[m.tipo] || m.tipo;
+        const cuentaTxt = cuentaLabel[m.cuenta_tipo] || '';
+        const saldoPost = t.lbl_saldo_post || 'Balance:';
 
-        const numCorta = m.numero_cuenta
-          ? '**** ' + m.numero_cuenta.slice(-4)
-          : '****';
+        // Texto completo para el lector de pantalla
+        const ariaItem = `${tipoTxt}. ${cuentaTxt} ${numCorta}. ` +
+          `${signoVoz[m.tipo] || ''} ${montoFmt} bolivianos. ` +
+          `${saldoPost} ${saldoFmt} bolivianos. ` +
+          `${fechaStr} ${horaStr}.`;
 
         return `
-          <div class="mov-item">
-            <div class="mov-icon ${m.tipo}">
+          <article class="mov-item" role="listitem" aria-label="${ariaItem}">
+            <div class="mov-icon ${m.tipo}" aria-hidden="true">
               ${svgIconos[m.tipo] || svgIconos.deposito}
             </div>
-            <div class="mov-info">
-              <div class="mov-tipo">${tipoLabel[m.tipo] || m.tipo}</div>
-              <div class="mov-cuenta">${cuentaLabel[m.cuenta_tipo] || ''} ${numCorta}</div>
+            <div class="mov-info" aria-hidden="true">
+              <div class="mov-tipo">${tipoTxt}</div>
+              <div class="mov-cuenta">${cuentaTxt} ${numCorta}</div>
               <div class="mov-fecha">${fechaStr} · ${horaStr}</div>
             </div>
-            <div class="mov-monto-col">
+            <div class="mov-monto-col" aria-hidden="true">
               <div class="mov-monto ${m.tipo}">
-                <span class="mov-signo">${signo[m.tipo] || ''}</span>
-                Bs. ${parseFloat(m.monto).toFixed(2)}
+                <span class="mov-signo">${signoVisual[m.tipo] || ''}</span>
+                Bs. ${montoFmt}
               </div>
               <div class="mov-saldo-post">
-                ${t.lbl_saldo_post || 'Balance:'} Bs. ${parseFloat(m.saldo_posterior).toFixed(2)}
+                ${saldoPost} Bs. ${saldoFmt}
               </div>
             </div>
-          </div>
-        `;
+          </article>`;
       }).join('');
     }
 
-    // ── Filtrar ───────────────────────────────────────────────
+    // ── FILTRAR ──────────────────────────────────────────────
     function filtrar(tipo) {
       filtroActual = tipo;
 
-      // Actualizar botones
+      // Actualiza clases visuales y aria-pressed en todos los filtros
       document.querySelectorAll('.filtro-btn').forEach(b => {
-        b.className = 'filtro-btn';
-        if (b.dataset.filtro === tipo) b.classList.add(`active-${tipo}`);
+        const esteActivo = b.dataset.filtro === tipo;
+        b.className = 'filtro-btn' + (esteActivo ? ` active-${tipo}` : '');
+        b.setAttribute('aria-pressed', esteActivo ? 'true' : 'false');
       });
 
       const filtrados = tipo === 'todos'
@@ -419,22 +524,40 @@
         : todosLosMov.filter(m => m.tipo === tipo);
 
       renderLista(filtrados);
+
+      // Voz: anuncia cuántos resultados hay tras el filtro
+      const tipoVoz = tipo === 'todos'
+        ? (t.filtro_todos || 'Todos')
+        : (tipoLabel[tipo] || tipo);
+      Voz.hablar(
+        `${tipoVoz}: ${filtrados.length} ${filtrados.length === 1 ? 'movimiento' : 'movimientos'}.`
+      );
     }
 
-    // ── Navegación ────────────────────────────────────────────
+    // ── NAVEGACIÓN ───────────────────────────────────────────
     function volver() { salir('menu.html'); }
 
     async function cerrarSesion() {
+      Voz.detenerHabla();
       try { await fetch(`${API}/logout.php`, { method: 'POST' }); } catch {}
       sessionStorage.clear();
       salir('index.html');
     }
 
     function salir(dest) {
+      Voz.detenerHabla();
       document.querySelector('.op-wrapper').style.transition = 'opacity 0.2s ease';
       document.querySelector('.op-wrapper').style.opacity    = '0';
       setTimeout(() => window.location.href = dest, 200);
     }
+
+    // ── VOZ ──────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', function () {
+      Voz.iniciarVozPagina(
+        t.movimientos_titulo   || 'Últimos movimientos.',
+        t.cargando_movimientos || 'Cargando su historial de transacciones, por favor espere.'
+      );
+    });
 
     cargarMovimientos();
   </script>

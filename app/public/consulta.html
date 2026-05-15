@@ -11,49 +11,83 @@
   </style>
 </head>
 <body>
-  <div class="top-bar"></div>
+  <div class="top-bar" role="presentation" aria-hidden="true"></div>
 
-  <div class="op-wrapper">
+  <div class="op-wrapper"
+       role="main"
+       aria-label="Pantalla de consulta de saldo">
 
-    <div class="op-header">
-      <button class="btn-back" onclick="volver()">←</button>
+    <!-- Header -->
+    <header class="op-header" aria-label="Encabezado de operación">
+      <button class="btn-back"
+              aria-label="Volver al menú principal"
+              onclick="volver()">←</button>
       <div class="op-header-info">
-        <div class="op-header-title" id="titulo-pagina">Consulta de Saldo</div>
-        <div class="op-header-sub" id="sub-pagina">Sus cuentas activas</div>
+        <h1 class="op-header-title" id="titulo-pagina">Consulta de Saldo</h1>
+        <p  class="op-header-sub"   id="sub-pagina">Sus cuentas activas</p>
       </div>
-      <div class="op-header-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
-             stroke-linecap="round" stroke-linejoin="round">
+      <div class="op-header-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"
+             fill="none"
+             stroke-width="2"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             aria-hidden="true"
+             focusable="false">
           <circle cx="12" cy="12" r="9"/>
           <path d="M12 8v4l3 3"/>
         </svg>
       </div>
-    </div>
+    </header>
 
-    <div class="saldo-list" id="saldo-list">
-      <div class="op-msg info visible">
-        <span class="spinner"></span>
+    <!-- Lista de saldos -->
+    <div class="saldo-list"
+         id="saldo-list"
+         role="region"
+         aria-label="Saldos de sus cuentas"
+         aria-live="polite"
+         aria-atomic="false">
+      <div class="op-msg info visible" role="status" aria-live="polite">
+        <span class="spinner" aria-hidden="true"></span>
         <span id="txt-consultando">Consultando saldos...</span>
       </div>
     </div>
 
-    <div class="op-msg error" id="op-msg" style="margin-top:12px; width:100%;">
-      <span>●</span><span id="msg-text"></span>
+    <!-- Mensaje de error -->
+    <div class="op-msg error"
+         id="op-msg"
+         role="alert"
+         aria-live="assertive"
+         aria-atomic="true"
+         style="margin-top:12px; width:100%;">
+      <span aria-hidden="true">●</span>
+      <span id="msg-text"></span>
     </div>
 
+    <!-- Acciones -->
     <div style="width:100%; margin-top:20px; display:flex; flex-direction:column; gap:10px;
-                animation: fadeUp 0.5s 0.3s ease both; opacity:0; animation-fill-mode:both;">
-      <button class="btn-otra-op si" onclick="salir('menu.html')" id="btn-otra">
+                animation: fadeUp 0.5s 0.3s ease both; opacity:0; animation-fill-mode:both;"
+         role="group"
+         aria-label="Opciones tras la consulta">
+      <button class="btn-otra-op si"
+              id="btn-otra"
+              aria-label="Realizar otra operación — volver al menú"
+              onclick="salir('menu.html')">
         Realizar otra operación
       </button>
-      <button class="btn-otra-op no" onclick="cerrarSesion()" id="btn-finalizar">
+      <button class="btn-otra-op no"
+              id="btn-finalizar"
+              aria-label="Finalizar sesión y salir"
+              onclick="cerrarSesion()">
         Finalizar sesión
       </button>
     </div>
 
-  </div>
-  <div class="bottom-bar"></div>
+  </div><!-- /op-wrapper -->
 
+  <div class="bottom-bar" role="presentation" aria-hidden="true"></div>
+
+  <script src="assets/js/voz.js"></script>
   <script>
     const API     = '/app/api';
     const t       = JSON.parse(sessionStorage.getItem('translations') || '{}');
@@ -61,61 +95,98 @@
     if (!usuario.id) window.location.href = 'index.html';
 
     // Aplicar idioma
-    document.getElementById('titulo-pagina').textContent  = t.consulta_titulo   || 'Consulta de Saldo';
-    document.getElementById('sub-pagina').textContent     = t.cuentas_activas   || 'Sus cuentas activas';
-    document.getElementById('txt-consultando').textContent= t.consultando       || 'Consultando saldos...';
-    document.getElementById('btn-otra').textContent       = t.realizar_otra_op  || 'Realizar otra operación';
-    document.getElementById('btn-finalizar').textContent  = t.finalizar_sesion  || 'Finalizar sesión';
+    document.getElementById('titulo-pagina').textContent   = t.consulta_titulo  || 'Consulta de Saldo';
+    document.getElementById('sub-pagina').textContent      = t.cuentas_activas  || 'Sus cuentas activas';
+    document.getElementById('txt-consultando').textContent = t.consultando      || 'Consultando saldos...';
+    document.getElementById('btn-otra').textContent        = t.realizar_otra_op || 'Realizar otra operación';
+    document.getElementById('btn-finalizar').textContent   = t.finalizar_sesion || 'Finalizar sesión';
 
+    // Sincronizar aria-label de botones con traducción activa
+    document.getElementById('btn-otra').setAttribute('aria-label',
+      (t.realizar_otra_op || 'Realizar otra operación') + ' — volver al menú'
+    );
+    document.getElementById('btn-finalizar').setAttribute('aria-label',
+      (t.finalizar_sesion || 'Finalizar sesión') + ' y salir'
+    );
+
+    // SVGs de ícono por tipo de cuenta (aria-hidden: son decorativos)
     const iconos = {
-      ahorros: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      ahorros: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round"
+          aria-hidden="true" focusable="false">
         <rect x="2" y="5" width="20" height="14" rx="2"/>
         <circle cx="12" cy="12" r="3"/>
       </svg>`,
-      corriente: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      corriente: `<svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round"
+          aria-hidden="true" focusable="false">
         <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
         <polyline points="9 22 9 12 15 12 15 22"/>
       </svg>`
     };
 
+    // ── CARGAR SALDOS ────────────────────────────────────────
     async function cargarSaldos() {
       try {
         const res  = await fetch(`${API}/balance.php`);
         const data = await res.json();
-
         if (!res.ok) throw new Error(data.error || 'Error');
 
         const lista = document.getElementById('saldo-list');
 
         if (!data.cuentas || data.cuentas.length === 0) {
-          lista.innerHTML = `<div class="op-msg info visible"><span>${t.sin_cuentas || 'Sin cuentas activas'}</span></div>`;
+          const msgSin = t.sin_cuentas || 'Sin cuentas activas';
+          lista.innerHTML = `<div class="op-msg info visible" role="status"><span>${msgSin}</span></div>`;
+          Voz.hablar(msgSin);
           return;
         }
 
-        lista.innerHTML = data.cuentas.map(c => `
-          <div class="saldo-item">
-            <div class="saldo-item-left">
-              <div class="saldo-item-icon">
-                ${iconos[c.tipo] || iconos.ahorros}
+        // Cada cuenta se renderiza como un artículo con aria-label completo
+        lista.innerHTML = data.cuentas.map(c => {
+          const tipoTxt  = c.tipo === 'ahorros'
+            ? (t.cuenta_ahorros   || 'Cuenta Ahorros')
+            : (t.cuenta_corriente || 'Cuenta Corriente');
+          const numFmt   = formatearNumCuenta(c.numero_cuenta);
+          const saldoFmt = parseFloat(c.saldo).toFixed(2);
+          const dispTxt  = t.saldo_disponible || 'Disponible';
+
+          return `
+            <article class="saldo-item"
+                     aria-label="${tipoTxt}, ${numFmt}. ${dispTxt}: ${saldoFmt} bolivianos.">
+              <div class="saldo-item-left">
+                <div class="saldo-item-icon" aria-hidden="true">
+                  ${iconos[c.tipo] || iconos.ahorros}
+                </div>
+                <div>
+                  <div class="saldo-item-tipo" aria-hidden="true">${tipoTxt}</div>
+                  <div class="saldo-item-num"  aria-hidden="true">${numFmt}</div>
+                </div>
               </div>
-              <div>
-                <div class="saldo-item-tipo">${c.tipo === 'ahorros'
-                  ? (t.cuenta_ahorros   || 'Cuenta Ahorros')
-                  : (t.cuenta_corriente || 'Cuenta Corriente')}</div>
-                <div class="saldo-item-num">${formatearNumCuenta(c.numero_cuenta)}</div>
+              <div style="text-align:right;" aria-hidden="true">
+                <div class="saldo-item-monto">Bs. ${saldoFmt}</div>
+                <div class="saldo-item-bs">${dispTxt}</div>
               </div>
-            </div>
-            <div style="text-align:right;">
-              <div class="saldo-item-monto">Bs. ${parseFloat(c.saldo).toFixed(2)}</div>
-              <div class="saldo-item-bs">${t.saldo_disponible || 'Disponible'}</div>
-            </div>
-          </div>
-        `).join('');
+            </article>`;
+        }).join('');
+
+        // Voz: lee el resumen de todas las cuentas de una vez
+        const resumenVoz = data.cuentas.map(c => {
+          const tipoTxt  = c.tipo === 'ahorros'
+            ? (t.cuenta_ahorros   || 'Cuenta Ahorros')
+            : (t.cuenta_corriente || 'Cuenta Corriente');
+          const saldoFmt = parseFloat(c.saldo).toFixed(2);
+          return `${tipoTxt}: ${saldoFmt} bolivianos.`;
+        }).join(' ');
+
+        Voz.hablar(
+          `${t.consulta_titulo || 'Consulta de saldo'}. ${resumenVoz} ${t.realizar_otra_op || '¿Desea realizar otra operación?'}`
+        );
 
       } catch (err) {
         document.getElementById('saldo-list').innerHTML = '';
         document.getElementById('msg-text').textContent = err.message || 'Error al consultar';
         document.getElementById('op-msg').classList.add('visible');
+        Voz.hablar(err.message || 'Error al consultar los saldos.');
       }
     }
 
@@ -126,16 +197,26 @@
     function volver() { salir('menu.html'); }
 
     async function cerrarSesion() {
+      Voz.detenerHabla();
       try { await fetch(`${API}/logout.php`, { method: 'POST' }); } catch {}
       sessionStorage.clear();
       salir('index.html');
     }
 
     function salir(dest) {
+      Voz.detenerHabla();
       document.querySelector('.op-wrapper').style.transition = 'opacity 0.2s ease';
       document.querySelector('.op-wrapper').style.opacity    = '0';
       setTimeout(() => window.location.href = dest, 200);
     }
+
+    // ── VOZ ──────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', function () {
+      Voz.iniciarVozPagina(
+        t.consulta_titulo || 'Consulta de saldo.',
+        t.consultando     || 'Consultando sus cuentas activas, por favor espere.'
+      );
+    });
 
     cargarSaldos();
   </script>

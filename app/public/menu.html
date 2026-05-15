@@ -8,183 +8,219 @@
 </head>
 <body>
 
-  <div class="top-bar"></div>
+  <div class="top-bar" role="presentation" aria-hidden="true"></div>
 
-  <div class="menu-wrapper">
+  <div class="menu-wrapper" role="main" aria-label="Menú principal del cajero">
 
     <!-- ── HEADER ── -->
-    <div class="menu-header">
-      <div class="mini-logo">
-        <svg viewBox="0 0 56 56" fill="none">
+    <header class="menu-header" aria-label="Encabezado Banco Fie">
+      <div class="mini-logo" role="img" aria-label="Logotipo de Banco Fie">
+        <svg viewBox="0 0 56 56"
+             fill="none"
+             aria-hidden="true"
+             focusable="false">
           <circle cx="28" cy="28" r="24" fill="#0a0a0a" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
           <path d="M20 16 C12 20, 12 36, 20 40" stroke="#e70075" stroke-width="4" stroke-linecap="round" fill="none"/>
           <path d="M28 20 C38 24, 38 32, 28 36" stroke="#0094d6" stroke-width="4" stroke-linecap="round" fill="none"/>
           <circle cx="24" cy="28" r="3" fill="#e70075"/>
         </svg>
-        <div class="mini-logo-text">
+        <div class="mini-logo-text" aria-hidden="true">
           <span class="b">Banco</span><span class="f">Fie</span>
         </div>
       </div>
-      <div class="menu-clock" id="reloj">--:--:--</div>
-    </div>
+      <div class="menu-clock"
+           id="reloj"
+           role="timer"
+           aria-live="off"
+           aria-label="Hora actual">
+        --:--:--
+      </div>
+    </header>
 
     <!-- ── TARJETA DE USUARIO ── -->
-    <div class="user-card">
-      <div class="user-avatar">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#0094d6" stroke-width="2"
-             stroke-linecap="round" stroke-linejoin="round">
+    <section class="user-card"
+             aria-label="Información de sesión del usuario">
+      <div class="user-avatar" aria-hidden="true">
+        <svg viewBox="0 0 24 24"
+             fill="none"
+             stroke="#0094d6"
+             stroke-width="2"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             aria-hidden="true"
+             focusable="false">
           <circle cx="12" cy="8" r="4"/>
           <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
         </svg>
       </div>
       <div class="user-info">
-        <div class="user-name" id="user-name">Cargando...</div>
+        <div class="user-name" id="user-name" aria-live="polite">Cargando...</div>
         <div class="user-label" id="user-label">Sesión activa</div>
       </div>
-      <div class="user-session">
-        <div class="session-dot"></div>
+      <div class="user-session" aria-label="Estado de conexión">
+        <div class="session-dot" aria-hidden="true"></div>
         <div class="session-text" id="session-text">En línea</div>
       </div>
-    </div>
+    </section>
 
     <!-- ── TÍTULO ── -->
-    <div class="menu-title" id="menu-titulo">Seleccione una operación</div>
+    <h1 class="menu-title" id="menu-titulo">Seleccione una operación</h1>
 
     <!-- ── GRID DE OPERACIONES ── -->
-    <div class="ops-grid">
+    <nav class="ops-grid"
+         aria-label="Operaciones disponibles">
 
       <!-- Retiro -->
-      <button class="op-btn retiro" onclick="irA('retiro.html')">
-        <div class="op-icon">
+      <button class="op-btn retiro"
+              aria-label="Retiro — Retire efectivo de su cuenta"
+              onclick="irA('retiro.html')">
+        <div class="op-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
-               stroke-linecap="round" stroke-linejoin="round">
+               stroke-linecap="round" stroke-linejoin="round" focusable="false">
             <rect x="2" y="6" width="20" height="14" rx="2"/>
             <path d="M16 12H8M12 9l-4 3 4 3"/>
           </svg>
         </div>
-        <div class="op-text">
+        <div class="op-text" aria-hidden="true">
           <div class="op-name" id="op-retiro">Retiro</div>
           <div class="op-desc" id="op-retiro-desc">Retire efectivo de su cuenta</div>
         </div>
-        <div class="op-arrow">↗</div>
+        <div class="op-arrow" aria-hidden="true">↗</div>
       </button>
 
       <!-- Depósito -->
-      <button class="op-btn deposito" onclick="irA('deposito.html')">
-        <div class="op-icon">
+      <button class="op-btn deposito"
+              aria-label="Depósito — Deposite dinero en su cuenta"
+              onclick="irA('deposito.html')">
+        <div class="op-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
-               stroke-linecap="round" stroke-linejoin="round">
+               stroke-linecap="round" stroke-linejoin="round" focusable="false">
             <rect x="2" y="6" width="20" height="14" rx="2"/>
             <path d="M8 12h8M12 9l4 3-4 3"/>
           </svg>
         </div>
-        <div class="op-text">
+        <div class="op-text" aria-hidden="true">
           <div class="op-name" id="op-deposito">Depósito</div>
           <div class="op-desc" id="op-deposito-desc">Deposite dinero en su cuenta</div>
         </div>
-        <div class="op-arrow">↗</div>
+        <div class="op-arrow" aria-hidden="true">↗</div>
       </button>
 
       <!-- Consulta de saldo -->
-      <button class="op-btn consulta" onclick="irA('consulta.html')">
-        <div class="op-icon">
+      <button class="op-btn consulta"
+              aria-label="Consulta de saldo — Vea su saldo disponible"
+              onclick="irA('consulta.html')">
+        <div class="op-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
-               stroke-linecap="round" stroke-linejoin="round">
+               stroke-linecap="round" stroke-linejoin="round" focusable="false">
             <circle cx="12" cy="12" r="9"/>
             <path d="M12 8v4l3 3"/>
           </svg>
         </div>
-        <div class="op-text">
+        <div class="op-text" aria-hidden="true">
           <div class="op-name" id="op-consulta">Consulta de saldo</div>
           <div class="op-desc" id="op-consulta-desc">Vea su saldo disponible</div>
         </div>
-        <div class="op-arrow">↗</div>
+        <div class="op-arrow" aria-hidden="true">↗</div>
       </button>
 
       <!-- Transferencia entre mis cuentas -->
-      <button class="op-btn transferencia" onclick="irA('transferencia.html')">
-        <div class="op-icon">
+      <button class="op-btn transferencia"
+              aria-label="Entre mis cuentas — Transfiera entre sus cuentas"
+              onclick="irA('transferencia.html')">
+        <div class="op-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
-               stroke-linecap="round" stroke-linejoin="round">
+               stroke-linecap="round" stroke-linejoin="round" focusable="false">
             <path d="M5 12h14M15 7l5 5-5 5"/>
             <path d="M19 12H5M9 17l-5-5 5-5"/>
           </svg>
         </div>
-        <div class="op-text">
+        <div class="op-text" aria-hidden="true">
           <div class="op-name" id="op-transferencia">Entre mis cuentas</div>
           <div class="op-desc" id="op-transferencia-desc">Transfiera entre sus cuentas</div>
         </div>
-        <div class="op-arrow">↗</div>
+        <div class="op-arrow" aria-hidden="true">↗</div>
       </button>
 
       <!-- Transferencia a terceros -->
-      <button class="op-btn transferencia" onclick="irA('transferencia-terceros.html')">
-        <div class="op-icon">
+      <button class="op-btn transferencia"
+              aria-label="A terceros — Transfiera a otra cuenta"
+              onclick="irA('transferencia-terceros.html')">
+        <div class="op-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
-               stroke-linecap="round" stroke-linejoin="round">
+               stroke-linecap="round" stroke-linejoin="round" focusable="false">
             <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
             <circle cx="9" cy="7" r="4"/>
             <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
           </svg>
         </div>
-        <div class="op-text">
+        <div class="op-text" aria-hidden="true">
           <div class="op-name" id="op-terceros">A terceros</div>
           <div class="op-desc" id="op-terceros-desc">Transfiera a otra cuenta</div>
         </div>
-        <div class="op-arrow">↗</div>
+        <div class="op-arrow" aria-hidden="true">↗</div>
       </button>
 
       <!-- Cambio de PIN -->
-      <button class="op-btn cambio-pin" onclick="irA('cambio-pin.html')">
-        <div class="op-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <button class="op-btn cambio-pin"
+              aria-label="Cambio de PIN — Actualice su clave de acceso"
+              onclick="irA('cambio-pin.html')">
+        <div class="op-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" focusable="false">
             <rect x="3" y="11" width="18" height="11" rx="2"/>
             <path d="M7 11V7a5 5 0 0110 0v4"/>
           </svg>
         </div>
-        <div class="op-text">
+        <div class="op-text" aria-hidden="true">
           <div class="op-name" id="op-cambio-pin">Cambio de PIN</div>
           <div class="op-desc" id="op-cambio-pin-desc">Actualice su clave de acceso</div>
         </div>
-        <div class="op-arrow">↗</div>
+        <div class="op-arrow" aria-hidden="true">↗</div>
       </button>
 
       <!-- Movimientos — ancho completo -->
-      <button class="op-btn movimientos full-width" onclick="irA('movimientos.html')">
-        <div class="op-icon">
+      <button class="op-btn movimientos full-width"
+              aria-label="Últimos movimientos — Historial de sus últimas transacciones"
+              onclick="irA('movimientos.html')">
+        <div class="op-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
-               stroke-linecap="round" stroke-linejoin="round">
+               stroke-linecap="round" stroke-linejoin="round" focusable="false">
             <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
             <rect x="9" y="3" width="6" height="4" rx="1"/>
             <path d="M9 12h6M9 16h4"/>
           </svg>
         </div>
-        <div class="op-text">
+        <div class="op-text" aria-hidden="true">
           <div class="op-name" id="op-movimientos">Últimos movimientos</div>
           <div class="op-desc" id="op-movimientos-desc">Historial de sus últimas transacciones</div>
         </div>
-        <div class="op-arrow">↗</div>
+        <div class="op-arrow" aria-hidden="true">↗</div>
       </button>
 
-    </div><!-- /ops-grid -->
+    </nav><!-- /ops-grid -->
 
     <!-- ── SALIR ── -->
-    <button class="btn-exit" id="btn-salir" onclick="cerrarSesion()">
+    <button class="btn-exit"
+            id="btn-salir"
+            aria-label="Terminar sesión y volver al inicio"
+            onclick="cerrarSesion()">
       ⏻ &nbsp; Terminar sesión
     </button>
 
   </div><!-- /menu-wrapper -->
 
-  <div class="bottom-bar"></div>
+  <div class="bottom-bar" role="presentation" aria-hidden="true"></div>
 
+  <script src="assets/js/voz.js"></script>
   <script>
     const t       = JSON.parse(sessionStorage.getItem('translations') || '{}');
     const usuario = JSON.parse(sessionStorage.getItem('usuario') || '{}');
 
     if (!usuario || !usuario.id) window.location.href = 'index.html';
 
-    document.getElementById('user-name').textContent  = usuario.nombre || 'Usuario';
-    document.getElementById('user-label').textContent = t.sesion_activa || 'Sesión activa';
+    document.getElementById('user-name').textContent    = usuario.nombre || 'Usuario';
+    document.getElementById('user-label').textContent   = t.sesion_activa || 'Sesión activa';
     document.getElementById('session-text').textContent = t.en_linea || 'En línea';
 
     // Aplicar idioma
@@ -211,32 +247,59 @@
       if (el) el.textContent = text;
     }
 
-    document.getElementById('btn-salir').textContent = '⏻  ' + (t.terminar_sesion || 'Terminar sesión');
+    // Sincronizar aria-label de cada botón con el texto traducido
+    // (los aria-label tienen el texto por defecto; se actualizan si hay traducción)
+    const ariaMap = [
+      { selector: '.op-btn.retiro',        fn: () => `${t.retiro || 'Retiro'} — ${t.retiro_desc || 'Retire efectivo de su cuenta'}` },
+      { selector: '.op-btn.deposito',       fn: () => `${t.deposito || 'Depósito'} — ${t.deposito_desc || 'Deposite dinero en su cuenta'}` },
+      { selector: '.op-btn.consulta',       fn: () => `${t.consulta_saldo || 'Consulta de saldo'} — ${t.consulta_desc || 'Vea su saldo disponible'}` },
+      { selector: '.op-btn.transferencia:nth-of-type(4)', fn: () => `${t.entre_mis_cuentas || 'Entre mis cuentas'} — ${t.transferencia_desc || 'Transfiera entre sus cuentas'}` },
+      { selector: '.op-btn.transferencia:nth-of-type(5)', fn: () => `${t.a_terceros || 'A terceros'} — ${t.terceros_desc || 'Transfiera a otra cuenta'}` },
+      { selector: '.op-btn.cambio-pin',     fn: () => `${t.cambio_pin || 'Cambio de PIN'} — ${t.cambio_pin_desc || 'Actualice su clave de acceso'}` },
+      { selector: '.op-btn.movimientos',    fn: () => `${t.movimientos || 'Últimos movimientos'} — ${t.movimientos_desc || 'Historial de sus últimas transacciones'}` },
+    ];
+    ariaMap.forEach(({ selector, fn }) => {
+      const el = document.querySelector(selector);
+      if (el) el.setAttribute('aria-label', fn());
+    });
 
-    // Reloj
+    document.getElementById('btn-salir').innerHTML =
+      '⏻ &nbsp;' + (t.terminar_sesion || 'Terminar sesión');
+    document.getElementById('btn-salir').setAttribute(
+      'aria-label',
+      t.terminar_sesion ? t.terminar_sesion + ', volver al inicio' : 'Terminar sesión y volver al inicio'
+    );
+
+    // Reloj (aria-live="off": no interrumpe al lector con cada segundo)
     function actualizarReloj() {
       const ahora = new Date();
       const h = String(ahora.getHours()).padStart(2, '0');
       const m = String(ahora.getMinutes()).padStart(2, '0');
       const s = String(ahora.getSeconds()).padStart(2, '0');
-      document.getElementById('reloj').textContent = `${h}:${m}:${s}`;
+      const el = document.getElementById('reloj');
+      el.textContent = `${h}:${m}:${s}`;
+      el.setAttribute('aria-label', `Hora actual: ${h} horas ${m} minutos`);
     }
     actualizarReloj();
     setInterval(actualizarReloj, 1000);
 
     function irA(pagina) {
-      document.querySelector('.menu-wrapper').style.transition = 'opacity 0.25s ease, transform 0.25s ease';
-      document.querySelector('.menu-wrapper').style.opacity    = '0';
-      document.querySelector('.menu-wrapper').style.transform  = 'translateY(-12px)';
+      const wrapper = document.querySelector('.menu-wrapper');
+      wrapper.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+      wrapper.style.opacity    = '0';
+      wrapper.style.transform  = 'translateY(-12px)';
       setTimeout(() => window.location.href = pagina, 250);
     }
 
     async function cerrarSesion() {
+      Voz.detenerHabla();
+      Voz.detenerReconocimiento();
       try { await fetch('/app/api/logout.php', { method: 'POST' }); } catch {}
       sessionStorage.clear();
       window.location.href = 'index.html';
     }
 
+    // Temporizador de inactividad
     let timerInactividad;
     function reiniciarTimer() {
       clearTimeout(timerInactividad);
@@ -249,6 +312,27 @@
       document.addEventListener(ev, reiniciarTimer)
     );
     reiniciarTimer();
+
+    // ── VOZ ──────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', function () {
+      const nombre   = usuario.nombre || '';
+      const titulo   = t.menu_titulo  || 'Seleccione una operación';
+      const saludo   = nombre
+        ? (t.bienvenida || 'Bienvenido') + ', ' + nombre + '. ' + titulo
+        : titulo;
+
+      Voz.iniciarVozPagina(saludo);
+
+      // Botón de micrófono con los comandos del menú
+      Voz.crearBotonMicrofono({
+        posicion:  'bottom-right',
+        comandos:  Voz.obtenerComandosMenu(),
+        continuo:  false,
+        alEscuchar: function () {
+          Voz.hablar(t.mic_activado || 'Escuchando. Diga una operación.');
+        },
+      });
+    });
   </script>
 
 </body>

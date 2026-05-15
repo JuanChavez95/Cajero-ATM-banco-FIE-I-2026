@@ -8,54 +8,78 @@
 </head>
 <body>
 
-  <div class="top-bar"></div>
+  <div class="top-bar" role="presentation" aria-hidden="true"></div>
 
   <!-- ── OVERLAY DE ÉXITO ── -->
-  <div class="success-overlay" id="success-overlay">
-    <div class="success-icon">
-      <svg viewBox="0 0 32 32" fill="none">
+  <div class="success-overlay"
+       id="success-overlay"
+       role="alert"
+       aria-live="assertive"
+       aria-atomic="true">
+    <div class="success-icon" aria-hidden="true">
+      <svg viewBox="0 0 32 32" fill="none" focusable="false">
         <polyline points="6,16 13,23 26,9" stroke="#0094d6" stroke-width="2.5"
           stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
     <div class="success-name" id="success-nombre">Welcome</div>
-    <div class="success-sub" id="success-sub">Access verified</div>
+    <div class="success-sub"  id="success-sub">Access verified</div>
   </div>
 
-  <div class="pin-wrapper" id="pin-wrapper">
+  <div class="pin-wrapper"
+       id="pin-wrapper"
+       role="main"
+       aria-label="Pantalla de autenticación">
 
     <!-- Mini logo -->
-    <div class="mini-logo">
-      <svg viewBox="0 0 56 56" fill="none">
+    <div class="mini-logo" role="img" aria-label="Logotipo de Banco Fie">
+      <svg viewBox="0 0 56 56"
+           fill="none"
+           aria-hidden="true"
+           focusable="false">
         <circle cx="28" cy="28" r="24" fill="#0a0a0a" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
         <path d="M20 16 C12 20, 12 36, 20 40" stroke="#e70075" stroke-width="4" stroke-linecap="round" fill="none"/>
         <path d="M28 20 C38 24, 38 32, 28 36" stroke="#0094d6" stroke-width="4" stroke-linecap="round" fill="none"/>
         <circle cx="24" cy="28" r="3" fill="#e70075"/>
       </svg>
-      <div class="mini-logo-text">
+      <div class="mini-logo-text" aria-hidden="true">
         <span class="b">Banco</span><span class="f">Fie</span>
       </div>
     </div>
 
-    <div class="logo-sep"></div>
+    <div class="logo-sep" role="separator" aria-hidden="true"></div>
 
     <!-- Indicador de paso -->
-    <div class="step-indicator">
-      <div class="step-dot active" id="dot-1"></div>
-      <div class="step-line"      id="line-1"></div>
-      <div class="step-dot"       id="dot-2"></div>
+    <div class="step-indicator"
+         role="progressbar"
+         aria-valuemin="1"
+         aria-valuemax="2"
+         aria-valuenow="1"
+         aria-valuetext="Paso 1 de 2: Número de tarjeta"
+         aria-label="Progreso de autenticación"
+         id="step-indicator">
+      <div class="step-dot active" id="dot-1" aria-hidden="true"></div>
+      <div class="step-line"      id="line-1" aria-hidden="true"></div>
+      <div class="step-dot"       id="dot-2"  aria-hidden="true"></div>
     </div>
 
-    <div class="step-title" id="step-title">Card number</div>
+    <h1 class="step-title" id="step-title">Card number</h1>
 
     <!-- ── CARD PRINCIPAL ── -->
     <div class="pin-card" id="pin-card">
 
       <!-- PASO 1: Número de tarjeta -->
-      <div id="paso-tarjeta" style="width:100%; display:flex; flex-direction:column; gap:20px;">
+      <div id="paso-tarjeta"
+           role="region"
+           aria-label="Paso 1: Ingrese el número de su tarjeta"
+           style="width:100%; display:flex; flex-direction:column; gap:20px;">
 
         <div class="field-block">
-          <div class="field-label" id="lbl-tarjeta">Card number</div>
+          <label class="field-label"
+                 id="lbl-tarjeta"
+                 for="input-tarjeta">
+            Card number
+          </label>
           <input
             type="text"
             class="field-input"
@@ -64,69 +88,127 @@
             placeholder="0000000000000000"
             autocomplete="off"
             inputmode="numeric"
+            aria-required="true"
+            aria-describedby="tarjeta-hint error-msg"
+            aria-label="Número de tarjeta, 16 dígitos"
           >
+          <span id="tarjeta-hint" class="sr-only">
+            Ingrese los 16 dígitos de su tarjeta sin espacios ni guiones.
+          </span>
         </div>
 
-        <button class="btn-confirm" id="btn-siguiente" onclick="irAPIN()">
+        <button class="btn-confirm"
+                id="btn-siguiente"
+                aria-label="Continuar al ingreso de PIN"
+                onclick="irAPIN()">
           <span id="btn-siguiente-text">Continue</span>
         </button>
 
       </div>
 
       <!-- PASO 2: PIN (oculto al inicio) -->
-      <div id="paso-pin" style="width:100%; display:none; flex-direction:column; gap:20px; align-items:center;">
+      <div id="paso-pin"
+           role="region"
+           aria-label="Paso 2: Ingrese su PIN de 4 dígitos"
+           style="width:100%; display:none; flex-direction:column; gap:20px; align-items:center;">
 
         <!-- Puntos visuales del PIN -->
-        <div class="pin-dots">
-          <div class="pin-dot" id="d1"></div>
-          <div class="pin-dot" id="d2"></div>
-          <div class="pin-dot" id="d3"></div>
-          <div class="pin-dot" id="d4"></div>
+        <div class="pin-dots"
+             role="status"
+             aria-live="polite"
+             aria-atomic="true"
+             aria-label="PIN ingresado: 0 de 4 dígitos"
+             id="pin-dots-status">
+          <div class="pin-dot" id="d1" aria-hidden="true"></div>
+          <div class="pin-dot" id="d2" aria-hidden="true"></div>
+          <div class="pin-dot" id="d3" aria-hidden="true"></div>
+          <div class="pin-dot" id="d4" aria-hidden="true"></div>
         </div>
 
         <!-- Teclado numérico -->
-        <div class="numpad">
-          <button class="num-btn" onclick="presionarNum('1')">1</button>
-          <button class="num-btn" onclick="presionarNum('2')">2</button>
-          <button class="num-btn" onclick="presionarNum('3')">3</button>
-          <button class="num-btn" onclick="presionarNum('4')">4</button>
-          <button class="num-btn" onclick="presionarNum('5')">5</button>
-          <button class="num-btn" onclick="presionarNum('6')">6</button>
-          <button class="num-btn" onclick="presionarNum('7')">7</button>
-          <button class="num-btn" onclick="presionarNum('8')">8</button>
-          <button class="num-btn" onclick="presionarNum('9')">9</button>
-          <button class="num-btn btn-clear" onclick="borrarNum()">⌫</button>
-          <button class="num-btn btn-zero" onclick="presionarNum('0')">0</button>
+        <div class="numpad"
+             role="group"
+             aria-label="Teclado numérico para ingresar PIN">
+          <button class="num-btn" aria-label="Dígito 1" onclick="presionarNum('1')">1</button>
+          <button class="num-btn" aria-label="Dígito 2" onclick="presionarNum('2')">2</button>
+          <button class="num-btn" aria-label="Dígito 3" onclick="presionarNum('3')">3</button>
+          <button class="num-btn" aria-label="Dígito 4" onclick="presionarNum('4')">4</button>
+          <button class="num-btn" aria-label="Dígito 5" onclick="presionarNum('5')">5</button>
+          <button class="num-btn" aria-label="Dígito 6" onclick="presionarNum('6')">6</button>
+          <button class="num-btn" aria-label="Dígito 7" onclick="presionarNum('7')">7</button>
+          <button class="num-btn" aria-label="Dígito 8" onclick="presionarNum('8')">8</button>
+          <button class="num-btn" aria-label="Dígito 9" onclick="presionarNum('9')">9</button>
+          <button class="num-btn btn-clear"
+                  aria-label="Borrar último dígito"
+                  onclick="borrarNum()">⌫</button>
+          <button class="num-btn btn-zero"
+                  aria-label="Dígito 0"
+                  onclick="presionarNum('0')">0</button>
         </div>
 
         <!-- Intentos restantes -->
-        <div class="intentos-bar" id="intentos-bar">
-          <div class="intento-pip activo" id="pip1"></div>
-          <div class="intento-pip activo" id="pip2"></div>
-          <div class="intento-pip activo" id="pip3"></div>
+        <div class="intentos-bar"
+             id="intentos-bar"
+             role="status"
+             aria-live="polite"
+             aria-atomic="true"
+             aria-label="Intentos restantes: 3 de 3"
+             id="intentos-status">
+          <div class="intento-pip activo" id="pip1" aria-hidden="true"></div>
+          <div class="intento-pip activo" id="pip2" aria-hidden="true"></div>
+          <div class="intento-pip activo" id="pip3" aria-hidden="true"></div>
         </div>
 
-        <button class="btn-confirm" id="btn-confirmar" disabled onclick="verificarLogin()">
+        <button class="btn-confirm"
+                id="btn-confirmar"
+                disabled
+                aria-label="Confirmar PIN"
+                aria-disabled="true"
+                onclick="verificarLogin()">
           <span id="btn-confirmar-text">Confirm PIN</span>
         </button>
 
       </div>
 
       <!-- Mensaje de error (compartido) -->
-      <div class="error-msg hidden" id="error-msg">
-        <span>●</span><span id="error-text"></span>
+      <div class="error-msg hidden"
+           id="error-msg"
+           role="alert"
+           aria-live="assertive"
+           aria-atomic="true">
+        <span aria-hidden="true">●</span>
+        <span id="error-text"></span>
       </div>
 
     </div><!-- /pin-card -->
 
-    <button class="btn-back" id="btn-volver" onclick="window.location.href='language.html'">
+    <button class="btn-back"
+            id="btn-volver"
+            aria-label="Volver al inicio, selección de idioma"
+            onclick="window.location.href='language.html'">
       ← Back to start
     </button>
 
   </div><!-- /pin-wrapper -->
 
-  <div class="bottom-bar"></div>
+  <div class="bottom-bar" role="presentation" aria-hidden="true"></div>
 
+  <!-- Texto solo para lectores de pantalla -->
+  <style>
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+
+  <script src="assets/js/voz.js"></script>
   <script>
     /* ============================================================
        BANCO FIE — Autenticación Tarjeta + PIN
@@ -139,25 +221,24 @@
     const t = JSON.parse(sessionStorage.getItem('translations') || '{}');
 
     // Estado
-    let pinActual    = '';
-    let tarjetaNum   = '';
-    let intentos     = 3;
-    let bloqueado    = false;
+    let pinActual  = '';
+    let tarjetaNum = '';
+    let intentos   = 3;
+    let bloqueado  = false;
 
     // Aplicar idioma si hay traducciones cargadas
-    document.getElementById('step-title').textContent         = t.numero_tarjeta      || 'Card number';
-    document.getElementById('lbl-tarjeta').textContent        = t.numero_tarjeta      || 'Card number';
-    document.getElementById('btn-siguiente-text').textContent = t.continuar_btn       || 'Continue';
-    document.getElementById('btn-confirmar-text').textContent = t.confirmar_pin       || 'Confirm PIN';
-    document.getElementById('success-nombre').textContent     = t.bienvenida          || 'Welcome';
-    document.getElementById('success-sub').textContent        = t.acceso_verificado   || 'Access verified';
-    document.getElementById('btn-volver').textContent         = t.volver_inicio       || '← Back to start';
+    document.getElementById('step-title').textContent         = t.numero_tarjeta    || 'Card number';
+    document.getElementById('lbl-tarjeta').textContent        = t.numero_tarjeta    || 'Card number';
+    document.getElementById('btn-siguiente-text').textContent = t.continuar_btn     || 'Continue';
+    document.getElementById('btn-confirmar-text').textContent = t.confirmar_pin     || 'Confirm PIN';
+    document.getElementById('success-nombre').textContent     = t.bienvenida        || 'Welcome';
+    document.getElementById('success-sub').textContent        = t.acceso_verificado || 'Access verified';
+    document.getElementById('btn-volver').textContent         = t.volver_inicio     || '← Back to start';
 
     // ── FORMATEAR número de tarjeta mientras escribe ──────────
     const inputTarjeta = document.getElementById('input-tarjeta');
 
     inputTarjeta.addEventListener('input', function () {
-      // Solo dígitos
       this.value = this.value.replace(/\D/g, '').slice(0, 16);
     });
 
@@ -184,12 +265,21 @@
       document.getElementById('dot-1').classList.add('done');
       document.getElementById('line-1').classList.add('done');
       document.getElementById('dot-2').classList.add('active');
-      document.getElementById('step-title').textContent =
-        t.ingrese_pin || 'Enter your PIN';
+
+      const titleText = t.ingrese_pin || 'Enter your PIN';
+      document.getElementById('step-title').textContent = titleText;
+
+      // Actualizar progressbar para lectores de pantalla
+      const indicator = document.getElementById('step-indicator');
+      indicator.setAttribute('aria-valuenow', '2');
+      indicator.setAttribute('aria-valuetext', 'Paso 2 de 2: Ingrese su PIN');
 
       // Cambiar vista
       document.getElementById('paso-tarjeta').style.display = 'none';
       document.getElementById('paso-pin').style.display     = 'flex';
+
+      // Voz: anuncia el cambio de paso
+      Voz.hablar(titleText + '. ' + (t.use_numpad || 'Use el teclado numérico para ingresar sus 4 dígitos.'));
     }
 
     // ── TECLADO NUMÉRICO ──────────────────────────────────────
@@ -198,14 +288,18 @@
       pinActual += n;
       actualizarDots();
       if (pinActual.length === 4) {
-        document.getElementById('btn-confirmar').disabled = false;
+        const btn = document.getElementById('btn-confirmar');
+        btn.disabled = false;
+        btn.removeAttribute('aria-disabled');
       }
     }
 
     function borrarNum() {
       if (bloqueado || pinActual.length === 0) return;
       pinActual = pinActual.slice(0, -1);
-      document.getElementById('btn-confirmar').disabled = true;
+      const btn = document.getElementById('btn-confirmar');
+      btn.disabled = true;
+      btn.setAttribute('aria-disabled', 'true');
       actualizarDots();
       ocultarError();
     }
@@ -216,6 +310,11 @@
         dot.classList.toggle('filled', i < pinActual.length);
         dot.classList.remove('error-dot');
       });
+      // Actualiza el texto accesible del status
+      document.getElementById('pin-dots-status').setAttribute(
+        'aria-label',
+        `PIN ingresado: ${pinActual.length} de 4 dígitos`
+      );
     }
 
     // ── VERIFICAR LOGIN (tarjeta + PIN) ───────────────────────
@@ -226,6 +325,8 @@
       const btn     = document.getElementById('btn-confirmar');
       btnText.innerHTML = '<span class="spinner"></span>';
       btn.disabled = true;
+      btn.setAttribute('aria-disabled', 'true');
+      btn.setAttribute('aria-label', 'Verificando, por favor espere');
 
       try {
         const res = await fetch(`${API}/login.php`, {
@@ -237,27 +338,30 @@
         const data = await res.json();
 
         if (res.ok && data.success) {
-          // Guardar datos de sesión
           sessionStorage.setItem('usuario', JSON.stringify(data.usuario));
           mostrarExito(data.usuario.nombre);
 
         } else {
-          // Fallo
           intentos--;
           actualizarPips();
           errorPIN(data.error || (t.pin_incorrecto || 'Incorrect PIN'));
 
           if (intentos <= 0) {
             bloqueado = true;
-            mostrarError(t.cuenta_bloqueada || 'Too many attempts. Session locked.');
+            const msgBloqueado = t.cuenta_bloqueada || 'Too many attempts. Session locked.';
+            mostrarError(msgBloqueado);
             btn.disabled = true;
-            btnText.textContent = t.cuenta_bloqueada || 'Too many attempts. Session locked.';
+            btn.setAttribute('aria-disabled', 'true');
+            btnText.textContent = msgBloqueado;
+            Voz.hablar(msgBloqueado);
             setTimeout(() => window.location.href = 'index.html', 3000);
             return;
           }
 
           btnText.textContent = t.ingresar || 'Confirm PIN';
           btn.disabled = false;
+          btn.removeAttribute('aria-disabled');
+          btn.setAttribute('aria-label', 'Confirmar PIN');
           pinActual = '';
           actualizarDots();
         }
@@ -265,6 +369,8 @@
       } catch (err) {
         btnText.textContent = t.ingresar || 'Confirm PIN';
         btn.disabled = false;
+        btn.removeAttribute('aria-disabled');
+        btn.setAttribute('aria-label', 'Confirmar PIN');
         mostrarError(t.error_conexion || 'Connection error with the server');
       }
     }
@@ -276,9 +382,14 @@
       pips.forEach((id, i) => {
         const el = document.getElementById(id);
         el.classList.remove('activo','perdido');
-        if (i < perdidos)  el.classList.add('perdido');
-        else               el.classList.add('activo');
+        if (i < perdidos) el.classList.add('perdido');
+        else              el.classList.add('activo');
       });
+      // Actualiza texto accesible de intentos
+      document.getElementById('intentos-bar').setAttribute(
+        'aria-label',
+        `Intentos restantes: ${intentos} de 3`
+      );
     }
 
     function errorPIN(msg) {
@@ -307,11 +418,14 @@
 
     // ── OVERLAY ÉXITO ────────────────────────────────────────
     function mostrarExito(nombre) {
-      document.getElementById('success-nombre').textContent =
-        (t.bienvenida || 'Welcome') + ', ' + nombre;
-      document.getElementById('success-sub').textContent =
-        t.acceso_verificado || 'Access verified';
+      const bienvenida = (t.bienvenida || 'Welcome') + ', ' + nombre;
+      const verificado = t.acceso_verificado || 'Access verified';
+
+      document.getElementById('success-nombre').textContent = bienvenida;
+      document.getElementById('success-sub').textContent    = verificado;
       document.getElementById('success-overlay').classList.add('show');
+
+      Voz.hablar(bienvenida + '. ' + verificado);
 
       setTimeout(() => {
         window.location.href = 'menu.html';
@@ -324,7 +438,47 @@
         if (pinActual.length === 4 && !bloqueado) verificarLogin();
       }
     });
+
+    // ── Voz: leer pantalla al cargar ─────────────────────────
+    document.addEventListener('DOMContentLoaded', function () {
+      Voz.iniciarVozPagina(
+        t.numero_tarjeta || 'Autenticación.',
+        t.ingrese_tarjeta_hint || 'Ingrese los 16 dígitos de su tarjeta para continuar.'
+      );
+    });
   </script>
+
+<!-- Botón flotante de voz -->
+<button id="voz-global-btn"
+        onclick="toggleVoz()"
+        aria-pressed="false"
+        aria-label="Silenciar voz"
+        title="Silenciar voz"
+        style="position:fixed; bottom:24px; right:24px; z-index:9999;
+               width:52px; height:52px; border-radius:50%; border:none;
+               background:#0d3b6e; color:#fff; cursor:pointer;
+               box-shadow:0 4px 16px rgba(0,0,0,0.4); font-size:22px;">
+  🔊
+</button>
+
+<script>
+  var vozActiva = true;
+  function toggleVoz() {
+    vozActiva = !vozActiva;
+    const btn = document.getElementById('voz-global-btn');
+    if (vozActiva) {
+      btn.textContent = '🔊';
+      btn.setAttribute('aria-label', 'Silenciar voz');
+      btn.style.background = '#0d3b6e';
+    } else {
+      window.speechSynthesis.cancel();
+      btn.textContent = '🔇';
+      btn.setAttribute('aria-label', 'Activar voz');
+      btn.style.background = '#3a1a1a';
+    }
+    btn.setAttribute('aria-pressed', vozActiva ? 'false' : 'true');
+  }
+</script>
 
 </body>
 </html>

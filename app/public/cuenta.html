@@ -8,48 +8,80 @@
   <style>
     .op-header-icon     { background: rgba(255,165,0,0.12); }
     .op-header-icon svg { stroke: #ffa500; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0;
+      margin: -1px; overflow: hidden; clip: rect(0,0,0,0);
+      white-space: nowrap; border: 0;
+    }
   </style>
 </head>
 <body>
-  <div class="top-bar"></div>
+  <div class="top-bar" role="presentation" aria-hidden="true"></div>
 
-  <div class="op-wrapper">
+  <div class="op-wrapper"
+       role="main"
+       aria-label="Pantalla de selección de cuenta">
 
     <!-- Header -->
-    <div class="op-header">
-      <button class="btn-back" onclick="volver()">←</button>
+    <header class="op-header" aria-label="Encabezado de operación">
+      <button class="btn-back"
+              aria-label="Volver a la pantalla anterior"
+              onclick="volver()">←</button>
       <div class="op-header-info">
-        <div class="op-header-title" id="titulo-pagina">Seleccione cuenta</div>
-        <div class="op-header-sub" id="sub-monto"></div>
+        <h1 class="op-header-title" id="titulo-pagina">Seleccione cuenta</h1>
+        <p class="op-header-sub" id="sub-monto"></p>
       </div>
-      <div class="op-header-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
-             stroke-linecap="round" stroke-linejoin="round">
+      <div class="op-header-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"
+             fill="none"
+             stroke-width="2"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             aria-hidden="true"
+             focusable="false">
           <rect x="2" y="5" width="20" height="14" rx="2"/>
           <line x1="2" y1="10" x2="22" y2="10"/>
         </svg>
       </div>
-    </div>
+    </header>
 
     <!-- Label -->
-    <div class="section-label" style="align-self:flex-start; margin-bottom:12px;
-         animation: fadeDown 0.4s ease both;" id="lbl-cuentas">
+    <div class="section-label"
+         id="lbl-cuentas"
+         aria-hidden="true"
+         style="align-self:flex-start; margin-bottom:12px; animation: fadeDown 0.4s ease both;">
       Cuentas disponibles
     </div>
 
     <!-- Lista de cuentas -->
-    <div style="width:100%; display:flex; flex-direction:column; gap:12px;" id="lista-cuentas">
-      <div class="op-msg info visible"><span class="spinner"></span><span id="txt-cargando">Cargando cuentas...</span></div>
+    <div style="width:100%; display:flex; flex-direction:column; gap:12px;"
+         id="lista-cuentas"
+         role="region"
+         aria-labelledby="lbl-cuentas"
+         aria-live="polite"
+         aria-atomic="false">
+      <div class="op-msg info visible" role="status" aria-live="polite">
+        <span class="spinner" aria-hidden="true"></span>
+        <span id="txt-cargando">Cargando cuentas...</span>
+      </div>
     </div>
 
     <!-- Mensaje error -->
-    <div class="op-msg error" id="op-msg" style="margin-top:14px; width:100%;">
-      <span>●</span><span id="msg-text"></span>
+    <div class="op-msg error"
+         id="op-msg"
+         role="alert"
+         aria-live="assertive"
+         aria-atomic="true"
+         style="margin-top:14px; width:100%;">
+      <span aria-hidden="true">●</span>
+      <span id="msg-text"></span>
     </div>
 
   </div>
-  <div class="bottom-bar"></div>
 
+  <div class="bottom-bar" role="presentation" aria-hidden="true"></div>
+
+  <script src="assets/js/voz.js"></script>
   <script>
     const API     = '/app/api';
     const t       = JSON.parse(sessionStorage.getItem('translations') || '{}');
@@ -69,8 +101,10 @@
       ? (t.retiro   || 'Retiro')
       : (t.deposito || 'Depósito');
 
-    document.getElementById('sub-monto').textContent = `${tipoLabel} — Bs. ${monto.toFixed(2)}`;
+    const subTexto = `${tipoLabel} — Bs. ${monto.toFixed(2)}`;
+    document.getElementById('sub-monto').textContent = subTexto;
 
+    // ── CARGAR CUENTAS ───────────────────────────────────────
     async function cargarCuentas() {
       try {
         const res  = await fetch(`${API}/balance.php`);
@@ -80,56 +114,89 @@
         const lista = document.getElementById('lista-cuentas');
 
         if (!data.cuentas || data.cuentas.length === 0) {
-          lista.innerHTML = `<div class="op-msg info visible"><span>${t.sin_cuentas_disp || 'Sin cuentas disponibles'}</span></div>`;
+          const msgSin = t.sin_cuentas_disp || 'Sin cuentas disponibles';
+          lista.innerHTML = `<div class="op-msg info visible" role="status"><span>${msgSin}</span></div>`;
+          Voz.hablar(msgSin);
           return;
         }
 
         lista.innerHTML = data.cuentas.map(c => {
-          const esCorriente = c.tipo === 'corriente';
-          const tipoTxt = esCorriente
+          const esCorriente  = c.tipo === 'corriente';
+          const tipoTxt      = esCorriente
             ? (t.cuenta_corriente || 'Cuenta Corriente')
             : (t.cuenta_ahorros   || 'Cuenta Ahorros');
-
           const insuficiente = tipo === 'retiro' && parseFloat(c.saldo) < monto;
+          const ultimosCuatro = c.numero_cuenta.slice(-4);
+          const saldoFmt     = parseFloat(c.saldo).toFixed(2);
+
+          // Texto completo para el aria-label del botón
+          const ariaBtn = insuficiente
+            ? `${tipoTxt}, terminada en ${ultimosCuatro}. Saldo: ${saldoFmt} bolivianos. Fondos insuficientes para esta operación.`
+            : `${tipoTxt}, terminada en ${ultimosCuatro}. Saldo disponible: ${saldoFmt} bolivianos. Seleccionar esta cuenta.`;
 
           return `
             <button
               class="cuenta-item ${c.tipo}"
+              aria-label="${ariaBtn}"
+              ${insuficiente ? `disabled aria-disabled="true" style="opacity:0.35; cursor:not-allowed;"` : ''}
               onclick="seleccionarCuenta(${c.id}, '${c.tipo}', ${c.saldo})"
-              ${insuficiente ? 'disabled style="opacity:0.35; cursor:not-allowed;"' : ''}
             >
-              <div class="cuenta-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round">
+              <div class="cuenta-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"
+                     fill="none"
+                     stroke-width="2"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                     aria-hidden="true"
+                     focusable="false">
                   ${esCorriente
                     ? '<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>'
                     : '<rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="12" cy="12" r="3"/>'}
                 </svg>
               </div>
-              <div class="cuenta-info">
+              <div class="cuenta-info" aria-hidden="true">
                 <div class="cuenta-tipo">${tipoTxt}</div>
-                <div class="cuenta-num">**** **** ${c.numero_cuenta.slice(-4)}</div>
+                <div class="cuenta-num">**** **** ${ultimosCuatro}</div>
               </div>
-              <div class="cuenta-saldo">
-                <div class="cuenta-saldo-monto">Bs. ${parseFloat(c.saldo).toFixed(2)}</div>
+              <div class="cuenta-saldo" aria-hidden="true">
+                <div class="cuenta-saldo-monto">Bs. ${saldoFmt}</div>
                 <div class="cuenta-saldo-label">${t.saldo_disponible || 'Disponible'}</div>
               </div>
-              <div class="cuenta-arrow">›</div>
+              <div class="cuenta-arrow" aria-hidden="true">›</div>
             </button>
           `;
         }).join('');
+
+        // Voz: anuncia cuántas cuentas hay disponibles
+        const total   = data.cuentas.length;
+        const aptas   = data.cuentas.filter(c => !(tipo === 'retiro' && parseFloat(c.saldo) < monto)).length;
+        const msgVoz  = aptas > 0
+          ? `${total === 1 ? 'Una cuenta disponible' : total + ' cuentas disponibles'}. ${aptas === total ? '' : (total - aptas) + ' sin fondos suficientes.'} Seleccione una para continuar.`
+          : `${t.sin_cuentas_disp || 'No hay cuentas con fondos suficientes para esta operación.'}`;
+        Voz.hablar(msgVoz);
 
       } catch (err) {
         document.getElementById('lista-cuentas').innerHTML = '';
         document.getElementById('msg-text').textContent = err.message;
         document.getElementById('op-msg').classList.add('visible');
+        Voz.hablar(err.message);
       }
     }
 
+    // ── SELECCIONAR CUENTA ───────────────────────────────────
     async function seleccionarCuenta(cuentaId, cuentaTipo, saldo) {
       const endpoint = tipo === 'retiro' ? 'withdraw.php' : 'deposit.php';
 
-      document.querySelectorAll('.cuenta-item').forEach(b => b.disabled = true);
+      // Deshabilita todos los botones mientras procesa
+      const botones = document.querySelectorAll('.cuenta-item');
+      botones.forEach(b => {
+        b.disabled = true;
+        b.setAttribute('aria-disabled', 'true');
+      });
+
+      // Anuncia que está procesando
+      const msgProcesando = t.procesando || 'Procesando operación, por favor espere.';
+      Voz.hablar(msgProcesando);
 
       try {
         const res  = await fetch(`${API}/${endpoint}`, {
@@ -139,7 +206,6 @@
         });
 
         const data = await res.json();
-
         if (!res.ok) throw new Error(data.error || 'Error en la operación');
 
         sessionStorage.setItem('op_resultado', JSON.stringify({
@@ -150,12 +216,21 @@
           mensaje:      data.mensaje
         }));
 
+        Voz.detenerHabla();
         salir('resultado.html');
 
       } catch (err) {
         document.getElementById('msg-text').textContent = err.message;
         document.getElementById('op-msg').classList.add('visible');
-        document.querySelectorAll('.cuenta-item').forEach(b => b.disabled = false);
+        Voz.hablar(err.message);
+
+        // Rehabilita botones disponibles (no los que tenían fondos insuficientes)
+        botones.forEach(b => {
+          if (b.style.opacity !== '0.35') {
+            b.disabled = false;
+            b.removeAttribute('aria-disabled');
+          }
+        });
       }
     }
 
@@ -169,6 +244,14 @@
       document.querySelector('.op-wrapper').style.opacity    = '0';
       setTimeout(() => window.location.href = dest, 200);
     }
+
+    // ── VOZ ──────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', function () {
+      Voz.iniciarVozPagina(
+        t.seleccione_cuenta_titulo || 'Seleccione una cuenta.',
+        `${tipoLabel} de ${monto.toFixed(2)} bolivianos. ${t.cargando_cuentas || 'Cargando cuentas disponibles.'}`
+      );
+    });
 
     cargarCuentas();
   </script>

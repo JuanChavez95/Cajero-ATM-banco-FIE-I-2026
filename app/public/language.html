@@ -8,101 +8,212 @@
 </head>
 <body>
 
-  <div class="top-bar"></div>
+  <div class="top-bar" role="presentation" aria-hidden="true"></div>
 
-  <div class="lang-wrapper">
+  <div class="lang-wrapper"
+       role="main"
+       aria-label="Pantalla de selección de idioma">
 
     <!-- Mini logo -->
-    <div class="mini-logo">
-      <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <div class="mini-logo" role="img" aria-label="Logotipo de Banco Fie">
+      <svg viewBox="0 0 56 56"
+           fill="none"
+           xmlns="http://www.w3.org/2000/svg"
+           aria-hidden="true"
+           focusable="false">
         <circle cx="28" cy="28" r="24" fill="#0a0a0a" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
         <path d="M20 16 C12 20, 12 36, 20 40" stroke="#e70075" stroke-width="4" stroke-linecap="round" fill="none"/>
         <path d="M28 20 C38 24, 38 32, 28 36" stroke="#0094d6" stroke-width="4" stroke-linecap="round" fill="none"/>
         <circle cx="24" cy="28" r="3" fill="#e70075"/>
       </svg>
-      <div class="mini-logo-text">
+      <div class="mini-logo-text" aria-hidden="true">
         <span class="b">Banco</span><span class="f">Fie</span>
       </div>
     </div>
 
-    <div class="logo-sep"></div>
+    <div class="logo-sep" role="separator" aria-hidden="true"></div>
 
     <!-- Título -->
-    <div class="lang-title">Elija el idioma &nbsp;/&nbsp; Choose your language</div>
+    <h1 class="lang-title" aria-label="Elija el idioma">
+      Elija el idioma &nbsp;/&nbsp; Choose your language
+    </h1>
 
     <!-- Opciones -->
-    <div class="lang-grid">
+    <div class="lang-grid"
+         role="group"
+         aria-label="Opciones de idioma disponibles">
 
       <!-- ESPAÑOL -->
-      <div class="lang-card es" onclick="elegirIdioma('es')">
-        <div class="lang-check">
-          <svg viewBox="0 0 10 10" fill="none">
+      <div class="lang-card es"
+           role="button"
+           tabindex="0"
+           aria-label="Español — Seleccionar idioma español"
+           onclick="elegirIdioma('es')"
+           onkeydown="if(event.key==='Enter'||event.key===' '){elegirIdioma('es')}">
+        <div class="lang-check" aria-hidden="true">
+          <svg viewBox="0 0 10 10" fill="none" focusable="false">
             <polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#e70075" stroke-width="1.5"
               stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
 
-        <!-- Bandera Bolivia (SVG inline) -->
-        <div class="flag-wrap">
-          <svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
-            <!-- Rojo -->
+        <div class="flag-wrap" role="img" aria-label="Bandera de Bolivia">
+          <svg viewBox="0 0 72 72"
+               xmlns="http://www.w3.org/2000/svg"
+               aria-hidden="true"
+               focusable="false">
             <rect width="72" height="24" fill="#D52B1E"/>
-            <!-- Amarillo -->
             <rect y="24" width="72" height="24" fill="#F4D03F"/>
-            <!-- Verde -->
             <rect y="48" width="72" height="24" fill="#007934"/>
           </svg>
         </div>
 
-        <div class="lang-name">Español</div>
-        <div class="lang-sub">Spanish</div>
+        <div class="lang-name" aria-hidden="true">Español</div>
+        <div class="lang-sub" aria-hidden="true">Spanish</div>
       </div>
 
       <!-- INGLÉS -->
-      <div class="lang-card en" onclick="elegirIdioma('en')">
-        <div class="lang-check">
-          <svg viewBox="0 0 10 10" fill="none">
+      <div class="lang-card en"
+           role="button"
+           tabindex="0"
+           aria-label="English — Select English language"
+           onclick="elegirIdioma('en')"
+           onkeydown="if(event.key==='Enter'||event.key===' '){elegirIdioma('en')}">
+        <div class="lang-check" aria-hidden="true">
+          <svg viewBox="0 0 10 10" fill="none" focusable="false">
             <polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#0094d6" stroke-width="1.5"
               stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
 
-        <!-- Bandera UK (SVG inline simplificada) -->
-        <div class="flag-wrap">
-          <svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
+        <div class="flag-wrap" role="img" aria-label="Flag of the United Kingdom">
+          <svg viewBox="0 0 72 72"
+               xmlns="http://www.w3.org/2000/svg"
+               aria-hidden="true"
+               focusable="false">
             <rect width="72" height="72" fill="#012169"/>
-            <!-- Diagonales blancas -->
             <line x1="0" y1="0" x2="72" y2="72" stroke="white" stroke-width="10"/>
             <line x1="72" y1="0" x2="0" y2="72" stroke="white" stroke-width="10"/>
-            <!-- Cruz blanca -->
             <rect x="28" y="0" width="16" height="72" fill="white"/>
             <rect x="0" y="28" width="72" height="16" fill="white"/>
-            <!-- Diagonales rojas -->
             <line x1="0" y1="0" x2="72" y2="72" stroke="#C8102E" stroke-width="6"/>
             <line x1="72" y1="0" x2="0" y2="72" stroke="#C8102E" stroke-width="6"/>
-            <!-- Cruz roja -->
             <rect x="31" y="0" width="10" height="72" fill="#C8102E"/>
             <rect x="0" y="31" width="72" height="10" fill="#C8102E"/>
           </svg>
         </div>
 
-        <div class="lang-name">English</div>
-        <div class="lang-sub">Inglés</div>
+        <div class="lang-name" aria-hidden="true">English</div>
+        <div class="lang-sub" aria-hidden="true">Inglés</div>
+      </div>
+
+      <!-- AYMARA -->
+      <div class="lang-card ay"
+           role="button"
+           tabindex="0"
+           aria-label="Aymara — Aymara arustawi arunaka ajllsiña"
+           onclick="elegirIdioma('ay')"
+           onkeydown="if(event.key==='Enter'||event.key===' '){elegirIdioma('ay')}">
+        <div class="lang-check" aria-hidden="true">
+          <svg viewBox="0 0 10 10" fill="none" focusable="false">
+            <polyline points="1.5,5 4,7.5 8.5,2.5" stroke="#e70075" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <!-- Wiphala (cuadrícula 7×7, diagonal de 7 colores) -->
+        <div class="flag-wrap" role="img" aria-label="Wiphala, bandera del pueblo Aymara">
+          <svg viewBox="0 0 72 72"
+               xmlns="http://www.w3.org/2000/svg"
+               aria-hidden="true"
+               focusable="false">
+            <defs>
+              <clipPath id="wip-clip">
+                <rect width="72" height="72" rx="36"/>
+              </clipPath>
+            </defs>
+            <g clip-path="url(#wip-clip)">
+              <!-- Fila 0 -->
+              <rect x="0"     y="0"     width="10.28" height="10.28" fill="#D52B1E"/>
+              <rect x="10.28" y="0"     width="10.28" height="10.28" fill="#F97316"/>
+              <rect x="20.57" y="0"     width="10.28" height="10.28" fill="#F4D03F"/>
+              <rect x="30.86" y="0"     width="10.28" height="10.28" fill="#FFFFFF"/>
+              <rect x="41.14" y="0"     width="10.28" height="10.28" fill="#007934"/>
+              <rect x="51.43" y="0"     width="10.28" height="10.28" fill="#0094D6"/>
+              <rect x="61.71" y="0"     width="10.29" height="10.28" fill="#7B2FBE"/>
+              <!-- Fila 1 -->
+              <rect x="0"     y="10.28" width="10.28" height="10.28" fill="#7B2FBE"/>
+              <rect x="10.28" y="10.28" width="10.28" height="10.28" fill="#D52B1E"/>
+              <rect x="20.57" y="10.28" width="10.28" height="10.28" fill="#F97316"/>
+              <rect x="30.86" y="10.28" width="10.28" height="10.28" fill="#F4D03F"/>
+              <rect x="41.14" y="10.28" width="10.28" height="10.28" fill="#FFFFFF"/>
+              <rect x="51.43" y="10.28" width="10.28" height="10.28" fill="#007934"/>
+              <rect x="61.71" y="10.28" width="10.29" height="10.28" fill="#0094D6"/>
+              <!-- Fila 2 -->
+              <rect x="0"     y="20.57" width="10.28" height="10.28" fill="#0094D6"/>
+              <rect x="10.28" y="20.57" width="10.28" height="10.28" fill="#7B2FBE"/>
+              <rect x="20.57" y="20.57" width="10.28" height="10.28" fill="#D52B1E"/>
+              <rect x="30.86" y="20.57" width="10.28" height="10.28" fill="#F97316"/>
+              <rect x="41.14" y="20.57" width="10.28" height="10.28" fill="#F4D03F"/>
+              <rect x="51.43" y="20.57" width="10.28" height="10.28" fill="#FFFFFF"/>
+              <rect x="61.71" y="20.57" width="10.29" height="10.28" fill="#007934"/>
+              <!-- Fila 3 -->
+              <rect x="0"     y="30.86" width="10.28" height="10.28" fill="#007934"/>
+              <rect x="10.28" y="30.86" width="10.28" height="10.28" fill="#0094D6"/>
+              <rect x="20.57" y="30.86" width="10.28" height="10.28" fill="#7B2FBE"/>
+              <rect x="30.86" y="30.86" width="10.28" height="10.28" fill="#D52B1E"/>
+              <rect x="41.14" y="30.86" width="10.28" height="10.28" fill="#F97316"/>
+              <rect x="51.43" y="30.86" width="10.28" height="10.28" fill="#F4D03F"/>
+              <rect x="61.71" y="30.86" width="10.29" height="10.28" fill="#FFFFFF"/>
+              <!-- Fila 4 -->
+              <rect x="0"     y="41.14" width="10.28" height="10.28" fill="#FFFFFF"/>
+              <rect x="10.28" y="41.14" width="10.28" height="10.28" fill="#007934"/>
+              <rect x="20.57" y="41.14" width="10.28" height="10.28" fill="#0094D6"/>
+              <rect x="30.86" y="41.14" width="10.28" height="10.28" fill="#7B2FBE"/>
+              <rect x="41.14" y="41.14" width="10.28" height="10.28" fill="#D52B1E"/>
+              <rect x="51.43" y="41.14" width="10.28" height="10.28" fill="#F97316"/>
+              <rect x="61.71" y="41.14" width="10.29" height="10.28" fill="#F4D03F"/>
+              <!-- Fila 5 -->
+              <rect x="0"     y="51.43" width="10.28" height="10.28" fill="#F4D03F"/>
+              <rect x="10.28" y="51.43" width="10.28" height="10.28" fill="#FFFFFF"/>
+              <rect x="20.57" y="51.43" width="10.28" height="10.28" fill="#007934"/>
+              <rect x="30.86" y="51.43" width="10.28" height="10.28" fill="#0094D6"/>
+              <rect x="41.14" y="51.43" width="10.28" height="10.28" fill="#7B2FBE"/>
+              <rect x="51.43" y="51.43" width="10.28" height="10.28" fill="#D52B1E"/>
+              <rect x="61.71" y="51.43" width="10.29" height="10.28" fill="#F97316"/>
+              <!-- Fila 6 -->
+              <rect x="0"     y="61.71" width="10.28" height="10.29" fill="#F97316"/>
+              <rect x="10.28" y="61.71" width="10.28" height="10.29" fill="#F4D03F"/>
+              <rect x="20.57" y="61.71" width="10.28" height="10.29" fill="#FFFFFF"/>
+              <rect x="30.86" y="61.71" width="10.28" height="10.29" fill="#007934"/>
+              <rect x="41.14" y="61.71" width="10.28" height="10.29" fill="#0094D6"/>
+              <rect x="51.43" y="61.71" width="10.28" height="10.29" fill="#7B2FBE"/>
+              <rect x="61.71" y="61.71" width="10.29" height="10.29" fill="#D52B1E"/>
+            </g>
+          </svg>
+        </div>
+
+        <div class="lang-name" aria-hidden="true">Aymara</div>
+        <div class="lang-sub" aria-hidden="true">Aymara</div>
       </div>
 
     </div><!-- /lang-grid -->
 
-    <div class="lang-hint">Seleccione una opción para continuar</div>
+    <p class="lang-hint"
+       role="status"
+       aria-live="polite"
+       aria-label="Seleccione una opción para continuar">
+      Seleccione una opción para continuar
+    </p>
 
   </div><!-- /lang-wrapper -->
 
-  <div class="bottom-bar"></div>
+  <div class="bottom-bar" role="presentation" aria-hidden="true"></div>
 
-  <!-- JSON de traducciones -->
+  <script src="assets/js/voz.js"></script>
   <script>
     const translations = {};
 
-    // Carga el JSON del idioma elegido
     async function cargarIdioma(lang) {
       try {
         const res = await fetch(`assets/lang/${lang}.json?v=${Date.now()}`);
@@ -113,14 +224,17 @@
       }
     }
 
-    // Guardar en sessionStorage y navegar al PIN
     async function elegirIdioma(lang) {
+      // Anuncia la selección antes de navegar
+      const nombres = { es: 'Español', en: 'English', ay: 'Aymara' };
+      Voz.detenerHabla();
+      Voz.hablar(nombres[lang] || lang);
+
       await cargarIdioma(lang);
       sessionStorage.clear();
       sessionStorage.setItem('idioma', lang);
       sessionStorage.setItem('translations', JSON.stringify(translations[lang] || {}));
 
-      // Animación de salida antes de navegar
       document.querySelector('.lang-wrapper').style.opacity = '0';
       document.querySelector('.lang-wrapper').style.transform = 'translateY(-15px)';
       document.querySelector('.lang-wrapper').style.transition = 'opacity 0.3s ease, transform 0.3s ease';
@@ -129,7 +243,48 @@
         window.location.href = 'pin.html';
       }, 300);
     }
+
+    // Voz: lee el título al cargar la pantalla
+    document.addEventListener('DOMContentLoaded', function () {
+      Voz.iniciarVozPagina(
+        'Selección de idioma.',
+        'Elija entre Español, English o Aymara.'
+      );
+      Voz.crearBotonVozGlobal();
+    });
   </script>
+
+  <!-- Botón flotante de voz -->
+<button id="voz-global-btn"
+        onclick="toggleVoz()"
+        aria-pressed="false"
+        aria-label="Silenciar voz"
+        title="Silenciar voz"
+        style="position:fixed; bottom:24px; right:24px; z-index:9999;
+               width:52px; height:52px; border-radius:50%; border:none;
+               background:#0d3b6e; color:#fff; cursor:pointer;
+               box-shadow:0 4px 16px rgba(0,0,0,0.4); font-size:22px;">
+  🔊
+</button>
+
+<script>
+  var vozActiva = true;
+  function toggleVoz() {
+    vozActiva = !vozActiva;
+    const btn = document.getElementById('voz-global-btn');
+    if (vozActiva) {
+      btn.textContent = '🔊';
+      btn.setAttribute('aria-label', 'Silenciar voz');
+      btn.style.background = '#0d3b6e';
+    } else {
+      window.speechSynthesis.cancel();
+      btn.textContent = '🔇';
+      btn.setAttribute('aria-label', 'Activar voz');
+      btn.style.background = '#3a1a1a';
+    }
+    btn.setAttribute('aria-pressed', vozActiva ? 'false' : 'true');
+  }
+</script>
 
 </body>
 </html>

@@ -73,7 +73,6 @@
   "monto_seleccionado":  "Monto seleccionado",
   "otro_monto_btn":      "Otro monto",
   "continuar_btn2":      "Continuar",
-
   "retiro_titulo": "Retiro",
 
   "lbl_operacion": "Operación",
@@ -82,6 +81,7 @@
   "lbl_fecha":     "Fecha",
   "lbl_otra_op_si": "Sí — Otra operación",
   "lbl_otra_op_no": "No — Finalizar sesión",
+
   "seleccione_cuenta_titulo": "Seleccione cuenta",
   "cuentas_disponibles":      "Cuentas disponibles",
   "cargando_cuentas":         "Cargando cuentas...",

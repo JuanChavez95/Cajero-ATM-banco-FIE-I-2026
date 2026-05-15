@@ -6,30 +6,43 @@
   <title>Banco Fie — Cajero ATM</title>
   <link rel="stylesheet" href="assets/css/welcome.css">
 </head>
+
 <body>
 
-<div class="fie-root" id="welcome-screen">
+<div class="fie-root"
+     id="welcome-screen"
+     role="main"
+     aria-label="Pantalla de bienvenida del cajero ATM Banco Fie">
 
-  <div class="top-bar"></div>
+  <div class="top-bar" role="presentation" aria-hidden="true"></div>
 
   <!-- LOGO -->
-  <div class="logo-area">
-    <svg class="logo-icon" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <div class="logo-area" role="img" aria-label="Logotipo de Banco Fie">
+    <svg class="logo-icon"
+         viewBox="0 0 56 56"
+         fill="none"
+         xmlns="http://www.w3.org/2000/svg"
+         aria-hidden="true"
+         focusable="false">
       <circle cx="28" cy="28" r="24" fill="#0a0a0a" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
       <path d="M20 16 C12 20, 12 36, 20 40" stroke="#e70075" stroke-width="4" stroke-linecap="round" fill="none"/>
       <path d="M28 20 C38 24, 38 32, 28 36" stroke="#0094d6" stroke-width="4" stroke-linecap="round" fill="none"/>
       <circle cx="24" cy="28" r="3" fill="#e70075"/>
     </svg>
-    <div class="logo-text">
+    <div class="logo-text" aria-hidden="true">
       <span class="banco">Banco</span><span class="fie">Fie</span>
     </div>
   </div>
 
-  <div class="tagline">Sé parte de la comunidad Fie</div>
+  <p class="tagline" aria-label="Eslogan: Sé parte de la comunidad Fie">
+    Sé parte de la comunidad Fie
+  </p>
 
   <!-- TARJETA ANIMADA -->
-  <div class="card-area">
-    <div class="atm-card-visual">
+  <div class="card-area"
+       role="img"
+       aria-label="Animación: inserte su tarjeta con el chip hacia arriba">
+    <div class="atm-card-visual" aria-hidden="true">
       <div class="card-stripe"></div>
       <div class="card-chip"></div>
       <div class="card-logo">
@@ -42,34 +55,43 @@
     </div>
 
     <!-- Flecha animada de inserción -->
-    <div class="insert-arrow">
+    <div class="insert-arrow" aria-hidden="true">
       <div class="arrow-line"></div>
       <div class="arrow-head"></div>
     </div>
   </div>
 
   <!-- INSTRUCCIONES -->
-  <div class="instructions">
+  <div class="instructions" role="region" aria-label="Instrucciones de uso">
     <div class="inst-line">
-      <div class="inst-dot"></div>
+      <div class="inst-dot" aria-hidden="true"></div>
       Inserte su tarjeta para comenzar
     </div>
-    <div class="inst-line" style="opacity:0.45; font-size:0.72rem; letter-spacing:1px; text-transform:none;">
+    <div class="inst-line"
+         style="opacity:0.45; font-size:0.72rem; letter-spacing:1px; text-transform:none;"
+         aria-label="Orientación de la tarjeta: introduzca la tarjeta con el chip hacia arriba">
       Introduzca la tarjeta con el chip hacia arriba
     </div>
   </div>
 
-  <div class="divider"></div>
+  <div class="divider" role="separator" aria-hidden="true"></div>
 
   <!-- 24H -->
-  <div class="available-text">
-    Cajero <span>ATM</span> disponible<br>las <span>24 horas</span> del día
+  <div class="available-text" aria-label="Cajero ATM disponible las 24 horas del día">
+    Cajero <span aria-hidden="true">ATM</span> disponible<br>
+    las <span aria-hidden="true">24 horas</span> del día
   </div>
 
-  <div class="enter-hint">Presione Enter o toque para continuar</div>
+  <div class="enter-hint"
+       role="status"
+       aria-live="polite"
+       aria-label="Presione Enter o toque la pantalla para continuar">
+    Presione Enter o toque para continuar
+  </div>
 
 </div><!-- /fie-root -->
 
+<script src="assets/js/voz.js"></script>
 <script>
   // Clic o Enter → avanza a selección de idioma
   document.getElementById('welcome-screen').addEventListener('click', irAIdiomas);
@@ -80,6 +102,46 @@
 
   function irAIdiomas() {
     window.location.href = 'language.html';
+  }
+
+  // Voz: lee el mensaje de bienvenida al cargar la pantalla
+  document.addEventListener('DOMContentLoaded', function () {
+    Voz.iniciarVozPagina(
+      'Bienvenido al cajero ATM de Banco Fie.',
+      'Inserte su tarjeta con el chip hacia arriba para comenzar, o presione Enter.'
+    );
+  });
+</script>
+
+<!-- Botón flotante de voz -->
+<button id="voz-global-btn"
+        onclick="toggleVoz()"
+        aria-pressed="false"
+        aria-label="Silenciar voz"
+        title="Silenciar voz"
+        style="position:fixed; bottom:24px; right:24px; z-index:9999;
+               width:52px; height:52px; border-radius:50%; border:none;
+               background:#0d3b6e; color:#fff; cursor:pointer;
+               box-shadow:0 4px 16px rgba(0,0,0,0.4); font-size:22px;">
+  🔊
+</button>
+
+<script>
+  var vozActiva = true;
+  function toggleVoz() {
+    vozActiva = !vozActiva;
+    const btn = document.getElementById('voz-global-btn');
+    if (vozActiva) {
+      btn.textContent = '🔊';
+      btn.setAttribute('aria-label', 'Silenciar voz');
+      btn.style.background = '#0d3b6e';
+    } else {
+      window.speechSynthesis.cancel();
+      btn.textContent = '🔇';
+      btn.setAttribute('aria-label', 'Activar voz');
+      btn.style.background = '#3a1a1a';
+    }
+    btn.setAttribute('aria-pressed', vozActiva ? 'false' : 'true');
   }
 </script>
 

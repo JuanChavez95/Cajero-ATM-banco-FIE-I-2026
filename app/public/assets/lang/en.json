@@ -58,7 +58,7 @@
   "otra_operacion": "Would you like to perform another transaction?",
   "fin_sesion": "Session ended. Please take your card.",
   "gracias": "Thank you for using Banco Fie",
-  
+
   "retiro_desc":        "Withdraw cash from your account",
   "deposito_desc":      "Deposit money into your account",
   "consulta_desc":      "Check your available balance",
@@ -96,19 +96,6 @@
   "cuentas_disponibles":      "Available accounts",
   "cargando_cuentas":         "Loading accounts...",
   "sin_cuentas_disp":         "No accounts available",
-
-  "movimientos_titulo":   "Recent Transactions",
-  "historial_sub":        "Transaction history",
-  "lbl_retiros":          "Withdrawals",
-  "lbl_depositos":        "Deposits",
-  "lbl_total_ops":        "Total ops.",
-  "filtro_todos":         "All",
-  "filtro_retiros":       "Withdrawals",
-  "filtro_depositos":     "Deposits",
-  "filtro_transf":        "Transfer",
-  "cargando_movimientos": "Loading transactions...",
-  "sin_movimientos":      "No transactions recorded",
-  "lbl_saldo_post":       "Balance:",
 
   "transferencia_titulo":      "Transfer",
   "paso_origen":               "Origin",

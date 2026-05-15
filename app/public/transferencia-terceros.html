@@ -3,41 +3,72 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Banco Fie — Transferencia</title>
+  <title>Banco Fie — Transferencia a Terceros</title>
   <link rel="stylesheet" href="assets/css/operaciones.css">
   <style>
-    .op-header-icon { background: rgba(255,165,0,0.12); }
-    .op-header-icon svg { stroke: #ffa500; }
-    .op-card::before { background: linear-gradient(90deg, #ffa500, #cc8400); }
-    .monto-btn:hover { border-color: rgba(255,165,0,0.5); color: #ffa500; }
-    .monto-btn.selected { background: rgba(255,165,0,0.12); border-color: #ffa500; color: #ffa500; }
-    .monto-btn.otro:hover { border-color: rgba(255,165,0,0.4); color: #ffa500; }
-    .monto-resumen-valor { color: #ffa500; }
-    .btn-confirm { background: linear-gradient(135deg, #ffa500, #cc8400); box-shadow: 0 6px 18px rgba(255,165,0,0.3); }
-    .btn-confirm:not(:disabled):hover { box-shadow: 0 10px 24px rgba(255,165,0,0.4); }
+    .op-header-icon     { background: rgba(160,90,255,0.12); }
+    .op-header-icon svg { stroke: #a05aff; }
+    .op-card::before    { background: linear-gradient(90deg, #a05aff, #7a3fd6); }
+    .monto-btn:hover    { border-color: rgba(160,90,255,0.5); color: #a05aff; }
+    .monto-btn.selected { background: rgba(160,90,255,0.12); border-color: #a05aff; color: #a05aff; }
+    .monto-btn.otro:hover { border-color: rgba(160,90,255,0.4); color: #a05aff; }
+    .monto-resumen-valor { color: #a05aff; }
+    .btn-confirm { background: linear-gradient(135deg, #a05aff, #7a3fd6); box-shadow: 0 6px 18px rgba(160,90,255,0.3); }
+    .btn-confirm:not(:disabled):hover { box-shadow: 0 10px 24px rgba(160,90,255,0.4); }
 
-    .paso-indicator { width: 100%; display: flex; align-items: center; margin-bottom: 24px; animation: fadeDown 0.4s ease both; }
-    .paso-step { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
-    .paso-circle { width: 28px; height: 28px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 800; color: rgba(255,255,255,0.2); transition: all 0.3s; }
-    .paso-circle.active { border-color: #ffa500; color: #ffa500; background: rgba(255,165,0,0.1); }
-    .paso-circle.done { border-color: #0094d6; background: #0094d6; color: white; }
-    .paso-label { font-size: 0.52rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.15); text-align: center; transition: color 0.3s; }
-    .paso-step.active .paso-label { color: #ffa500; }
-    .paso-step.done .paso-label { color: #0094d6; }
-    .paso-line { height: 2px; width: 36px; background: rgba(255,255,255,0.07); margin-bottom: 18px; transition: background 0.3s; flex-shrink: 0; }
-    .paso-line.done { background: #0094d6; }
+    .paso-indicator { width:100%; display:flex; align-items:center; margin-bottom:24px; animation:fadeDown 0.4s ease both; }
+    .paso-step { flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; }
+    .paso-circle { width:28px; height:28px; border-radius:50%; border:2px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; font-size:0.65rem; font-weight:800; color:rgba(255,255,255,0.2); transition:all 0.3s; }
+    .paso-circle.active { border-color:#a05aff; color:#a05aff; background:rgba(160,90,255,0.1); }
+    .paso-circle.done   { border-color:#0094d6; background:#0094d6; color:white; }
+    .paso-label { font-size:0.52rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,0.15); text-align:center; transition:color 0.3s; }
+    .paso-step.active .paso-label { color:#a05aff; }
+    .paso-step.done   .paso-label { color:#0094d6; }
+    .paso-line { height:2px; width:36px; background:rgba(255,255,255,0.07); margin-bottom:18px; transition:background 0.3s; flex-shrink:0; }
+    .paso-line.done { background:#0094d6; }
 
-    .cuenta-badge { display: flex; align-items: center; gap: 12px; background: #1a1a1a; border: 1.5px solid rgba(255,165,0,0.3); border-radius: 12px; padding: 14px 16px; margin-bottom: 4px; }
-    .cuenta-badge-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: rgba(255,165,0,0.12); }
-    .cuenta-badge-icon svg { width: 16px; height: 16px; stroke: #ffa500; }
-    .cuenta-badge-info { flex: 1; }
-    .cuenta-badge-tipo { font-size: 0.78rem; font-weight: 800; color: rgba(255,255,255,0.75); }
-    .cuenta-badge-saldo { font-size: 0.62rem; font-weight: 600; color: rgba(255,255,255,0.2); margin-top: 2px; }
+    .destino-card {
+      width:100%; background:#1a1a1a; border:1.5px solid rgba(255,255,255,0.07);
+      border-radius:14px; padding:20px 18px;
+      display:flex; flex-direction:column; gap:10px;
+    }
+    .destino-label { font-size:0.62rem; font-weight:800; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.25); }
+    .destino-input-wrap { display:flex; align-items:center; background:#111; border:1.5px solid rgba(255,255,255,0.08); border-radius:10px; overflow:hidden; transition:border-color 0.2s; }
+    .destino-input-wrap:focus-within { border-color:rgba(160,90,255,0.5); }
+    .destino-input {
+      flex:1; background:transparent; border:none; outline:none;
+      padding:14px 16px; font-family:'Montserrat',sans-serif;
+      font-size:1rem; font-weight:800; color:#fff; letter-spacing:3px;
+    }
+    .destino-input::placeholder { color:rgba(255,255,255,0.12); letter-spacing:1px; font-size:0.85rem; }
+
+    .destinatario-badge {
+      display:none; align-items:center; gap:12px;
+      background:#1a1a1a; border:1.5px solid rgba(160,90,255,0.3);
+      border-radius:12px; padding:14px 16px;
+    }
+    .destinatario-badge.visible { display:flex; }
+    .destinatario-avatar {
+      width:40px; height:40px; border-radius:50%;
+      background:rgba(160,90,255,0.12); border:2px solid rgba(160,90,255,0.25);
+      display:flex; align-items:center; justify-content:center;
+      font-size:0.75rem; font-weight:800; color:#a05aff;
+    }
+    .destinatario-nombre { font-size:0.85rem; font-weight:800; color:rgba(255,255,255,0.85); }
+    .destinatario-cuenta { font-size:0.6rem; font-weight:600; color:rgba(255,255,255,0.2); letter-spacing:2px; margin-top:2px; }
+    .check-verde { margin-left:auto; color:#00c853; font-size:1.1rem; }
+
+    .cuenta-badge { display:flex; align-items:center; gap:12px; background:#1a1a1a; border:1.5px solid rgba(160,90,255,0.25); border-radius:12px; padding:14px 16px; margin-bottom:4px; }
+    .cuenta-badge-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:rgba(160,90,255,0.12); }
+    .cuenta-badge-icon svg { width:16px; height:16px; stroke:#a05aff; }
+    .cuenta-badge-info { flex:1; }
+    .cuenta-badge-tipo  { font-size:0.78rem; font-weight:800; color:rgba(255,255,255,0.75); }
+    .cuenta-badge-saldo { font-size:0.62rem; font-weight:600; color:rgba(255,255,255,0.2); margin-top:2px; }
 
     .sr-only {
-      position: absolute; width: 1px; height: 1px; padding: 0;
-      margin: -1px; overflow: hidden; clip: rect(0,0,0,0);
-      white-space: nowrap; border: 0;
+      position:absolute; width:1px; height:1px; padding:0;
+      margin:-1px; overflow:hidden; clip:rect(0,0,0,0);
+      white-space:nowrap; border:0;
     }
   </style>
 </head>
@@ -46,23 +77,24 @@
 
   <div class="op-wrapper"
        role="main"
-       aria-label="Pantalla de transferencia entre cuentas">
+       aria-label="Pantalla de transferencia a terceros">
 
     <!-- Header -->
-    <header class="op-header">
+    <header class="op-header" aria-label="Encabezado de operación">
       <button class="btn-back"
               aria-label="Retroceder al paso anterior"
               onclick="retroceder()">←</button>
       <div class="op-header-info">
-        <h1 class="op-header-title" id="header-titulo">Transfer</h1>
+        <h1 class="op-header-title" id="header-titulo">Third-Party Transfer</h1>
         <p  class="op-header-sub"   id="sub-paso">Origin account</p>
       </div>
       <div class="op-header-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
              stroke-linecap="round" stroke-linejoin="round"
              aria-hidden="true" focusable="false">
-          <path d="M5 12h14M15 7l5 5-5 5"/>
-          <path d="M19 12H5M9 17l-5-5 5-5"/>
+          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
         </svg>
       </div>
     </header>
@@ -105,7 +137,7 @@
            id="lbl-seleccione-origen"
            aria-hidden="true"
            style="margin-bottom:12px;">
-        Select origin account
+        Select your origin account
       </div>
       <div id="lista-origen"
            role="group"
@@ -128,10 +160,12 @@
       </div>
     </section>
 
-    <!-- ── PASO 2: Cuenta destino ── -->
+    <!-- ── PASO 2: Cuenta destino (número manual) ── -->
     <section id="paso2"
              style="width:100%; display:none;"
-             aria-label="Paso 2: Seleccione la cuenta destino">
+             aria-label="Paso 2: Ingrese la cuenta destino">
+
+      <!-- Badge cuenta origen seleccionada -->
       <div class="cuenta-badge"
            id="badge-origen"
            role="region"
@@ -145,20 +179,60 @@
           </svg>
         </div>
         <div class="cuenta-badge-info">
-          <div class="cuenta-badge-tipo" id="badge-origen-tipo">—</div>
+          <div class="cuenta-badge-tipo"  id="badge-origen-tipo">—</div>
           <div class="cuenta-badge-saldo" id="badge-origen-saldo">—</div>
         </div>
       </div>
+
       <div class="section-label"
-           id="lbl-seleccione-destino"
+           id="lbl-ingrese-num-destino"
            aria-hidden="true"
-           style="margin-bottom:12px; margin-top:16px;">
-        Select destination account
+           style="margin:16px 0 12px;">
+        Enter destination account number
       </div>
-      <div id="lista-destino"
-           role="group"
-           aria-labelledby="lbl-seleccione-destino"
-           style="display:flex; flex-direction:column; gap:10px;"></div>
+
+      <!-- Campo número de cuenta destino -->
+      <div class="destino-card" role="group" aria-labelledby="lbl-destino-label">
+        <label class="destino-label"
+               id="lbl-destino-label"
+               for="input-num-destino">
+          Account number (12 digits)
+        </label>
+        <div class="destino-input-wrap">
+          <input type="text"
+                 class="destino-input"
+                 id="input-num-destino"
+                 maxlength="12"
+                 placeholder="000000000000"
+                 inputmode="numeric"
+                 aria-label="Número de cuenta destino, 12 dígitos"
+                 aria-required="true"
+                 aria-describedby="destino-hint"
+                 oninput="this.value=this.value.replace(/\D/g,''); limpiarVerificacion()">
+        </div>
+        <span id="destino-hint" class="sr-only">
+          Ingrese los 12 dígitos del número de cuenta del destinatario.
+        </span>
+      </div>
+
+      <!-- Badge destinatario verificado -->
+      <div class="destinatario-badge"
+           id="badge-destinatario"
+           role="status"
+           aria-live="polite"
+           aria-atomic="true"
+           aria-label="Destinatario no verificado"
+           style="margin-top:12px;">
+        <div class="destinatario-avatar"
+             id="dest-avatar"
+             aria-hidden="true">??</div>
+        <div>
+          <div class="destinatario-nombre" id="dest-nombre" aria-hidden="true">—</div>
+          <div class="destinatario-cuenta" id="dest-cuenta" aria-hidden="true">—</div>
+        </div>
+        <div class="check-verde" aria-hidden="true">✓</div>
+      </div>
+
       <div class="op-msg error"
            id="err2"
            role="alert"
@@ -167,39 +241,62 @@
            style="margin-top:12px;">
         <span aria-hidden="true">●</span><span id="err2-text"></span>
       </div>
+
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button class="btn-confirm"
+                style="flex:1;"
+                id="btn-verificar"
+                aria-label="Verificar número de cuenta destino"
+                onclick="verificarCuentaDestino()">
+          <span id="btn-verificar-text">Verify account</span>
+        </button>
+      </div>
+
+      <button class="btn-confirm"
+              style="margin-top:10px; display:none;"
+              id="btn-continuar-dest"
+              aria-label="Continuar al siguiente paso con la cuenta verificada"
+              onclick="irPasoUI(3)">
+        Continue →
+      </button>
     </section>
 
     <!-- ── PASO 3: Monto ── -->
     <section id="paso3"
              style="width:100%; display:none;"
              aria-label="Paso 3: Seleccione el monto a transferir">
+
+      <!-- Badge destinatario en paso 3 -->
       <div class="cuenta-badge"
            role="region"
-           aria-label="Resumen de cuentas seleccionadas"
+           aria-label="Destinatario de la transferencia"
            style="margin-bottom:8px;">
         <div class="cuenta-badge-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
                stroke-linecap="round" stroke-linejoin="round"
                aria-hidden="true" focusable="false">
-            <path d="M5 12h14M15 7l5 5-5 5"/>
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
           </svg>
         </div>
         <div class="cuenta-badge-info">
-          <div class="cuenta-badge-tipo" id="badge-resumen-tipos">— → —</div>
-          <div class="cuenta-badge-saldo" id="lbl-transferencia-entre">Transfer between your accounts</div>
+          <div class="cuenta-badge-tipo"  id="badge-dest-nombre-3">—</div>
+          <div class="cuenta-badge-saldo" id="badge-dest-cuenta-3">—</div>
         </div>
       </div>
 
       <div class="op-card" style="margin-top:8px;">
+
         <section aria-label="Montos predefinidos">
           <div class="section-label"
-               id="lbl-montos-disponibles"
+               id="lbl-seleccione-monto"
                aria-hidden="true">
-            Available amounts
+            Select amount
           </div>
           <div class="montos-grid"
                role="group"
-               aria-labelledby="lbl-montos-disponibles">
+               aria-labelledby="lbl-seleccione-monto">
             <button class="monto-btn"
                     aria-label="Transferir 10 bolivianos"
                     aria-pressed="false"
@@ -262,7 +359,7 @@
           <label id="lbl-ingresar-monto" for="monto-input">
             Enter amount (Bs.)
           </label>
-          <div class="monto-input-wrap" style="border-color: rgba(255,165,0,0.3);">
+          <div class="monto-input-wrap">
             <span class="monto-prefix" aria-hidden="true">Bs.</span>
             <input type="number"
                    class="monto-input"
@@ -275,7 +372,7 @@
                    oninput="actualizarDesdeInput()">
           </div>
           <span id="monto-hint" class="sr-only">
-            Ingrese el monto en bolivianos que desea transferir. Solo números.
+            Ingrese el monto en bolivianos que desea transferir al destinatario.
           </span>
         </div>
 
@@ -321,14 +418,14 @@
              aria-label="Paso 4: Confirme la transferencia">
       <div class="op-card">
         <div class="section-label"
-             id="lbl-resumen-transferencia"
+             id="lbl-confirme-transferencia"
              aria-hidden="true">
-          Transfer summary
+          Confirm the transfer
         </div>
 
         <dl class="resultado-detalle"
             id="resumen-final"
-            aria-label="Resumen de la transferencia"
+            aria-label="Resumen de la transferencia a terceros"
             style="margin-top:4px;">
           <!-- se llena con JS -->
         </dl>
@@ -354,7 +451,7 @@
                 id="btn-modificar-monto"
                 aria-label="Volver al paso anterior para modificar el monto"
                 style="margin-top:8px;"
-                onclick="irPaso3()">
+                onclick="irPasoUI(3)">
           ← Modify amount
         </button>
       </div>
@@ -371,20 +468,15 @@
     const usuario = JSON.parse(sessionStorage.getItem('usuario') || '{}');
     if (!usuario.id) window.location.href = 'index.html';
 
-    let cuentas      = [];
-    let origenId     = null;
-    let origenTipo   = '';
-    let origenSaldo  = 0;
-    let destinoId    = null;
-    let destinoTipo  = '';
-    let montoElegido = 0;
-    let otroVisible  = false;
-    let paso         = 1;
-
-    const iconoSVG = {
-      ahorros:   '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="12" cy="12" r="3"/></svg>',
-      corriente: '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>'
-    };
+    let cuentas           = [];
+    let origenId          = null;
+    let origenTipo        = '';
+    let origenSaldo       = 0;
+    let destinoVerificado = false;
+    let destinoNombre     = '';
+    let numeroCuentaDest  = '';
+    let montoElegido      = 0;
+    let otroVisible       = false;
 
     const labelCuenta = {
       ahorros:   t.cuenta_ahorros   || 'Savings Acc.',
@@ -392,63 +484,27 @@
     };
 
     // Aplicar idioma
-    document.getElementById('header-titulo').textContent             = t.transferencia_titulo    || 'Transfer';
-    document.getElementById('lbl-paso1').textContent                 = t.paso_origen             || 'Origin';
-    document.getElementById('lbl-paso2').textContent                 = t.paso_destino            || 'Destination';
-    document.getElementById('lbl-paso3').textContent                 = t.paso_monto              || 'Amount';
-    document.getElementById('lbl-paso4').textContent                 = t.paso_confirmar          || 'Confirm';
-    document.getElementById('lbl-seleccione-origen').textContent     = t.seleccione_origen       || 'Select origin account';
-    document.getElementById('txt-cargando-cuentas').textContent      = t.cargando_cuentas        || 'Loading accounts...';
-    document.getElementById('lbl-seleccione-destino').textContent    = t.seleccione_destino      || 'Select destination account';
-    document.getElementById('lbl-transferencia-entre').textContent   = t.transferencia_entre     || 'Transfer between your accounts';
-    document.getElementById('lbl-montos-disponibles').textContent    = t.montos_disponibles      || 'Available amounts';
-    document.getElementById('btn-otro-monto').innerHTML              = t.otro_monto              || '✎ &nbsp; Other amount';
-    document.getElementById('lbl-ingresar-monto').textContent        = t.ingresar_monto          || 'Enter amount (Bs.)';
-    document.getElementById('lbl-monto-a-transferir').textContent    = t.monto_a_transferir      || 'Amount to transfer';
-    document.getElementById('btn-paso3').textContent                 = t.continuar               || 'Continue';
-    document.getElementById('lbl-resumen-transferencia').textContent = t.resumen_transferencia   || 'Transfer summary';
-    document.getElementById('btn-confirmar-tf').textContent          = t.confirmar_transferencia || 'Confirm transfer';
-    document.getElementById('btn-modificar-monto').textContent       = t.modificar_monto         || '← Modify amount';
+    document.getElementById('header-titulo').textContent              = t.terceros_titulo            || 'Third-Party Transfer';
+    document.getElementById('lbl-paso1').textContent                  = t.paso_origen                || 'Origin';
+    document.getElementById('lbl-paso2').textContent                  = t.paso_destino               || 'Destination';
+    document.getElementById('lbl-paso3').textContent                  = t.paso_monto                 || 'Amount';
+    document.getElementById('lbl-paso4').textContent                  = t.paso_confirmar             || 'Confirm';
+    document.getElementById('lbl-seleccione-origen').textContent      = t.seleccione_origen          || 'Select your origin account';
+    document.getElementById('txt-cargando-cuentas').textContent       = t.cargando_cuentas           || 'Loading accounts...';
+    document.getElementById('lbl-ingrese-num-destino').textContent    = t.ingrese_num_destino        || 'Enter destination account number';
+    document.getElementById('lbl-destino-label').textContent          = t.destino_label              || 'Account number (12 digits)';
+    document.getElementById('btn-verificar-text').textContent         = t.verificar_cuenta           || 'Verify account';
+    document.getElementById('btn-continuar-dest').textContent         = t.continuar_destino          || 'Continue →';
+    document.getElementById('lbl-seleccione-monto').textContent       = t.seleccione_monto           || 'Select amount';
+    document.getElementById('btn-otro-monto').innerHTML               = t.otro_monto                 || '✎ &nbsp; Other amount';
+    document.getElementById('lbl-ingresar-monto').textContent         = t.ingresar_monto             || 'Enter amount (Bs.)';
+    document.getElementById('lbl-monto-a-transferir').textContent     = t.monto_a_transferir         || 'Amount to transfer';
+    document.getElementById('btn-paso3').textContent                  = t.continuar                  || 'Continue';
+    document.getElementById('lbl-confirme-transferencia').textContent = t.confirme_transferencia     || 'Confirm the transfer';
+    document.getElementById('btn-confirmar-tf').textContent           = t.confirmar_transferencia    || 'Confirm transfer';
+    document.getElementById('btn-modificar-monto').textContent        = t.modificar_monto            || '← Modify amount';
 
-    function colorCuenta(tipo) { return tipo === 'ahorros' ? '#0094d6' : '#ffa500'; }
-
-    // Genera el HTML de un botón de cuenta con aria completo
-    function renderCuentaItem(c, onclickFn, disabled) {
-      const col          = colorCuenta(c.tipo);
-      const labelTipo    = labelCuenta[c.tipo] || c.tipo;
-      const ultimos4     = c.numero_cuenta.slice(-4);
-      const saldoFmt     = parseFloat(c.saldo).toFixed(2);
-      const ariaLabel    = disabled
-        ? `${labelTipo}, terminada en ${ultimos4}. Saldo: ${saldoFmt} bolivianos. No disponible.`
-        : `${labelTipo}, terminada en ${ultimos4}. Saldo: ${saldoFmt} bolivianos. Seleccionar.`;
-
-      return `
-        <button class="cuenta-item ${c.tipo}"
-                aria-label="${ariaLabel}"
-                ${disabled ? `disabled aria-disabled="true" style="opacity:0.3;cursor:not-allowed;"` : ''}
-                onclick="${onclickFn}">
-          <div class="cuenta-icon" style="background:${col}18;" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round"
-                 aria-hidden="true" focusable="false">
-              ${c.tipo === 'ahorros'
-                ? '<rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="12" cy="12" r="3"/>'
-                : '<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>'}
-            </svg>
-          </div>
-          <div class="cuenta-info" aria-hidden="true">
-            <div class="cuenta-tipo">${labelTipo}</div>
-            <div class="cuenta-num">**** **** ${ultimos4}</div>
-          </div>
-          <div class="cuenta-saldo" aria-hidden="true">
-            <div class="cuenta-saldo-monto">Bs. ${saldoFmt}</div>
-            <div class="cuenta-saldo-label">${t.saldo_disponible || 'Available'}</div>
-          </div>
-          <div class="cuenta-arrow" aria-hidden="true">›</div>
-        </button>`;
-    }
-
-    // ── CARGAR CUENTAS ───────────────────────────────────────
+    // ── CARGAR CUENTAS ORIGEN ────────────────────────────────
     async function cargarCuentas() {
       try {
         const res  = await fetch(`${API}/balance.php`);
@@ -456,16 +512,45 @@
         if (!res.ok) throw new Error(data.error || 'Error');
         cuentas = data.cuentas || [];
 
-        if (cuentas.length < 2) {
-          const msg = t.necesita_dos_cuentas || 'You need at least 2 active accounts to transfer';
+        if (!cuentas.length) {
+          const msg = t.no_cuentas_activas || 'You have no active accounts';
           document.getElementById('lista-origen').innerHTML =
             `<div class="op-msg info visible" role="status"><span>${msg}</span></div>`;
           Voz.hablar(msg);
           return;
         }
 
-        document.getElementById('lista-origen').innerHTML =
-          cuentas.map(c => renderCuentaItem(c, `elegirOrigen(${c.id})`, false)).join('');
+        document.getElementById('lista-origen').innerHTML = cuentas.map(c => {
+          const col        = c.tipo === 'ahorros' ? '#0094d6' : '#ffa500';
+          const labelTipo  = labelCuenta[c.tipo] || c.tipo;
+          const ultimos4   = c.numero_cuenta.slice(-4);
+          const saldoFmt   = parseFloat(c.saldo).toFixed(2);
+          const ariaLabel  = `${labelTipo}, terminada en ${ultimos4}. Saldo: ${saldoFmt} bolivianos. Seleccionar como cuenta origen.`;
+
+          return `
+            <button class="cuenta-item ${c.tipo}"
+                    aria-label="${ariaLabel}"
+                    onclick="elegirOrigen(${c.id})">
+              <div class="cuenta-icon" style="background:${col}18;" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round"
+                     aria-hidden="true" focusable="false">
+                  ${c.tipo === 'ahorros'
+                    ? '<rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="12" cy="12" r="3"/>'
+                    : '<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>'}
+                </svg>
+              </div>
+              <div class="cuenta-info" aria-hidden="true">
+                <div class="cuenta-tipo">${labelTipo}</div>
+                <div class="cuenta-num">**** **** ${ultimos4}</div>
+              </div>
+              <div class="cuenta-saldo" aria-hidden="true">
+                <div class="cuenta-saldo-monto">Bs. ${saldoFmt}</div>
+                <div class="cuenta-saldo-label">${t.saldo_disponible || 'Available'}</div>
+              </div>
+              <div class="cuenta-arrow" aria-hidden="true">›</div>
+            </button>`;
+        }).join('');
 
         Voz.hablar(
           `${cuentas.length} ${t.cuentas_disponibles || 'cuentas disponibles'}. ${t.seleccione_origen || 'Seleccione la cuenta origen.'}`
@@ -485,38 +570,86 @@
       origenSaldo = parseFloat(c.saldo);
 
       const labelOrigen = `${labelCuenta[c.tipo]} — **** ${c.numero_cuenta.slice(-4)}`;
-      const saldoOrigen = 'Bs. ' + origenSaldo.toFixed(2);
+      const saldoFmt    = 'Bs. ' + origenSaldo.toFixed(2);
 
       document.getElementById('badge-origen-tipo').textContent  = labelOrigen;
-      document.getElementById('badge-origen-saldo').textContent = saldoOrigen;
+      document.getElementById('badge-origen-saldo').textContent = saldoFmt;
       document.getElementById('badge-origen').setAttribute(
-        'aria-label', `Cuenta origen: ${labelOrigen}. Saldo: ${saldoOrigen}`
+        'aria-label', `Cuenta origen: ${labelOrigen}. Saldo: ${saldoFmt}`
       );
-
-      // Destinos: excluye la cuenta origen
-      document.getElementById('lista-destino').innerHTML =
-        cuentas.filter(x => x.id !== id)
-               .map(c2 => renderCuentaItem(c2, `elegirDestino(${c2.id})`, false)).join('');
 
       irPasoUI(2);
-      Voz.hablar(
-        `${t.seleccione_destino || 'Seleccione la cuenta destino.'}`
-      );
+      Voz.hablar(t.ingrese_num_destino || 'Ingrese el número de cuenta del destinatario.');
     }
 
-    // ── PASO 2 → 3 ───────────────────────────────────────────
-    function elegirDestino(id) {
-      const c     = cuentas.find(x => x.id === id);
-      destinoId   = c.id;
-      destinoTipo = c.tipo;
+    // ── VERIFICAR CUENTA DESTINO ─────────────────────────────
+    function limpiarVerificacion() {
+      destinoVerificado = false;
+      const badge = document.getElementById('badge-destinatario');
+      badge.classList.remove('visible');
+      badge.setAttribute('aria-label', 'Destinatario no verificado');
+      document.getElementById('btn-continuar-dest').style.display = 'none';
+      document.getElementById('err2').classList.remove('visible');
+    }
 
-      const resumenTipos = labelCuenta[origenTipo] + '  →  ' + labelCuenta[destinoTipo];
-      document.getElementById('badge-resumen-tipos').textContent = resumenTipos;
+    async function verificarCuentaDestino() {
+      const num = document.getElementById('input-num-destino').value.trim();
+      if (num.length !== 12) {
+        const msgErr = t.num_cuenta_12 || 'Account number must have 12 digits';
+        document.getElementById('err2-text').textContent = msgErr;
+        document.getElementById('err2').classList.add('visible');
+        Voz.hablar(msgErr);
+        return;
+      }
 
-      irPasoUI(3);
-      Voz.hablar(
-        `${t.paso_monto || 'Monto'}. ${t.seleccione_monto_sub || 'Seleccione el monto a transferir.'}`
-      );
+      const btn     = document.getElementById('btn-verificar');
+      const btnText = document.getElementById('btn-verificar-text');
+      btnText.innerHTML = '<span class="spinner" aria-hidden="true"></span>';
+      btn.disabled  = true;
+      btn.setAttribute('aria-disabled', 'true');
+      btn.setAttribute('aria-label', 'Verificando cuenta, por favor espere');
+      Voz.hablar(t.verificando || 'Verificando cuenta, por favor espere.');
+
+      try {
+        const res  = await fetch(`${API}/buscar_cuenta.php?numero=${num}`);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Cuenta no encontrada');
+
+        numeroCuentaDest  = num;
+        destinoNombre     = data.nombre;
+        destinoVerificado = true;
+
+        const iniciales = data.nombre.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+        const cuentaTxt = `**** **** ${num.slice(-4)} — ${labelCuenta[data.tipo] || data.tipo}`;
+
+        document.getElementById('dest-avatar').textContent  = iniciales;
+        document.getElementById('dest-nombre').textContent  = data.nombre;
+        document.getElementById('dest-cuenta').textContent  = cuentaTxt;
+
+        const badge = document.getElementById('badge-destinatario');
+        badge.classList.add('visible');
+        badge.setAttribute('aria-label', `Destinatario verificado: ${data.nombre}. ${cuentaTxt}.`);
+
+        document.getElementById('err2').classList.remove('visible');
+        document.getElementById('btn-continuar-dest').style.display = 'block';
+
+        // Actualizar paso 3
+        document.getElementById('badge-dest-nombre-3').textContent = data.nombre;
+        document.getElementById('badge-dest-cuenta-3').textContent = 'Account **** ' + num.slice(-4);
+
+        Voz.hablar(`${t.cuenta_verificada || 'Cuenta verificada'}. ${data.nombre}. ${t.continuar_destino || 'Pulse Continuar para avanzar.'}`);
+
+      } catch (err) {
+        document.getElementById('err2-text').textContent = err.message;
+        document.getElementById('err2').classList.add('visible');
+        destinoVerificado = false;
+        Voz.hablar(err.message);
+      } finally {
+        btnText.textContent = t.verificar_cuenta || 'Verify account';
+        btn.disabled = false;
+        btn.removeAttribute('aria-disabled');
+        btn.setAttribute('aria-label', 'Verificar número de cuenta destino');
+      }
     }
 
     // ── MONTO PREDEFINIDO ────────────────────────────────────
@@ -597,12 +730,10 @@
     }
 
     // ── PASO 3 → 4 ───────────────────────────────────────────
-    function irPaso3() { irPasoUI(3); }
-
     function irPaso4() {
       if (montoElegido <= 0) return;
       if (montoElegido > origenSaldo) {
-        const msgErr = t.saldo_insuficiente || 'Insufficient balance in origin account';
+        const msgErr = t.saldo_insuficiente || 'Insufficient balance';
         document.getElementById('err3-text').textContent = msgErr;
         document.getElementById('err3').classList.add('visible');
         Voz.hablar(msgErr);
@@ -610,30 +741,33 @@
       }
       document.getElementById('err3').classList.remove('visible');
 
-      const cOrigen  = cuentas.find(x => x.id === origenId);
-      const cDestino = cuentas.find(x => x.id === destinoId);
+      const cOrigen   = cuentas.find(x => x.id === origenId);
       const saldoPost = (origenSaldo - montoElegido).toFixed(2);
 
-      // Resumen como <dl> para accesibilidad semántica
+      // Resumen como <dl> semántico
       document.getElementById('resumen-final').innerHTML = `
         <div class="detalle-row">
-          <dt class="detalle-key">${t.detalle_origen   || 'Origin'}</dt>
+          <dt class="detalle-key">${t.detalle_desde         || 'From'}</dt>
           <dd class="detalle-val">${labelCuenta[origenTipo]} **** ${cOrigen.numero_cuenta.slice(-4)}</dd>
         </div>
         <div class="detalle-row">
-          <dt class="detalle-key">${t.detalle_destino  || 'Destination'}</dt>
-          <dd class="detalle-val">${labelCuenta[destinoTipo]} **** ${cDestino.numero_cuenta.slice(-4)}</dd>
+          <dt class="detalle-key">${t.detalle_para          || 'To'}</dt>
+          <dd class="detalle-val">${destinoNombre}</dd>
         </div>
         <div class="detalle-row">
-          <dt class="detalle-key">${t.detalle_monto    || 'Amount'}</dt>
+          <dt class="detalle-key">${t.detalle_cuenta_destino || 'Destination account'}</dt>
+          <dd class="detalle-val">**** **** ${numeroCuentaDest.slice(-4)}</dd>
+        </div>
+        <div class="detalle-row">
+          <dt class="detalle-key">${t.detalle_monto         || 'Amount'}</dt>
           <dd class="detalle-val highlight">Bs. ${montoElegido.toFixed(2)}</dd>
         </div>
         <div class="detalle-row">
-          <dt class="detalle-key">${t.detalle_saldo_post || 'Origin balance after op.'}</dt>
+          <dt class="detalle-key">${t.detalle_saldo_post    || 'Balance after operation'}</dt>
           <dd class="detalle-val" style="color:#e70075;">Bs. ${saldoPost}</dd>
         </div>
         <div class="detalle-row">
-          <dt class="detalle-key">${t.detalle_fecha    || 'Date'}</dt>
+          <dt class="detalle-key">${t.detalle_fecha         || 'Date'}</dt>
           <dd class="detalle-val">${new Date().toLocaleString('es-BO')}</dd>
         </div>`;
 
@@ -641,12 +775,12 @@
 
       // Voz: lee el resumen completo
       Voz.hablar([
-        t.resumen_transferencia || 'Resumen de la transferencia.',
-        `${t.detalle_origen  || 'Origen'}: ${labelCuenta[origenTipo]}.`,
-        `${t.detalle_destino || 'Destino'}: ${labelCuenta[destinoTipo]}.`,
-        `${t.detalle_monto   || 'Monto'}: ${montoElegido.toFixed(2)} bolivianos.`,
-        `${t.detalle_saldo_post || 'Saldo posterior'}: ${saldoPost} bolivianos.`,
-        t.confirmar_transferencia || 'Confirme para continuar.'
+        t.confirme_transferencia  || 'Confirme la transferencia.',
+        `${t.detalle_desde        || 'Desde'}: ${labelCuenta[origenTipo]}.`,
+        `${t.detalle_para         || 'Para'}: ${destinoNombre}.`,
+        `${t.detalle_monto        || 'Monto'}: ${montoElegido.toFixed(2)} bolivianos.`,
+        `${t.detalle_saldo_post   || 'Saldo posterior'}: ${saldoPost} bolivianos.`,
+        t.confirmar_transferencia || 'Pulse Confirmar para ejecutar.'
       ].join(' '));
     }
 
@@ -660,13 +794,13 @@
       Voz.hablar(t.procesando || 'Procesando transferencia, por favor espere.');
 
       try {
-        const res  = await fetch(`${API}/transfer.php`, {
+        const res  = await fetch(`${API}/transfer_terceros.php`, {
           method:  'POST',
           headers: { 'Content-Type': 'application/json' },
           body:    JSON.stringify({
-            cuenta_origen_id:  origenId,
-            cuenta_destino_id: destinoId,
-            monto:             montoElegido
+            cuenta_origen_id:      origenId,
+            numero_cuenta_destino: numeroCuentaDest,
+            monto:                 montoElegido
           })
         });
         const data = await res.json();
@@ -677,7 +811,7 @@
           monto:       montoElegido,
           cuenta_tipo: origenTipo,
           nuevo_saldo: data.nuevo_saldo_origen,
-          mensaje:     data.mensaje
+          mensaje:     data.mensaje + ' a ' + data.destinatario
         }));
 
         Voz.detenerHabla();
@@ -696,7 +830,6 @@
 
     // ── NAVEGACIÓN ENTRE PASOS ───────────────────────────────
     function irPasoUI(n) {
-      paso = n;
       const subs = [
         t.sub_paso_1 || 'Origin account',
         t.sub_paso_2 || 'Destination account',
@@ -724,27 +857,29 @@
 
       document.getElementById('sub-paso').textContent = subs[n - 1];
 
-      // Actualiza progressbar accesible
+      // Actualizar progressbar accesible
       const indicator = document.getElementById('paso-indicator');
       indicator.setAttribute('aria-valuenow', String(n));
       indicator.setAttribute('aria-valuetext', `Paso ${n} de 4: ${labelsPaso[n - 1]}`);
 
-      // Foco al inicio de la sección activa para lectores de pantalla
-      const seccionActiva = document.getElementById(`paso${n}`);
-      if (seccionActiva) {
-        seccionActiva.setAttribute('tabindex', '-1');
-        seccionActiva.focus({ preventScroll: false });
+      // Foco a la sección activa para lectores de pantalla
+      const seccion = document.getElementById(`paso${n}`);
+      if (seccion) {
+        seccion.setAttribute('tabindex', '-1');
+        seccion.focus({ preventScroll: false });
       }
     }
 
     function retroceder() {
-      if (paso === 1) salir('menu.html');
-      else if (paso === 2) irPasoUI(1);
-      else if (paso === 3) irPasoUI(2);
-      else if (paso === 4) irPasoUI(3);
+      const pasoActual = [1,2,3,4].find(i =>
+        document.getElementById(`paso${i}`).style.display !== 'none'
+      ) || 1;
+      if (pasoActual === 1) salir('menu.html');
+      else irPasoUI(pasoActual - 1);
     }
 
     function salir(dest) {
+      Voz.detenerHabla();
       document.querySelector('.op-wrapper').style.transition = 'opacity 0.2s ease';
       document.querySelector('.op-wrapper').style.opacity    = '0';
       setTimeout(() => window.location.href = dest, 200);
@@ -753,7 +888,7 @@
     // ── VOZ ──────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', function () {
       Voz.iniciarVozPagina(
-        t.transferencia_titulo || 'Transferencia entre cuentas.',
+        t.terceros_titulo      || 'Transferencia a terceros.',
         t.seleccione_origen    || 'Seleccione la cuenta origen para comenzar.'
       );
     });

@@ -20,7 +20,6 @@
       animation: fadeUp 0.5s 0.1s ease both;
       position: relative; overflow: hidden;
     }
-
     .pin-step-card::before {
       content: ''; position: absolute;
       top: 0; left: 0; right: 0; height: 3px;
@@ -62,87 +61,153 @@
   </style>
 </head>
 <body>
-  <div class="top-bar"></div>
+  <div class="top-bar" role="presentation" aria-hidden="true"></div>
 
-  <div class="success-overlay" id="success-overlay">
-    <div class="success-icon">
-      <svg viewBox="0 0 32 32" fill="none">
-        <polyline points="6,16 13,23 26,9" stroke="#0094d6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Overlay de éxito -->
+  <div class="success-overlay"
+       id="success-overlay"
+       role="alert"
+       aria-live="assertive"
+       aria-atomic="true">
+    <div class="success-icon" aria-hidden="true">
+      <svg viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false">
+        <polyline points="6,16 13,23 26,9" stroke="#0094d6" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
     <div class="success-name" id="success-name">PIN updated</div>
-    <div class="success-sub" id="success-sub">Returning to menu...</div>
+    <div class="success-sub"  id="success-sub">Returning to menu...</div>
   </div>
 
-  <div class="op-wrapper" id="main-wrapper">
+  <div class="op-wrapper" id="main-wrapper" role="main" aria-label="Pantalla de cambio de PIN">
 
-    <div class="op-header">
-      <button class="btn-back" onclick="retroceder()">←</button>
+    <!-- Header -->
+    <header class="op-header" aria-label="Encabezado de operación">
+      <button class="btn-back"
+              aria-label="Retroceder al paso anterior"
+              onclick="retroceder()">←</button>
       <div class="op-header-info">
-        <div class="op-header-title" id="header-titulo">PIN Change</div>
-        <div class="op-header-sub" id="sub-paso">Current PIN</div>
+        <h1 class="op-header-title" id="header-titulo">PIN Change</h1>
+        <p  class="op-header-sub"   id="sub-paso">Current PIN</p>
       </div>
-      <div class="op-header-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <div class="op-header-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round"
+             aria-hidden="true" focusable="false">
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
           <path d="M7 11V7a5 5 0 0110 0v4"/>
         </svg>
       </div>
-    </div>
+    </header>
 
     <!-- Indicador de pasos -->
-    <div class="paso-indicator">
-      <div class="paso-step active" id="ps1"><div class="paso-circle active" id="pc1">1</div><div class="paso-label" id="lbl-paso1">Current</div></div>
-      <div class="paso-line" id="pl1"></div>
-      <div class="paso-step" id="ps2"><div class="paso-circle" id="pc2">2</div><div class="paso-label" id="lbl-paso2">New</div></div>
-      <div class="paso-line" id="pl2"></div>
-      <div class="paso-step" id="ps3"><div class="paso-circle" id="pc3">3</div><div class="paso-label" id="lbl-paso3">Confirm</div></div>
+    <div class="paso-indicator"
+         role="progressbar"
+         aria-valuemin="1"
+         aria-valuemax="3"
+         aria-valuenow="1"
+         aria-valuetext="Paso 1 de 3: PIN actual"
+         aria-label="Progreso del cambio de PIN"
+         id="paso-indicator">
+      <div class="paso-step active" id="ps1">
+        <div class="paso-circle active" id="pc1" aria-hidden="true">1</div>
+        <div class="paso-label" id="lbl-paso1" aria-hidden="true">Current</div>
+      </div>
+      <div class="paso-line" id="pl1" aria-hidden="true"></div>
+      <div class="paso-step" id="ps2">
+        <div class="paso-circle" id="pc2" aria-hidden="true">2</div>
+        <div class="paso-label" id="lbl-paso2" aria-hidden="true">New</div>
+      </div>
+      <div class="paso-line" id="pl2" aria-hidden="true"></div>
+      <div class="paso-step" id="ps3">
+        <div class="paso-circle" id="pc3" aria-hidden="true">3</div>
+        <div class="paso-label" id="lbl-paso3" aria-hidden="true">Confirm</div>
+      </div>
     </div>
 
     <!-- Card PIN -->
-    <div class="pin-step-card">
-      <div class="step-title-pin" id="step-label">Enter your current PIN</div>
+    <div class="pin-step-card" role="region" aria-labelledby="step-label">
 
-      <!-- Puntos visuales -->
-      <div class="pin-dots">
-        <div class="pin-dot" id="d1"></div>
-        <div class="pin-dot" id="d2"></div>
-        <div class="pin-dot" id="d3"></div>
-        <div class="pin-dot" id="d4"></div>
+      <!-- Título del paso actual -->
+      <div class="step-title-pin"
+           id="step-label"
+           role="status"
+           aria-live="polite"
+           aria-atomic="true">
+        Enter your current PIN
       </div>
 
-      <!-- Teclado -->
-      <div class="numpad">
-        <button class="num-btn" onclick="presionar('1')">1</button>
-        <button class="num-btn" onclick="presionar('2')">2</button>
-        <button class="num-btn" onclick="presionar('3')">3</button>
-        <button class="num-btn" onclick="presionar('4')">4</button>
-        <button class="num-btn" onclick="presionar('5')">5</button>
-        <button class="num-btn" onclick="presionar('6')">6</button>
-        <button class="num-btn" onclick="presionar('7')">7</button>
-        <button class="num-btn" onclick="presionar('8')">8</button>
-        <button class="num-btn" onclick="presionar('9')">9</button>
-        <button class="num-btn btn-clear" onclick="borrar()">⌫</button>
-        <button class="num-btn btn-zero" onclick="presionar('0')">0</button>
+      <!-- Puntos visuales del PIN -->
+      <div class="pin-dots"
+           id="pin-dots-status"
+           role="status"
+           aria-live="polite"
+           aria-atomic="true"
+           aria-label="PIN ingresado: 0 de 4 dígitos">
+        <div class="pin-dot" id="d1" aria-hidden="true"></div>
+        <div class="pin-dot" id="d2" aria-hidden="true"></div>
+        <div class="pin-dot" id="d3" aria-hidden="true"></div>
+        <div class="pin-dot" id="d4" aria-hidden="true"></div>
       </div>
 
-      <div class="error-msg hidden" id="error-msg">
-        <span>●</span><span id="error-text"></span>
+      <!-- Teclado numérico -->
+      <div class="numpad"
+           role="group"
+           aria-label="Teclado numérico para ingresar PIN">
+        <button class="num-btn" aria-label="Dígito 1" onclick="presionar('1')">1</button>
+        <button class="num-btn" aria-label="Dígito 2" onclick="presionar('2')">2</button>
+        <button class="num-btn" aria-label="Dígito 3" onclick="presionar('3')">3</button>
+        <button class="num-btn" aria-label="Dígito 4" onclick="presionar('4')">4</button>
+        <button class="num-btn" aria-label="Dígito 5" onclick="presionar('5')">5</button>
+        <button class="num-btn" aria-label="Dígito 6" onclick="presionar('6')">6</button>
+        <button class="num-btn" aria-label="Dígito 7" onclick="presionar('7')">7</button>
+        <button class="num-btn" aria-label="Dígito 8" onclick="presionar('8')">8</button>
+        <button class="num-btn" aria-label="Dígito 9" onclick="presionar('9')">9</button>
+        <button class="num-btn btn-clear"
+                aria-label="Borrar último dígito"
+                onclick="borrar()">⌫</button>
+        <button class="num-btn btn-zero"
+                aria-label="Dígito 0"
+                onclick="presionar('0')">0</button>
       </div>
 
-      <button class="btn-confirm-pin" id="btn-siguiente" disabled onclick="avanzar()">
+      <!-- Mensaje de error -->
+      <div class="error-msg hidden"
+           id="error-msg"
+           role="alert"
+           aria-live="assertive"
+           aria-atomic="true">
+        <span aria-hidden="true">●</span>
+        <span id="error-text"></span>
+      </div>
+
+      <!-- Botón continuar / confirmar -->
+      <button class="btn-confirm-pin"
+              id="btn-siguiente"
+              disabled
+              aria-label="Continuar al siguiente paso"
+              aria-disabled="true"
+              onclick="avanzar()">
         <span id="btn-text">Continue</span>
       </button>
-    </div>
 
-    <button class="btn-back" style="margin-top:16px; width:auto; padding:0 16px; height:36px; font-size:0.62rem; letter-spacing:2px; text-transform:uppercase;"
-            id="btn-cancelar" onclick="salir('menu.html')">
+    </div><!-- /pin-step-card -->
+
+    <!-- Botón cancelar -->
+    <button class="btn-back"
+            id="btn-cancelar"
+            aria-label="Cancelar cambio de PIN y volver al menú"
+            style="margin-top:16px; width:auto; padding:0 16px; height:36px;
+                   font-size:0.62rem; letter-spacing:2px; text-transform:uppercase;"
+            onclick="salir('menu.html')">
       ← Cancel
     </button>
 
-  </div>
-  <div class="bottom-bar"></div>
+  </div><!-- /main-wrapper -->
 
+  <div class="bottom-bar" role="presentation" aria-hidden="true"></div>
+
+  <script src="assets/js/voz.js"></script>
   <script>
     const API     = '/app/api';
     const t       = JSON.parse(sessionStorage.getItem('translations') || '{}');
@@ -172,25 +237,35 @@
     ];
 
     // Aplicar idioma
-    document.getElementById('header-titulo').textContent  = t.cambiopin_titulo    || 'PIN Change';
-    document.getElementById('lbl-paso1').textContent      = stepSteps[0];
-    document.getElementById('lbl-paso2').textContent      = stepSteps[1];
-    document.getElementById('lbl-paso3').textContent      = stepSteps[2];
-    document.getElementById('success-name').textContent   = t.cambiopin_actualizado || 'PIN updated';
-    document.getElementById('success-sub').textContent    = t.cambiopin_volviendo   || 'Returning to menu...';
-    document.getElementById('btn-cancelar').textContent   = t.cambiopin_cancelar    || '← Cancel';
+    document.getElementById('header-titulo').textContent = t.cambiopin_titulo    || 'PIN Change';
+    document.getElementById('lbl-paso1').textContent     = stepSteps[0];
+    document.getElementById('lbl-paso2').textContent     = stepSteps[1];
+    document.getElementById('lbl-paso3').textContent     = stepSteps[2];
+    document.getElementById('success-name').textContent  = t.cambiopin_actualizado || 'PIN updated';
+    document.getElementById('success-sub').textContent   = t.cambiopin_volviendo   || 'Returning to menu...';
+    document.getElementById('btn-cancelar').textContent  = t.cambiopin_cancelar    || '← Cancel';
 
+    // ── TECLADO ──────────────────────────────────────────────
     function presionar(n) {
       if (pinBuffer.length >= 4) return;
       pinBuffer += n;
       actualizarDots();
-      document.getElementById('btn-siguiente').disabled = pinBuffer.length < 4;
+      const btn = document.getElementById('btn-siguiente');
+      const listo = pinBuffer.length === 4;
+      btn.disabled = !listo;
+      if (listo) {
+        btn.removeAttribute('aria-disabled');
+      } else {
+        btn.setAttribute('aria-disabled', 'true');
+      }
     }
 
     function borrar() {
       pinBuffer = pinBuffer.slice(0, -1);
       actualizarDots();
-      document.getElementById('btn-siguiente').disabled = pinBuffer.length < 4;
+      const btn = document.getElementById('btn-siguiente');
+      btn.disabled = true;
+      btn.setAttribute('aria-disabled', 'true');
       ocultarError();
     }
 
@@ -200,6 +275,11 @@
         d.classList.toggle('filled', i < pinBuffer.length);
         d.classList.remove('error-dot');
       });
+      // Actualiza el anuncio accesible del progreso del PIN
+      document.getElementById('pin-dots-status').setAttribute(
+        'aria-label',
+        `PIN ingresado: ${pinBuffer.length} de 4 dígitos`
+      );
     }
 
     function errorDots(msg) {
@@ -209,8 +289,11 @@
       });
       document.getElementById('error-text').textContent = msg;
       document.getElementById('error-msg').classList.remove('hidden');
+      Voz.hablar(msg);
       setTimeout(() => {
-        ['d1','d2','d3','d4'].forEach(id => document.getElementById(id).classList.remove('error-dot'));
+        ['d1','d2','d3','d4'].forEach(id =>
+          document.getElementById(id).classList.remove('error-dot')
+        );
       }, 700);
     }
 
@@ -218,8 +301,10 @@
       document.getElementById('error-msg').classList.add('hidden');
     }
 
+    // ── AVANZAR ENTRE PASOS ──────────────────────────────────
     function avanzar() {
       if (pinBuffer.length < 4) return;
+
       if (paso === 1) {
         pinActual = pinBuffer;
         irPasoUI(2);
@@ -229,67 +314,107 @@
       } else if (paso === 3) {
         pinConfirm = pinBuffer;
         if (pinNuevo !== pinConfirm) {
-          errorDots(t.cambiopin_no_coinciden || 'New PINs do not match');
+          const msgNoCoinciden = t.cambiopin_no_coinciden || 'New PINs do not match';
+          errorDots(msgNoCoinciden);
           pinBuffer = '';
           actualizarDots();
           document.getElementById('btn-siguiente').disabled = true;
+          document.getElementById('btn-siguiente').setAttribute('aria-disabled', 'true');
           return;
         }
         enviarCambio();
       }
     }
 
+    // ── ENVIAR CAMBIO ────────────────────────────────────────
     async function enviarCambio() {
       const btn = document.getElementById('btn-siguiente');
-      btn.innerHTML = '<span class="spinner"></span>';
+      btn.innerHTML = '<span class="spinner" aria-hidden="true"></span>';
       btn.disabled  = true;
+      btn.setAttribute('aria-disabled', 'true');
+      btn.setAttribute('aria-label', 'Procesando cambio de PIN, por favor espere');
+      Voz.hablar(t.procesando || 'Procesando cambio de PIN, por favor espere.');
 
       try {
-        const res  = await fetch(`${API}/change_pin.php`, {
+        const res = await fetch(`${API}/change_pin.php`, {
           method:  'POST',
           headers: { 'Content-Type': 'application/json' },
-          // ANTIGUO: body:    JSON.stringify({ pin_actual: pinActual, pin_nuevo: pinNuevo, pin_confirm: pinConfirm })
-          body: JSON.stringify({ usuario_id: usuario.id, pin_actual: pinActual, pin_nuevo: pinNuevo, pin_confirm: pinConfirm })
-          
+          body: JSON.stringify({
+            usuario_id:  usuario.id,
+            pin_actual:  pinActual,
+            pin_nuevo:   pinNuevo,
+            pin_confirm: pinConfirm
+          })
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Error');
 
+        // Muestra el overlay de éxito
+        const msgExito = (t.cambiopin_actualizado || 'PIN updated') + '. ' + (t.cambiopin_volviendo || 'Returning to menu.');
+        Voz.hablar(msgExito);
         document.getElementById('success-overlay').classList.add('show');
         setTimeout(() => salir('menu.html'), 2500);
 
       } catch (err) {
-        // Mostrar error sin llamar irPasoUI (causa crash)
         document.getElementById('error-text').textContent = err.message;
         document.getElementById('error-msg').classList.remove('hidden');
-        btn.textContent = paso === 3 ? (t.cambiopin_confirmar || 'Confirm change') : (t.cambiopin_continuar || 'Continue');
+        Voz.hablar(err.message);
+
+        const labelBtn = paso === 3
+          ? (t.cambiopin_confirmar || 'Confirm change')
+          : (t.cambiopin_continuar || 'Continue');
+        btn.textContent = labelBtn;
+        btn.setAttribute('aria-label', labelBtn);
         btn.disabled    = false;
+        btn.removeAttribute('aria-disabled');
         pinBuffer = '';
         actualizarDots();
       }
     }
 
+    // ── NAVEGACIÓN ENTRE PASOS ───────────────────────────────
     function irPasoUI(n) {
       paso      = n;
       pinBuffer = '';
       actualizarDots();
       ocultarError();
-      document.getElementById('btn-siguiente').disabled = true;
-      document.getElementById('btn-text').textContent   = n < 3 ? (t.cambiopin_continuar || 'Continue') : (t.cambiopin_confirmar || 'Confirm change');
-      document.getElementById('step-label').textContent = stepLabels[n-1];
-      document.getElementById('sub-paso').textContent   = stepSubs[n-1];
 
+      const btn      = document.getElementById('btn-siguiente');
+      const labelBtn = n < 3
+        ? (t.cambiopin_continuar || 'Continue')
+        : (t.cambiopin_confirmar || 'Confirm change');
+
+      btn.disabled    = true;
+      btn.setAttribute('aria-disabled', 'true');
+      btn.setAttribute('aria-label', labelBtn);
+      document.getElementById('btn-text').textContent   = labelBtn;
+      document.getElementById('step-label').textContent = stepLabels[n - 1];
+      document.getElementById('sub-paso').textContent   = stepSubs[n - 1];
+
+      // Actualiza el progressbar accesible
+      const stepTexts = [
+        t.cambiopin_paso1_sub || 'PIN actual',
+        t.cambiopin_paso2_sub || 'PIN nuevo',
+        t.cambiopin_paso3_sub || 'Confirmación'
+      ];
+      const indicator = document.getElementById('paso-indicator');
+      indicator.setAttribute('aria-valuenow', String(n));
+      indicator.setAttribute('aria-valuetext', `Paso ${n} de 3: ${stepTexts[n - 1]}`);
+
+      // Actualiza círculos visuales
       [1,2,3].forEach(i => {
         const ps = document.getElementById(`ps${i}`);
         const pc = document.getElementById(`pc${i}`);
         ps.className = 'paso-step' + (i === n ? ' active' : i < n ? ' done' : '');
         pc.className = 'paso-circle' + (i === n ? ' active' : i < n ? ' done' : '');
-        if (pc.classList.contains('done')) pc.innerHTML = '✓';
-        else pc.textContent = i;
+        pc.innerHTML  = pc.classList.contains('done') ? '✓' : String(i);
         if (i < 3) {
           document.getElementById(`pl${i}`).className = 'paso-line' + (i < n ? ' done' : '');
         }
       });
+
+      // Voz: anuncia el nuevo paso
+      Voz.hablar(stepLabels[n - 1]);
     }
 
     function retroceder() {
@@ -298,10 +423,19 @@
     }
 
     function salir(dest) {
+      Voz.detenerHabla();
       document.getElementById('main-wrapper').style.transition = 'opacity 0.2s ease';
       document.getElementById('main-wrapper').style.opacity    = '0';
       setTimeout(() => window.location.href = dest, 200);
     }
+
+    // ── VOZ ──────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', function () {
+      Voz.iniciarVozPagina(
+        t.cambiopin_titulo      || 'Cambio de PIN.',
+        t.cambiopin_paso1_label || 'Ingrese su PIN actual usando el teclado numérico.'
+      );
+    });
   </script>
 </body>
 </html>
