@@ -1,4 +1,8 @@
 <?php
+// login.php — MODIFICADO para módulo Markov
+// CAMBIO: Después del login exitoso se inicializa $_SESSION['estado_markov'] = 'MENU'
+// INTACTO: toda la lógica de autenticación, intentos, sesión ATM.
+
 require_once '../config/config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -9,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $data    = json_decode(file_get_contents('php://input'), true);
 $tarjeta = trim($data['tarjeta'] ?? '');
-$pin     = trim($data['pin'] ?? '');
+$pin     = trim($data['pin']     ?? '');
 
 if (empty($tarjeta) || empty($pin)) {
     http_response_code(400);
@@ -48,10 +52,8 @@ if (!$usuario || $usuario['estado'] === 'bloqueado') {
 
 if (!password_verify($pin, $usuario['pin_hash'])) {
     $_SESSION['intentos']++;
-
     $pdo->prepare("UPDATE usuarios SET intentos_fallidos = intentos_fallidos + 1 WHERE id = ?")
         ->execute([$usuario['id']]);
-
     http_response_code(401);
     echo json_encode([
         'error'              => 'PIN incorrecto',
@@ -60,13 +62,26 @@ if (!password_verify($pin, $usuario['pin_hash'])) {
     exit();
 }
 
-// Login exitoso
+// ── Login exitoso ─────────────────────────────────────────────
 $_SESSION['intentos']   = 0;
 $_SESSION['usuario_id'] = $usuario['id'];
 $_SESSION['nombre']     = $usuario['nombre'];
 
 $pdo->prepare("UPDATE usuarios SET intentos_fallidos = 0 WHERE id = ?")
     ->execute([$usuario['id']]);
+
+// ── Crear sesión ATM ──────────────────────────────────────────
+$stmtSesion = $pdo->prepare(
+    "INSERT INTO sesiones_atm (usuario_id, hora_inicio, estado)
+     VALUES (?, NOW(), 'activa')"
+);
+$stmtSesion->execute([$usuario['id']]);
+$_SESSION['sesion_atm_id'] = $pdo->lastInsertId();
+
+// ── [MARKOV] Inicializar estado de la cadena ──────────────────
+// Estado inicial siempre es MENU al comenzar una nueva sesión.
+$_SESSION['estado_markov'] = 'MENU';
+// ─────────────────────────────────────────────────────────────
 
 echo json_encode([
     'success' => true,

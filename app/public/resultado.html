@@ -184,6 +184,14 @@
       sessionStorage.removeItem('op_monto');
       sessionStorage.removeItem('op_resultado');
       Voz.detenerHabla();
+      // [MARKOV] Registrar retorno al menú
+      fetch(`${API}/registrar_markov.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ estado_siguiente: 'MENU' }),
+        keepalive: true,
+        credentials: 'include' 
+      });
       salir('menu.html');
     }
 

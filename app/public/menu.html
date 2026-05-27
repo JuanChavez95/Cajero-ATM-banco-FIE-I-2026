@@ -248,7 +248,6 @@
     }
 
     // Sincronizar aria-label de cada botón con el texto traducido
-    // (los aria-label tienen el texto por defecto; se actualizan si hay traducción)
     const ariaMap = [
       { selector: '.op-btn.retiro',        fn: () => `${t.retiro || 'Retiro'} — ${t.retiro_desc || 'Retire efectivo de su cuenta'}` },
       { selector: '.op-btn.deposito',       fn: () => `${t.deposito || 'Depósito'} — ${t.deposito_desc || 'Deposite dinero en su cuenta'}` },
@@ -270,7 +269,7 @@
       t.terminar_sesion ? t.terminar_sesion + ', volver al inicio' : 'Terminar sesión y volver al inicio'
     );
 
-    // Reloj (aria-live="off": no interrumpe al lector con cada segundo)
+    // Reloj
     function actualizarReloj() {
       const ahora = new Date();
       const h = String(ahora.getHours()).padStart(2, '0');
@@ -283,14 +282,57 @@
     actualizarReloj();
     setInterval(actualizarReloj, 1000);
 
-    function irA(pagina) {
+    // ── [MARKOV] Mapa página → estado ────────────────────────
+    // Convierte el nombre de archivo HTML al estado limpio de la cadena.
+    const estadosMarkov = {
+      'retiro.html'               : 'RETIRO',
+      'deposito.html'             : 'DEPOSITO',
+      'consulta.html'             : 'CONSULTA',
+      'transferencia.html'        : 'TRANSFERENCIA',
+      'transferencia-terceros.html': 'TRANSFERENCIA_TERCEROS',
+      'cambio-pin.html'           : 'CAMBIO_PIN'
+      // movimientos.html no se registra: es consultivo, no operacional
+    };
+
+    // ── irA() MODIFICADA — registra transición antes de navegar ──
+    // Intacto: animación fade-out + delay 250ms + window.location.href
+    // Añadido: llamada fetch a registrar_markov.php (fire-and-forget)
+    async function irA(pagina) {
+      // Animación visual (original intacta)
       const wrapper = document.querySelector('.menu-wrapper');
       wrapper.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
       wrapper.style.opacity    = '0';
       wrapper.style.transform  = 'translateY(-12px)';
+
+      // [MARKOV] Registrar transición solo si la página tiene estado definido
+      const estadoSiguiente = estadosMarkov[pagina];
+      if (estadoSiguiente) {
+        try {
+          fetch('/app/api/registrar_markov.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ estado_siguiente: estadoSiguiente }),
+            keepalive: true,
+            credentials: 'include'  // ← esta línea
+          });
+
+          fetch('/app/api/registrar_markov.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ estado_siguiente: estadoSiguiente }),
+            keepalive: true,
+            credentials: 'include'  // ← esta línea
+          });
+        } catch (_) {
+          // Silencioso: nunca interrumpir la navegación ATM
+        }
+      }
+
+      // Navegar tras el delay de la animación (original intacto)
       setTimeout(() => window.location.href = pagina, 250);
     }
 
+    // cerrarSesion() original intacta
     async function cerrarSesion() {
       Voz.detenerHabla();
       Voz.detenerReconocimiento();
@@ -299,7 +341,7 @@
       window.location.href = 'index.html';
     }
 
-    // Temporizador de inactividad
+    // Temporizador de inactividad (original intacto)
     let timerInactividad;
     function reiniciarTimer() {
       clearTimeout(timerInactividad);
@@ -313,7 +355,7 @@
     );
     reiniciarTimer();
 
-    // ── VOZ ──────────────────────────────────────────────────
+    // ── VOZ (original intacta) ────────────────────────────────
     document.addEventListener('DOMContentLoaded', function () {
       const nombre   = usuario.nombre || '';
       const titulo   = t.menu_titulo  || 'Seleccione una operación';
@@ -323,7 +365,6 @@
 
       Voz.iniciarVozPagina(saludo);
 
-      // Botón de micrófono con los comandos del menú
       Voz.crearBotonMicrofono({
         posicion:  'bottom-right',
         comandos:  Voz.obtenerComandosMenu(),
